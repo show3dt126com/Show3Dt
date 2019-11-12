@@ -4,6 +4,7 @@
 #include "BBS.h"
 #include "Global.h"
 
+//sxd
 
 BBSMessage::BBSMessage(EBBSSource source, EBBSVarty varity)
 {
