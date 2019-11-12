@@ -1,0 +1,193 @@
+<<< Sky.vert <<<
+#version 400 core
+
+layout (location = 0) in vec3 vertex;
+layout (location = 1) in vec2 textCoord;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+out vec2 TexCoord;
+out vec3 bColor;
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(vertex, 1.0f);
+    //mat4 v4 = model * vec4(textCoord, 1.0f, 1.0f);
+    //TexCoord = v4.xy();
+    TexCoord = textCoord;
+    bColor = vec3(1.0f, 1.0f, 1.0f);
+}
+
+<<< Sky.frag <<<
+#version 400 core
+
+in vec3 bColor;
+in vec2 TexCoord;
+out vec4 fcolor;
+
+uniform sampler2D skyText;
+uniform vec3 textColor;
+
+void main()
+{
+    fcolor = texture2D(skyText, TexCoord) * vec4(bColor, 1.0f);
+
+    //fcolor = vec4(0.9f, 0.0f, 0.0f, 1.0f);
+}
+
+<<< Dem.vert <<<
+#version 400 core
+
+layout (location = 0) in vec3 vertex;
+layout (location = 1) in vec2 textCoord;
+layout (location = 2) in vec3 norm;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+out vec2 TexCoord;
+out vec3 bColor;
+out vec3 Normal;
+out vec3 FragPos;
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(vertex, 1.0f);
+    //mat4 v4 = model * vec4(textCoord, 1.0f, 1.0f);
+    //TexCoord = v4.xy();
+    TexCoord = textCoord;
+    bColor = vec3(1.0f, 1.0f, 1.0f);
+    FragPos = vec3(model * vec4(vertex, 1.0f));
+    Normal = normalize(norm);
+}
+
+
+<<< Dem.frag <<<
+#version 400 core
+
+in vec3 bColor;
+in vec2 TexCoord;
+in vec3 Normal;
+in vec3 FragPos;
+
+out vec4 fcolor;
+
+uniform vec3 lightPos=vec3(0.0f, 2000.0f, 5610.0f);
+uniform sampler2D demText;
+uniform vec3 textColor;
+
+void main()
+{
+    fcolor = texture2D(demText, TexCoord) * vec4(bColor, 1.0f);
+//    if (FragPos.y <= 0)
+//        fcolor = vec4(0.09f,0.0f,0.60f,1.0f);
+//    else
+//        fcolor = vec4(0.59f,0.0f,0.0f,1.0f);
+
+    //vec3 lightDir = normalize(lightPos - FragPos);
+   // float diff = max(dot(Normal, lightDir), 0.0f);
+    //fcolor = vec4(diff*bColor, 1.0f);
+    //fcolor = vec4(1.0f,0.8f, 0.2f, 1.0f);
+}
+
+<<< Line.vert <<<
+#version 400 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in float aColor;
+layout (location = 2) in vec3 aNormal;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+out vec3 bColor;
+out vec3 FragPos;
+out vec3 Normal;
+
+void main(){
+  gl_Position = projection * view * model * vec4(aPos, 1.0f);
+  //bColor = vec3(0.2, 0.4, 1.0-aColor);
+  bColor = vec3(0.3, 0.3, aColor);
+  //FragPos = vec3(model * vec4(aPos, 1.0f));
+  //Normal = mat3(transpose(inverse(model))) * aNormal;
+  //Normal = aNormal;
+}
+
+<<< Line.frag <<<
+#version 400 core
+
+out vec4 color;
+in vec3 bColor;
+in vec3 Normal;
+in vec3 FragPos;
+
+uniform vec3 lightPos;
+
+void main(){
+//    vec3 norm = normalize(Normal);
+//    vec3 lightDir = normalize(lightPos - FragPos);
+//    float diff = max(dot(norm, lightDir), 0.0f);
+//    color = vec4(diff*bColor, 1.0f);
+
+    //color = vec4(bColor, 1.0f);
+    color = vec4(0.9f, 0.2f, 0.4f, 1.0f);
+}
+
+<<< ScrnLine.vert <<<
+#version 400 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in float aColor;
+
+uniform mat4 projection;
+out vec3 bcolor;
+
+void main()
+{
+    gl_Position = projection * vec4(aPos, 1.0);
+    bcolor = vec3(aColor, 0.8f, 0.5f);
+}
+
+<<< ScrnLine.frag <<<
+
+#version 400 core
+
+out vec4 color;
+in vec3 bcolor;
+
+void main()
+{
+    color = vec4(bcolor, 1.0);
+}
+
+<<< Text.vert <<<
+#version 400 core
+
+layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
+out vec2 TexCoords;
+uniform mat4 projection;
+void main()
+{
+    gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
+    TexCoords = vertex.zw;
+}
+
+<<< Text.frag <<<
+#version 400 core
+
+in vec2 TexCoords;
+out vec4 color;
+uniform sampler2D text;
+uniform vec3 textColor;
+
+void main()
+{
+    vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);
+    color = vec4(textColor, 1.0) * sampled;
+}
+
+<<< END
+

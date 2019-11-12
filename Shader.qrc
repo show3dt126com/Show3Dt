@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Shader.all</file>
+        <file>ZoomIn.png</file>
+    </qresource>
+</RCC>
