@@ -1,6 +1,9 @@
 #ifndef BBS_H
 #define BBS_H
 
+
+// 
+
 /*
   消息交换中心，
 */
