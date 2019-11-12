@@ -2,7 +2,7 @@
 #define BBS_H
 
 
-// 
+// CXB
 
 /*
   消息交换中心，
