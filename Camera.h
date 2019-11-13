@@ -88,7 +88,7 @@ public:
     QVector3D right;
 
     // Eular Angles 不考虑 roll操作
-    // 俯仰叫，度
+    // 俯仰角，度
     double pitch;
     // 偏转角，度
     double yaw;

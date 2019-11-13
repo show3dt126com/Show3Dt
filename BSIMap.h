@@ -34,7 +34,7 @@ struct BSIMapTxt
     // 图像对应 webMercator 坐标范围，texXY0左上角，texXY1右下角
     DVec3 texXY0, texXY1;
     // 图像文件，信息文件的名称，不含后缀，不含完整路径
-    char file[64];
+    char file[128];
     // 计算任意点对应的图像坐标
     int lb2tex(DVec3 lb, double & texX, double & texY);
     // 计算图像坐标对应的经纬度

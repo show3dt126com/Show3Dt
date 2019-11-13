@@ -146,7 +146,9 @@ void BSIMap::readPathAllBSIMapTxt(QString mapPath)
         //右下角坐标：18354670.728062804788351,-724011.531917189946398
         //左下角坐标：8433755.952873207628727,-724011.531917189946398
 
-        QFile file(mapPath+txtFile);
+        QString mapPathall = QString(allBSIMapRoot)+mapPath+"/"+txtFile;
+        //qDebug()<<"mapPathall"<<mapPath;
+        QFile file(mapPathall);
         if (!file.open(QIODevice::ReadOnly| QIODevice::Text))
             continue;
 
@@ -195,7 +197,7 @@ void BSIMap::readPathAllBSIMapTxt(QString mapPath)
         }
         // GD.mainPath + QString("/dem/") +
         QString txtFileName =  txtFile.left(txtFile.length()-3);
-        sprintf(txt.file, "%s%s", mapPath.toLatin1().data(), txtFileName.toLatin1().data());
+        sprintf(txt.file, "%s/%s", mapPath.toLatin1().data(), txtFileName.toLatin1().data());
         qDebug() << "  File=" << i << txt.scale << txt.file;
 
         file.close();

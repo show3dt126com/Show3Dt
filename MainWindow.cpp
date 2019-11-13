@@ -5,6 +5,7 @@
 #include "Global.h"
 #include <QDir>
 #include <QFileDialog>
+#include <QtDebug>
 #include <QMessageBox>
 #include "SchemeSaveDlg.h"
 

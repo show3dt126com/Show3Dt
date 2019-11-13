@@ -3,6 +3,14 @@
 
 #include <QObject>
 #include <QWidget>
+#include "Dem.h"
+#include <algorithm>
+
+struct LL
+{
+  double ll;
+  double bb;
+};
 
 class SideEye : public QWidget
 {
@@ -21,9 +29,18 @@ public:
     // 绘制
     void paintEvent(QPaintEvent *)  override;
 
+    void getAllValue(LL *LBV,GLshort *VV);
+
 signals:
 
 public slots:
+    void dodrawLine(double ,double);
+private:
+    LL *ALLB;
+    GLshort *Values;
+    Dem *lodeDem;
+    GLshort maxValue;
+
 };
 
 #endif // SIDEEYE_H

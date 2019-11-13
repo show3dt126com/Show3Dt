@@ -1,5 +1,6 @@
 
 #include <QMainWindow>
+#include <QObject>
 #include "Global.h"
 #include "BBS.h"
 #include "Scene.h"
@@ -15,6 +16,11 @@ Global::Global()
     scene = nullptr;
     winBox = nullptr;
     eyeBox = nullptr;
+}
+
+Global::~Global()
+{
+
 }
 
 int Global::init()
@@ -72,6 +78,9 @@ int Global::initWinBox()
         eyeBox = new WinBox(nullptr, "全局图小窗口");
         eyeBox->setDockNestingEnabled(true);
         eyeBox->setDockOptions(QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks);
+        //by sxd
+        eyeBox->installEventFilter(nullptr);
+        eyeBox->setFocusPolicy(Qt::ClickFocus);
     }
 
     eagleEye = new Eagle(eyeBox);
@@ -82,6 +91,7 @@ int Global::initWinBox()
 
     eyeBox->arrangeWindows();
     eyeBox->show();
+    connect(eagleEye,SIGNAL(drawMyline(double,double)),sideEye,SLOT(dodrawLine(double,double)));
 
     return 1;
 }

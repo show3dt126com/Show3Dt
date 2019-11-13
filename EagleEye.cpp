@@ -9,12 +9,16 @@ Eagle::Eagle(QWidget *parent) : QWidget(parent)
     timeForScrollProc.start();
     isLeftMousePress = false;
     isFirstMouse = true;
+    isInited = false;
+    keep =false;
     image = nullptr;
     mouseL = 0;
     mouseB = 0;
     loadedMap = -1;
     loadedMapTxt = nullptr;
     setWindowTitle("俯视全局图");
+    loadConfig();
+
     //connect(G.bbs, SIGNAL(bbsMessage(int)), this, SLOT(onBBSMessage(int)));
     //connect(this, SIGNAL(bbsMessage(int)), &G.bbs, SLOT(onBBSMessage(int)));
 }
@@ -22,9 +26,9 @@ Eagle::Eagle(QWidget *parent) : QWidget(parent)
 void Eagle::loadConfig()
 {
     // 可以修改为读取配置，恢复上次退出时的参数
-    scale = G.iniFile->value("Eagle/scale", 6.0).toDouble();
-    centL = G.iniFile->value("Eagle/centL", 118.0).toDouble();
-    centB = G.iniFile->value("Eagle/centB", 18.0).toDouble();
+    scale = G.iniFile->value("Eagle/scale", 8.0).toDouble();
+    centL = G.iniFile->value("Eagle/centL", 120.0).toDouble();
+    centB = G.iniFile->value("Eagle/centB", 20.0).toDouble();
 }
 
 void Eagle::saveConfig()
@@ -48,14 +52,17 @@ void Eagle::checkOpenFitDem()
         // 只找相同分辨率的，不做放大缩小的显示
         if (txt.scale < scale-0.5 || txt.scale > scale+0.5)
             continue;
-
-        if (txt.texLB0.x < centL && txt.texLB1.x > centL
-                && txt.texLB1.y < centB  && txt.texLB0.y > centB)
+        if (keep == false)
         {
-            findTxt = i;
-            break;
+            if (txt.texLB0.x < centL && txt.texLB1.x > centL
+                    && txt.texLB1.y < centB  && txt.texLB0.y > centB)
+            {
+                findTxt = i;
+                break;
+            }
         }
     }
+
     if (findTxt == -1)
         return;
 
@@ -65,65 +72,115 @@ void Eagle::checkOpenFitDem()
             delete image;
         image  = new QImage();
         loadedMap = findTxt;
+        keep = true;
         loadedMapTxt = G.bsiMap.allBSIMTxt + loadedMap;
+
         bool s = image->load(QString(loadedMapTxt->file)+"jpg");
         qDebug() << "loadedMap=" << s << loadedMap << loadedMapTxt->file
                  << loadedMapTxt->scale << "ViewScale=" << scale;
 
-        //calculateSoundBoard();
+
     }
 }
+
+void Eagle::getLineFunc(double lon1, double lan1, double lon2, double lan2)
+{
+    coefficient = (lan1-lan2) / (lon1-lon2);
+    conf = lan1 - coefficient * lon1;
+}
+
+void Eagle::getLB(double  *a, double *b)
+{
+    int wid = this->width();
+    int hei = this->height();
+
+    double px = (loadedMapTxt->texLB1.x)-(loadedMapTxt->texLB0.x);
+    double fx = (loadedMapTxt->texLB1.y)-(loadedMapTxt->texLB0.y);
+
+    jd = px/wid;
+    wd = fx/hei;
+
+    *a = (loadedMapTxt->texLB0.x)+(jd*lastX);
+    *b = (loadedMapTxt->texLB0.y)+(wd*lastY);
+
+}
+
+
 
 //滚轮事件
 void Eagle::wheelEvent(QWheelEvent* event)
 {
-    int elapse = timeForScrollProc.elapsed();
-    if (elapse > 500)
-    {
-        timeForScrollProc.start();
-        return;
-    }
-    else if (elapse < 60)
-        return;
-    timeForScrollProc.start();
+//    int elapse = timeForScrollProc.elapsed();
+//    if (elapse > 500)
+//    {
+//        timeForScrollProc.start();
+//        return;
+//    }
+//    else if (elapse < 60)
+//        return;
+//    timeForScrollProc.start();
 
-    QPoint offset = event->angleDelta();
-    double co = 0.3;
-    if (offset.y() < 0)
-        co = -0.3;
-    scale += co;
-    if (scale < 1.0)
-        scale = 1.0;
-    else if (scale > 11.5)
-        scale = 11.5;
+//    QPoint offset = event->angleDelta();
+//    double co = 0.3;
+//    if (offset.y() < 0)
+//        co = -0.3;
+//    scale += co;
+//    if (scale < 1.0)
+//        scale = 1.0;
+//    else if (scale > 11.5)
+//        scale = 11.5;
 
 
     checkOpenFitDem();
 
-    if (loadedMap >= 0)
-    {
-        char info[200];
-        sprintf(info, "S=%2.1f:%2.1f C=%6.4lf,%6.4lf M=%6.4lf,%6.4lf",
-                loadedMapTxt->scale, scale, centL, centB, mouseL, mouseB);
-        this->parentWidget()->setWindowTitle(info);
-    }
-    update();
-    //qDebug() << "EagleEye::wheelEvent=" << scale;
+//    if (loadedMap >= 0)
+//    {
+//        char info[200];
+//        sprintf(info, "S=%2.1f:%2.1f C=%6.4lf,%6.4lf M=%6.4lf,%6.4lf",
+//                loadedMapTxt->scale, scale, centL, centB, mouseL, mouseB);
+//        this->parentWidget()->setWindowTitle(info);
+//    }
+    //update();
+
 }
 
 //鼠标按下事件
 void Eagle::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton)
+
+    if (event->button() == Qt::RightButton)
     {
+        qDebug()<<"youjian";
+        getLineFunc(G.comjd1,G.comwd1,G.comjd2,G.comwd2);
+        isFirstMouse = true;
+        emit drawMyline(coefficient,conf);
+    }
+    else if (event->button() == Qt::LeftButton)
+    {
+        G.sideEye->releaseKeyboard();
         isLeftMousePress = true;
 
         int xpos = event->pos().x();
         int ypos = event->pos().y();
         lastX = xpos;
         lastY = ypos;
+
+        if (isFirstMouse)
+        {
+            getLB(&G.comjd1,&G.comwd1);
+         qDebug()<<"11111111";
+        }
+        else
+        {
+            getLB(&G.comjd2,&G.comwd2);
+            qDebug()<<"22222222222";
+        }
+
         isFirstMouse = false;
-        setMouseTracking(true);
+        //setMouseTracking(true);
+        //通过单击鼠标右键来触发计算直线方程
+
+        this-> grabKeyboard();
     }
 }
 
@@ -132,10 +189,10 @@ void Eagle::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        setMouseTracking(false);
+        //setMouseTracking(false);
         isLeftMousePress = false;
-        isFirstMouse = true;
-        checkOpenFitDem();
+        //isFirstMouse = true;
+        //checkOpenFitDem();
         update();
     }
 }
@@ -148,6 +205,7 @@ void Eagle::mouseMoveEvent(QMouseEvent* event)
 
     //qDebug() << "MoveTo=" <<  xpos << ypos;
 
+    startPoint = QPointF(xpos,ypos);
     if (loadedMap == -1)
         return;
 
@@ -193,9 +251,38 @@ void Eagle::mouseMoveEvent(QMouseEvent* event)
     centB = newLB.y;
     //qDebug() << "MoveTo=" <<  centL << centB;
 
-    checkOpenFitDem();
+    //checkOpenFitDem();
     update();
 }
+
+
+void Eagle::keyPressEvent(QKeyEvent *event)
+{
+
+     switch (event->key()) {
+     case Qt::Key_Up:
+         lastY = (lastY - 10);
+
+         break;
+     case Qt::Key_Down:
+         lastY = (lastY + 10);
+
+         break;
+     case Qt::Key_Right:
+         lastX = (lastX + 10);
+
+         break;
+     case Qt::Key_Left:
+         lastX = (lastX - 10);
+
+         break;
+     default:
+         break;
+     }
+
+     update();
+}
+
 
 void Eagle::paintEvent(QPaintEvent *)
 {
@@ -216,11 +303,17 @@ void Eagle::paintEvent(QPaintEvent *)
 
     double srcX = texCentX - dest.width()/2;
     double srcY = texCentY - dest.height()/2;
-    src.setX(srcX);
-    src.setY(srcY);
-    src.setWidth(dest.width());
-    src.setHeight(dest.height());
+    //qDebug()<<"srcX"<<srcX<<"srcY"<<srcY;
 
+    if(isInited != true)
+    {
+        src.setX(srcX);
+        src.setY(srcY);
+        src.setWidth(dest.width());
+        src.setHeight(dest.height());
+    }
+
+    isInited = true;
     painter.drawImage(dest, *image, src);
   /*
     QRectF soundRect;

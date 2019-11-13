@@ -23,7 +23,9 @@ public:
     // Qt::Horizontal Qt::Vertical
     void doSplitDockWidget(QWidget *after, QWidget *w, Qt::Orientation orient);
     void doTabifyDockWidget(QDockWidget *first, QDockWidget *second);
-
+    //by sxd ¼üÅÌÊÂ¼þ
+    virtual void focusInEvent(QFocusEvent *e) override;
+    virtual void focusOutEvent(QFocusEvent *e) override;
 signals:
 
 public slots:
