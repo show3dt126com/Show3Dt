@@ -3,33 +3,38 @@
 #include "Scheme.h"
 
 
-CubeMan::CubeMan()
+CubeModelMan::CubeModelMan()
 {
 
 }
 
-CubeMan::~ CubeMan()
+CubeModelMan::~ CubeModelMan()
 {
 
 }
 
-int CubeMan::addCube(CubeModel * cubeModel)
+int CubeModelMan::addCubeModel(CubeModel * cubeModel)
 {
     cubeModels.append(cubeModel);
     mergeCubeRange();
     return 1;
 }
 
-void  CubeMan::mergeCubeRange()
+int CubeModelMan::removeCubeModel(CubeModel * cubeModel)
+{
+    cubeModels.removeOne(cubeModel);
+}
+
+void  CubeModelMan::mergeCubeRange()
 {
     if (cubeModels.count() == 0)
         return;
     CubeModel * cubeUse = cubeModels[0];
-    mrgField = cubeUse->field;
+    mergedField = cubeUse->field;
     for (int i=1; i<cubeModels.count(); i++)
     {
         CubeModel * cubeModel = cubeModels[i];
-        mrgField.merge(cubeModel->field);
+        mergedField.merge(cubeModel->field);
     }
 }
 
@@ -45,20 +50,28 @@ void ModelMan::removeAllModels()
 
 int ModelMan::addModel(BaseModel * model)
 {
+    foreach (BaseModel * m, models)
+    {
+        if (m == model)
+            return 0;
+    }
     models.append(model);
     return 1;
 }
 
+int ModelMan::removeModel(BaseModel * model)
+{
+    return models.removeOne(model);
+}
+
 int ModelMan::prepareAllDarw()
 {
-
     return 1;
 }
 
-
 Scheme::Scheme(QObject *parent) : QObject(parent)
 {
-
+    this->schemeInfo = "Test Scheme";
 }
 
 int Scheme::saveToFile(QString file)
@@ -74,14 +87,14 @@ int Scheme::saveToFile(QString file)
     int cubeFileN = cubeFiles.count();
     fs << cubeFileN;
     for (int i=0; i<cubeFileN; i++)
-        fs << cubeFiles[i].toLatin1().data();
+        fs << cubeFiles[i];
 
     fs.writeBytes((char *)&colorMap, sizeof(ColorMap));
 
     int ssFileN = soundSourceFiles.count();
     fs << ssFileN;
     for (int i=0; i<ssFileN; i++)
-        fs << soundSourceFiles[i].toLatin1().data();
+        fs << soundSourceFiles[i];
 
     int vpCount = viewPots.count();
     fs << vpCount;
@@ -105,10 +118,9 @@ int Scheme::loadFromFile(QString file)
     fs >> cubeFileN;
     for (int i=0; i<cubeFileN; i++)
     {
-        char * buf;
-        fs >> buf;
-        cubeFiles.append(buf);
-        delete [] buf;
+        QString f;
+        fs >> f;
+        cubeFiles.append(f);
     }
 
     fs.readRawData((char *)&colorMap, sizeof(ColorMap));
@@ -117,10 +129,9 @@ int Scheme::loadFromFile(QString file)
     fs >> ssFileN;
     for (int i=0; i<ssFileN; i++)
     {
-        char * buf;
-        fs >> buf;
-        soundSourceFiles.append(buf);
-        delete [] buf;
+        QString f;
+        fs >> f;
+        soundSourceFiles.append(f);
     }
 
     int vpCount;

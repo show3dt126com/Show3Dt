@@ -7,14 +7,13 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
-
-    MainWindow w;
     GD = new Global();
     G.mainPath = a.applicationDirPath();
     qDebug() << "Run From Dir=" << G.mainPath;
-    G.mw = &w;
     G.init();
+
+    MainWindow w;
+    G.mw = &w;
     G.initWinBox();
     G.initSence();
     G.scene->show();

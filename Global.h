@@ -76,10 +76,12 @@ public:
 
     // 数据场区域，要切去的部分的参数
     CutField cutField;
+    // CutField 的 Field 是 CubeModelMan 的所有Cube 的
+    CubeModel * cutFiledUseCubeModel;
 
-    // 原始数据+颜色映射表对，
-    CubeMan cubeMan;
-    // 各种需要显示的模型
+    // 原始数据+颜色映射表对，d=当前的工程打开了一些Cube，需要列表显示，选择某一个显示
+    CubeModelMan cubeModelMan;
+    // 各种需要显示的模型，包含天空、周边环境等
     ModelMan modelMan;
 
     // 管理地图
@@ -111,24 +113,28 @@ public:
     // 周边环境
     Dem dem;
     Sky sky;
-
-    Shader shaderCube;
     Shader shaderDem;
     Shader shaderSky;
+
+    //
+    Shader shaderCube;
     Shader shaderSpirit;
 
     //
     Shader shaderLine;
     Shader shaderScrnLine;
+
+    //
     Shader shaderText;
     Texter texter;
 
-    // 海底
-    bool showBathy;
     // 半球天空
     bool showSky;
     // 周边环境
     bool showDem;
+
+    // 海底
+    bool showBathy;
     // 直线
     bool showLine;
 

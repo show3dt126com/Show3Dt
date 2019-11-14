@@ -151,7 +151,7 @@ int Cube::saveFile(QString file)
 int Cube::readParam(QFile & f)
 {
     int headSize = PChar(&tailFlag)-PChar(this);
-    qDebug() << headSize << "\r\n";
+    qDebug() << "headSize=" << headSize;
 
     int r0 = f.read((char *)this, headSize);
 

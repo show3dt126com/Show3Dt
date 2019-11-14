@@ -519,6 +519,11 @@
             <widget class="QTableWidget" name="tableWidgetDataSet">
              <column>
               <property name="text">
+               <string>√</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
                <string>名称</string>
               </property>
              </column>
@@ -569,12 +574,17 @@
              </column>
              <column>
               <property name="text">
-               <string>东西点数</string>
+               <string>东西点</string>
               </property>
              </column>
              <column>
               <property name="text">
-               <string>南北点数</string>
+               <string>南北点</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>深度点</string>
               </property>
              </column>
             </widget>
@@ -763,6 +773,9 @@
     <addaction name="actionSaveProject"/>
     <addaction name="actionSaveAsProject"/>
     <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="actionUseMergeCubeField"/>
+    <addaction name="actionUseChooseCubeField"/>
     <addaction name="actionExitApp"/>
    </widget>
    <widget class="QMenu" name="menuViewMan">
@@ -963,6 +976,25 @@
   <action name="actionTest_2">
    <property name="text">
     <string>Test 2</string>
+   </property>
+  </action>
+  <action name="actionUseMergeCubeField">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>采用合并区域作为场区范围</string>
+   </property>
+  </action>
+  <action name="actionUseChooseCubeField">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>选择场区作为场区范围</string>
    </property>
   </action>
  </widget>

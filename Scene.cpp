@@ -199,6 +199,11 @@ void Scene::paintGL()
 
     // 绘制水声场
     G.shaderCube.bind();
+    for (int i=0; i<G.modelMan.models.count(); i++)
+    {
+        G.modelMan.models[i]->draw();
+
+    }
     //G.modelMan.models.[0].drawSeaSound();
 
     // 绘制海底
@@ -271,6 +276,7 @@ void Scene::paintGL()
 
 void Scene::updateGL()
 {
+
     /*
     if (!seaSound.drawPrepared)
         seaSound.prepareVertexArrayObject();

@@ -18,7 +18,32 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     //ui->comboBoxParts->setCurrentIndex(1);
-    ui->comboBoxParts->setCurrentIndex(2);
+    ui->comboBoxParts->setCurrentIndex(0);
+
+    int cubeInfoColWs[] =
+    {
+        20, 80, 35, 35, 120,120, 120,120, 70,70,60, 70,70,60
+    };
+    for (int i=0; i<sizeof(cubeInfoColWs)/sizeof(int); i++)
+        ui->tableWidgetDataSet->setColumnWidth(i, cubeInfoColWs[i]);
+    ui->tableWidgetDataSet->setSelectionBehavior(QAbstractItemView::SelectRows);  //设置选择行为时每次选择一行
+
+    for (int i=0; i<RecentMAX; i++)
+        recentFile[i] = "";
+
+    readConfig();
+
+    // 动态构建历史文件菜单
+    for(int i=0; i<RecentMAX; ++i)
+    {
+        if (recentFile[i] == "")
+            break;
+        recentFileActions[i] = new QAction(recentFile[i], this);
+        recentFileActions[i]->setVisible(true);
+        connect(recentFileActions[i], SIGNAL(triggered()), this, SLOT(onOpenRecentFile()));
+        ui->menuProjectMan->insertAction(ui->actionUseMergeCubeField, recentFileActions[i]);
+    }
+
 }
 
 MainWindow::~MainWindow()
@@ -32,6 +57,21 @@ void MainWindow::closeEvent(QCloseEvent *event)
     G.eyeBox->close();
     G.scene->close();
     event->accept();
+    saveConfig();
+}
+
+
+void MainWindow::updateRecentFile(QString newFile)
+{
+    for (int i=0; i<RecentMAX; i++)
+    {
+        if (recentFile[i] == newFile)
+            return;
+    }
+
+    for (int i=RecentMAX-2; i>=0; i--)
+        recentFile[i+1] = recentFile[i];
+    recentFile[0] = newFile;
 }
 
 void MainWindow::saveConfig()
@@ -204,6 +244,20 @@ void MainWindow::on_actionSaveProject_triggered()
         G.scheme.schemeInfo = ui->lineEditProjectInfo->text();
         G.scheme.saveToFile(ui->lineEditProjectName->text());
     }
+    updateRecentFile(ui->lineEditProjectName->text());
+}
+
+void MainWindow::onOpenRecentFile()
+{
+    QAction * act=qobject_cast<QAction*>(sender());
+    for (int i=0; i<RecentMAX; i++)
+    {
+        if (act == recentFileActions[i])
+        {
+            openProjectFile(act->text());
+            break;
+        }
+    }
 }
 
 void MainWindow::on_actionOpenProject_triggered()
@@ -219,10 +273,19 @@ void MainWindow::on_actionOpenProject_triggered()
     QStringList fileNames = dlg.selectedFiles();
     if (fileNames.count() == 0)
         return;
+    QString projectFile = fileNames[0];
+    openProjectFile(projectFile);
+}
 
-    ui->lineEditProjectName->setText(fileNames[0]);
+void MainWindow::openProjectFile(QString projectFile)
+{
+    ui->lineEditProjectName->setText(projectFile);
     G.scheme.loadFromFile(ui->lineEditProjectName->text());
     ui->lineEditProjectInfo->setText(G.scheme.schemeInfo);
+
+    for (int i=0; i<G.scheme.cubeFiles.count(); i++)
+        addDataSetFile(G.scheme.cubeFiles[i]);
+    updateRecentFile(ui->lineEditProjectName->text());
 }
 
 void MainWindow::on_actionSaveAsProject_triggered()
@@ -253,20 +316,31 @@ void MainWindow::on_pushButtonAddDataSet_clicked()
     if (fileName == "")
         return;
 
+    G.scheme.cubeFiles.append(fileName);
+    addDataSetFile(fileName);
+}
+
+void MainWindow::addDataSetFile(QString fileName)
+{
+    // 构建模型对象
     CubeModel * cubeModel = new CubeModel;
     cubeModel->initCube();
     cubeModel->readFile(fileName);
-    G.modelMan.addModel(cubeModel);
-    addCubeModel(cubeModel);
+    // 加入到界面列表
+    addCubeModelToList(cubeModel);
+
+    G.cubeModelMan.addCubeModel(cubeModel);
+    //G.modelMan.addModel(cubeModel);
 }
 
-int MainWindow::addCubeModel(CubeModel * cm)
+int MainWindow::addCubeModelToList(CubeModel * cm)
 {
     QTableWidget & tw = * ui->tableWidgetDataSet;
     tw.setRowCount(tw.rowCount()+1);
 
     int r = tw.rowCount()-1;
     int c = 0;
+    tw.setItem(r, c++, new QTableWidgetItem("√"));
     tw.setItem(r, c++, new QTableWidgetItem(cm->file));
     c += 2;
 
@@ -281,6 +355,7 @@ int MainWindow::addCubeModel(CubeModel * cm)
 
     tw.setItem(r, c++, new QTableWidgetItem(QString::number(cm->nLon, 'd', 0)));
     tw.setItem(r, c++, new QTableWidgetItem(QString::number(cm->nLat, 'd', 0)));
+    tw.setItem(r, c++, new QTableWidgetItem(QString::number(cm->nDepth, 'd', 0)));
 }
 
 void MainWindow::on_pushButtonDelDataSet_clicked()
@@ -294,6 +369,9 @@ void MainWindow::on_pushButtonDelDataSet_clicked()
         return;
     }
     tw.removeRow(sel);
+    CubeModel * cm = G.cubeModelMan.cubeModels[sel];
+    G.cubeModelMan.removeCubeModel(cm);
+    G.scheme.cubeFiles.removeOne(cm->pathFile);
 }
 
 void MainWindow::on_pushButtonShow3DView_clicked()
@@ -311,4 +389,17 @@ void MainWindow::on_comboBoxParts_activated(int index)
 void MainWindow::on_actionExitApp_triggered()
 {
     close();
+}
+
+void MainWindow::on_actionUseMergeCubeField_triggered()
+{
+    ui->actionUseMergeCubeField->setChecked(true);
+    ui->actionUseChooseCubeField->setChecked(false);
+}
+
+void MainWindow::on_actionUseChooseCubeField_triggered()
+{
+    ui->actionUseMergeCubeField->setChecked(false);
+    ui->actionUseChooseCubeField->setChecked(true);
+
 }

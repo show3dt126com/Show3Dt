@@ -19,16 +19,22 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void closeEvent(QCloseEvent *event);
+
+    void updateRecentFile(QString newFile);
     void saveConfig();
     void readConfig();
 
+    void addDataSetFile(QString filename);
+    void openProjectFile(QString projectFile);
+
 public:
     QString recentFile[RecentMAX];
+    QAction * recentFileActions[RecentMAX];
 
     bool restoreGeometryAndState(QString set);
     void saveGeometryAndState(QString set);
 
-    int addCubeModel(CubeModel * cubeModel);
+    int addCubeModelToList(CubeModel * cubeModel);
 
 private slots:
 
@@ -60,6 +66,10 @@ private slots:
     void on_actionSaveLayout3_triggered();
 
     void on_actionExitApp_triggered();
+    void on_actionUseMergeCubeField_triggered();
+    void on_actionUseChooseCubeField_triggered();
+
+    void onOpenRecentFile();
 
 private:
     Ui::MainWindow *ui;

@@ -25,6 +25,7 @@ public:
     QOpenGLTexture * tex;
 };
 
+// 根据水声场区域中心点，以及半径，构建周边环境,
 class Dem : public BaseModel
 {
 public:
