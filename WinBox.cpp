@@ -127,6 +127,18 @@ void WinBox::doTabifyDockWidget(QDockWidget *first, QDockWidget *second)
     }
 }
 
+void WinBox::focusInEvent(QFocusEvent *e)
+{
+
+}
+
+void WinBox::focusOutEvent(QFocusEvent *e)
+{
+
+    G.sideEye->releaseKeyboard();
+    G.eagleEye->releaseKeyboard();
+}
+
 void WinBox::onAddData(QString data)
 {
     this->setWindowTitle(QString("小控制窗口 - ") + data);

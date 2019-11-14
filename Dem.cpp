@@ -153,6 +153,43 @@ int Dem::loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l
     return 1;
 }
 
+
+int Dem::loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l1, double b1, double lc, double bs, GLshort &high)
+{
+    if (lc >l1 || bs >b1)
+    {
+        qDebug("out of range");
+        return 0;
+    }
+    int ret = loadGEBCO1DNetCDFArea(gebcoFile,l0,b0,l1,b1);
+    if (ret != 1)
+    {
+        return ret;
+    }
+
+    int coo = int((lc - gebcoL0) * 120.0);
+    int roo = int((bs - gebcoB0) * 120.0);
+    high =gebcoData[(gebcoRN-roo)*gebcoCN+coo];
+    qDebug("%d",high);
+
+    return 1;
+}
+
+int Dem::getHightValue(double lc, double bs, GLshort &high)
+{
+    if (lc >gebcoL1 || bs >gebcoB1)
+    {
+        qDebug("out of range");
+        return 0;
+    }
+
+    int coo = int((lc - gebcoL0) * 120.0);
+    int roo = int((bs - gebcoB0) * 120.0);
+    high =gebcoData[(gebcoRN-roo)*gebcoCN+coo];
+    qDebug("%d",high);
+
+    return 1;
+}
 int Dem::prepareVertexFromGEBCO1DNetCDF(double cLat, double cLon, double rr)
 {
     if (C == nullptr)

@@ -42,6 +42,15 @@ public:
     // 读取足够大范围，覆盖预计可能海区的，如果超出，再考虑重新读取
     int loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l1, double b1);
 
+
+    // 根据指定的经纬度范围读取 海深及地形高程数据，
+    // 读取足够大范围，覆盖预计可能海区的，如果超出，再考虑重新读取
+    int loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l1, double b1, double lc, double bs, GLshort &high );
+
+
+    //获得指定经纬度的高程点 by sxd
+    int getHightValue(double lc, double bs, GLshort &high);
+
     // 根据GEBCO数据提取指定线条下面的高程数据数组
     // line 每个点 d 为从 l0,bo 开始的距离，v为深度
     void pickupLine(double l0, double b0, double l1, double b1, DVec2 * line, int & num);
@@ -59,6 +68,7 @@ public:
     // 读取的起点，相对于整个gebco文件
     int gebcoR0;
     int gebcoC0;
+
     // 读取的行列数
     int gebcoRN;
     int gebcoCN;

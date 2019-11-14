@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QTime>
 #include <QObject>
+#include <QPointF>
 #include "BSIMap.h"
 
 // 显示地图的窗口，主要作为鹰眼图用，叠加水声场区域示意图，摄像机方位方向示意图
@@ -26,7 +27,10 @@ public:
     void saveConfig();
 
     void checkOpenFitDem();
-
+    //两点确定一条直线方程
+    void getLineFunc(double lon1, double lan1, double lon2, double lan2);
+    //像素点转换为经纬度
+    void getLB(double *, double *);
     // dem 图像文件的路径
     QString mapPath;
     // 当前打开的图像
@@ -34,6 +38,7 @@ public:
     int loadedMap;
     QImage * image;
 
+    bool keep;
     // 与地图级别对应，1...
     double scale;
     // 当前显示的中心点坐标
@@ -47,7 +52,14 @@ public:
     bool isFirstMouse;
     int lastX, lastY;
     double lastLat, lastLon;
+    QPointF startPoint;
+    bool isInited;
 
+    double jd ;     //经度系数
+    double wd ;     //纬度系数
+
+    double coefficient;  //系数
+    double conf;    //常数
 protected:
     // 鼠标移动事件
     void mouseMoveEvent(QMouseEvent* event) override;
@@ -57,9 +69,13 @@ protected:
     void mousePressEvent(QMouseEvent* event) override;
     //鼠标释放事件
     void mouseReleaseEvent(QMouseEvent* event) override;
+    //键盘事件
+    void keyPressEvent(QKeyEvent *event) override;
     // 绘制
     void paintEvent(QPaintEvent *)  override;
 
+signals:
+   void drawMyline(double,double);
 public slots:
     void onBBSMessage(int msg);
 };

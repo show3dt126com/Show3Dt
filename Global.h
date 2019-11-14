@@ -33,10 +33,12 @@
 
 class MainWindow;
 
-class Global
+class Global :public QObject
 {
+    Q_OBJECT
 public:
     Global();
+    virtual ~Global();
 
     int init();
     int initGL();
@@ -137,6 +139,12 @@ public:
     bool showBathy;
     // 直线
     bool showLine;
+
+     double comjd1 ;      //计算后的经度
+     double comwd1 ;      //计算后的纬度
+
+     double comjd2 ;      //计算后的经度
+     double comwd2 ;      //计算后的纬度
 
 };
 
