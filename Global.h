@@ -24,6 +24,7 @@
 #include "Test.h"
 #include "EagleEye.h"
 #include "SideEye.h"
+#include "SceneWin.h"
 
 #include "LookDownControl.h"
 #include "LookIso3DCamera.h"
@@ -73,10 +74,7 @@ public:
     // 程序启动时创建一个新的空的，可以打开已有的
     Scheme scheme;
 
-    // 当前打开声场范围, lat0 < lat1, lon0 < lon1, depth >0
-    Field openedField;
-
-    // 数据场区域，要切去的部分的参数
+    // 数据场区域(根据界面指定是合并场区范围，或者选择某场区为代表)，要切去的部分的参数
     CutField cutField;
     // CutField 的 Field 是 CubeModelMan 的所有Cube 的
     CubeModel * cutFiledUseCubeModel;
@@ -97,6 +95,7 @@ public:
 
     // 场景窗口
     Scene * scene;
+    SceneWin * sceneWin;
 
     // 当前显示的视图类型
     EViewType viewType;

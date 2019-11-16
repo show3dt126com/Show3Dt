@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->comboBoxParts->setCurrentIndex(1);
     ui->comboBoxParts->setCurrentIndex(0);
 
+    // Cube 列表的各列属性的宽度
     int cubeInfoColWs[] =
     {
         20, 80, 35, 35, 120,120, 120,120, 70,70,60, 70,70,60
@@ -32,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     for (int i=0; i<RecentMAX; i++)
         recentFile[i] = "";
 
+    // 读取到最近打开文件列表
     readConfig();
 
     // 动态构建历史文件菜单
@@ -56,11 +58,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     G.winBox->close();
     G.eyeBox->close();
-    G.scene->close();
+    G.sceneWin->close();
     event->accept();
     saveConfig();
 }
-
 
 void MainWindow::updateRecentFile(QString newFile)
 {
@@ -70,6 +71,7 @@ void MainWindow::updateRecentFile(QString newFile)
             return;
     }
 
+    // 保存到最新的位置
     for (int i=RecentMAX-2; i>=0; i--)
         recentFile[i+1] = recentFile[i];
     recentFile[0] = newFile;
@@ -112,7 +114,7 @@ void MainWindow::saveGeometryAndState(QString set)
     settings.setValue(QString("WinBox/State") + set, G.winBox->saveState());
     settings.setValue(QString("EyeBox/Geometry") + set, G.eyeBox->saveGeometry());
     settings.setValue(QString("EyeBox/State") + set, G.eyeBox->saveState());
-    settings.setValue(QString("Scene/Geometry") + set, G.scene->saveGeometry());
+    settings.setValue(QString("SceneWin/Geometry") + set, G.sceneWin->saveGeometry());
 }
 
 bool MainWindow::restoreGeometryAndState(QString set)
@@ -125,7 +127,7 @@ bool MainWindow::restoreGeometryAndState(QString set)
     G.winBox->restoreState(settings.value(QString("WinBox/State") + set).toByteArray());
     G.eyeBox->restoreGeometry(settings.value(QString("EyeBox/Geometry") + set).toByteArray());
     G.eyeBox->restoreState(settings.value(QString("EyeBox/State") + set).toByteArray());
-    G.scene->restoreGeometry(settings.value(QString("Scene/Geometry") + set).toByteArray());
+    G.sceneWin->restoreGeometry(settings.value(QString("SceneWin/Geometry") + set).toByteArray());
     return 1;
 }
 
@@ -327,11 +329,19 @@ void MainWindow::addDataSetFile(QString fileName)
     CubeModel * cubeModel = new CubeModel;
     cubeModel->initCube();
     cubeModel->readFile(fileName);
+    cubeModel->initCubeModel();
+
     // 加入到界面列表
     addCubeModelToList(cubeModel);
-
+    //
     G.cubeModelMan.addCubeModel(cubeModel);
     //G.modelMan.addModel(cubeModel);
+    QString s;
+    Field & mf = G.cubeModelMan.mergedField;
+    s.sprintf("%3.1lfkm,%3.1lfkm,%2.0lfm; L:%6.3lf~%5.3lf; B:%6.3lf~%5.3lf;",
+              mf.width()/1000,  mf.height()/1000,mf.depth,
+              mf.lon0, mf.lon1, mf.lat0, mf.lat1);
+    ui->lineEditDataSetInfo->setText(s);
 }
 
 int MainWindow::addCubeModelToList(CubeModel * cm)
@@ -357,6 +367,7 @@ int MainWindow::addCubeModelToList(CubeModel * cm)
     tw.setItem(r, c++, new QTableWidgetItem(QString::number(cm->nLon, 'd', 0)));
     tw.setItem(r, c++, new QTableWidgetItem(QString::number(cm->nLat, 'd', 0)));
     tw.setItem(r, c++, new QTableWidgetItem(QString::number(cm->nDepth, 'd', 0)));
+    return 1;
 }
 
 void MainWindow::on_pushButtonDelDataSet_clicked()
@@ -396,11 +407,20 @@ void MainWindow::on_actionUseMergeCubeField_triggered()
 {
     ui->actionUseMergeCubeField->setChecked(true);
     ui->actionUseChooseCubeField->setChecked(false);
+    G.cutField.setField(G.cubeModelMan.mergedField);
+    for (int i=0; i<ui->tableWidgetDataSet->rowCount(); i++)
+        ui->tableWidgetDataSet->item(i, 0)->setText("√");
 }
 
 void MainWindow::on_actionUseChooseCubeField_triggered()
 {
+    int selCube = ui->tableWidgetDataSet->currentRow();
+    if (selCube < 0)
+        return;
+
     ui->actionUseMergeCubeField->setChecked(false);
     ui->actionUseChooseCubeField->setChecked(true);
-
+    G.cutField.setField(G.cubeModelMan.cubeModels[selCube]->field);
+    for (int i=0; i<ui->tableWidgetDataSet->rowCount(); i++)
+        ui->tableWidgetDataSet->item(i, 0)->setText(i==selCube?"√":"");
 }

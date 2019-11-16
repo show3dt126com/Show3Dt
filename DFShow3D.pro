@@ -64,7 +64,8 @@ SOURCES += \
     EagleEye.cpp \
     SideEye.cpp \
     Scene.cpp \
-    SchemeSaveDlg.cpp
+    SchemeSaveDlg.cpp \
+    SceneWin.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -99,7 +100,8 @@ HEADERS += \
     BaseModel.h \
     EagleEye.h \
     SideEye.h \
-    SchemeSaveDlg.h
+    SchemeSaveDlg.h \
+    SceneWin.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \

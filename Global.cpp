@@ -14,6 +14,7 @@ Global * GD = nullptr;
 Global::Global()
 {
     scene = nullptr;
+    sceneWin = nullptr;
     winBox = nullptr;
     eyeBox = nullptr;
 }
@@ -41,10 +42,11 @@ int Global::init()
 
 int Global::initSence()
 {
-    if (scene == nullptr)
+    if (sceneWin == nullptr)
     {
-        scene = new Scene();
-        scene->show();
+        sceneWin = new SceneWin();
+        scene = sceneWin->scene;
+        sceneWin->show();
     }
     return 1;
 }

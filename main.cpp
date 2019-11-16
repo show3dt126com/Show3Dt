@@ -6,6 +6,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    printf("main \r\n");
+    qDebug() << "main ...";
 
     GD = new Global();
     G.mainPath = a.applicationDirPath();

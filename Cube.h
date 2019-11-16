@@ -35,6 +35,8 @@
 #include <stdio.h>
 #include <QFile>
 
+#include "Defines.h"
+
 //#pragma pack(push, 1)
 
 // 声源位置频率特性参数
@@ -61,7 +63,7 @@ public:
     double atten;
 
     // 声源位置声速
-    int num;
+    U4B num;
     // 不同深度
     double * depths;
     // 对应声速
@@ -119,11 +121,11 @@ public:
     // 数据集的信息
     DataInfo dataInfo;
     // 网格的纬度格数
-    int nLat;
+    U4B nLat;
     // 网格的经度格数
-    int nLon;
+    U4B nLon;
     // 网格的深度格数
-    int nDepth;
+    U4B nDepth;
     // 无数据标记，比如-1，有数据的值大于 noneValue
     double noneValue;
 
@@ -146,7 +148,7 @@ public:
     double * lats;
     // 网格经度点，实际经度数
     double * lons;
-    // 网格深度点，实际深度数
+    // 网格深度点，实际深度数，水面为0，正数，数越大深度越大
     double * depths;
     // 数据 按照纬度、经度、深度顺序排列，经纬度从小到大，深度由上到下。
     // 理解：先按深度相同的分层数据；同层，先按经度不变的经线；经线上，纬度点由小到大。

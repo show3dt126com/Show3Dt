@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
-    <height>266</height>
+    <width>424</width>
+    <height>265</height>
    </rect>
   </property>
   <property name="font">
@@ -80,9 +80,6 @@
    </property>
    <property name="buttonSymbols">
     <enum>QAbstractSpinBox::UpDownArrows</enum>
-   </property>
-   <property name="stepType">
-    <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
    </property>
   </widget>
   <widget class="QSlider" name="layerSlider">

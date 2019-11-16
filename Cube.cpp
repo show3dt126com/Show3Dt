@@ -76,7 +76,7 @@ int Cube::simuParam(int idx)
 int Cube::simuParam1()
 {
     strcpy(fileFlag, "simu001");
-    strcpy(dataInfo.name, "simu-Sound");
+    strcpy(dataInfo.name, "simu-Sound-1");
     dataInfo.type = 1;
 
     nLat = 299;
@@ -87,17 +87,17 @@ int Cube::simuParam1()
 
     double minLat = 20.0;
     double stepLat = 0.01;
-    for (int i=0; i<nLat; i++)
+    for (U4B i=0; i<nLat; i++)
         lats[i] = minLat + i*stepLat;
 
     double minLon = 100.0;
     double stepLon = 0.01;
-    for (int i=0; i<nLon; i++)
+    for (U4B i=0; i<nLon; i++)
         lons[i] = minLon + i*stepLon;
 
     double minDept = 0.0;
     double stepDept = 10.0;
-    for (int i=0; i<nDepth; i++)
+    for (U4B i=0; i<nDepth; i++)
         depths[i] = minDept + i*stepDept;
 
     return 1;
@@ -105,12 +105,60 @@ int Cube::simuParam1()
 
 int Cube::simuParam2()
 {
+    strcpy(fileFlag, "simu002");
+    strcpy(dataInfo.name, "simu-Sound-2");
+    dataInfo.type = 1;
 
-return 1;
+    nLat = 299;
+    nLon = 499;
+    nDepth = 49;
+    noneValue = NoneValue-1;
+    initParamIfNeed();
+
+    double minLat = 21.0;
+    double stepLat = 0.01;
+    for (U4B i=0; i<nLat; i++)
+        lats[i] = minLat + i*stepLat;
+
+    double minLon = 101.0;
+    double stepLon = 0.01;
+    for (U4B i=0; i<nLon; i++)
+        lons[i] = minLon + i*stepLon;
+
+    double minDept = 0.0;
+    double stepDept = 10.0;
+    for (U4B i=0; i<nDepth; i++)
+        depths[i] = minDept + i*stepDept;
+
+    return 1;
 }
 
 int Cube::simuParam3()
 {
+    strcpy(fileFlag, "simu003");
+    strcpy(dataInfo.name, "simu-Sound-3");
+    dataInfo.type = 1;
+
+    nLat = 299;
+    nLon = 499;
+    nDepth = 49;
+    noneValue = NoneValue-1;
+    initParamIfNeed();
+
+    double minLat = 21.0;
+    double stepLat = 0.01;
+    for (U4B i=0; i<nLat; i++)
+        lats[i] = minLat + i*stepLat;
+
+    double minLon = 101.0;
+    double stepLon = 0.01;
+    for (U4B i=0; i<nLon; i++)
+        lons[i] = minLon + i*stepLon;
+
+    double minDept = 0.0;
+    double stepDept = 10.0;
+    for (U4B i=0; i<nDepth; i++)
+        depths[i] = minDept + i*stepDept;
 
     return 1;
 }
@@ -206,15 +254,15 @@ int Cube::simuData1()
     //
     if (data != nullptr)
         delete [] data;
-    int dataSize = nLat * nLon * nDepth;
+    U4B dataSize = nLat * nLon * nDepth;
     data = new double [dataSize];
 
-    int ijk = 0;
-    for (int i=0; i<nLat; i++)
+    U4B ijk = 0;
+    for (U4B i=0; i<nDepth; i++)
     {
-        for (int j=0; j<nLon; j++)
+        for (U4B j=0; j<nLon; j++)
         {
-            for (int k=0; k<nDepth; k++)
+            for (U4B k=0; k<nLat; k++)
             {
                 double d = k*100 + j;
                 data[ijk++] = d;
@@ -226,13 +274,46 @@ int Cube::simuData1()
 
 int Cube::simuData2()
 {
+    if (data != nullptr)
+        delete [] data;
+    U4B dataSize = nLat * nLon * nDepth;
+    data = new double [dataSize];
+
+    U4B ijk = 0;
+    for (U4B i=0; i<nDepth; i++)
+    {
+        for (U4B j=0; j<nLon; j++)
+        {
+            for (U4B k=0; k<nLat; k++)
+            {
+                double d = i*10 + j/10 +k/10;
+                data[ijk++] = d;
+            }
+        }
+    }
 
     return 1;
 }
 
 int Cube::simuData3()
 {
+    if (data != nullptr)
+        delete [] data;
+    U4B dataSize = nLat * nLon * nDepth;
+    data = new double [dataSize];
 
+    U4B ijk = 0;
+    for (U4B i=0; i<nDepth; i++)
+    {
+        for (U4B j=0; j<nLon; j++)
+        {
+            for (U4B k=0; k<nLat; k++)
+            {
+                double d = i*10 + j/10 +k/10;
+                data[ijk++] = d;
+            }
+        }
+    }
 
     return 1;
 }
@@ -240,13 +321,12 @@ int Cube::simuData3()
 // 增加一份数据集
 int Cube::readData(QFile & f)
 {
-
     //readParam(fp);
-    int dataSize = nLat * nLon * nDepth;
+    U4B dataSize = nLat * nLon * nDepth;
     if (data != nullptr)
         delete [] data;
     data = new double [dataSize];
-    f.read((char *)data, dataSize*sizeof(double));
+    f.read((char *)(data), dataSize*sizeof(double));
     return 1;
 }
 
@@ -254,7 +334,7 @@ int Cube::readData(QFile & f)
 int Cube::saveData(QFile & f)
 {
     saveParam(f);
-    int dataSize = nLat * nLon * nDepth;
+    U4B dataSize = nLat * nLon * nDepth;
     f.write((char *)data, dataSize*sizeof(double));
     return 1;
 }

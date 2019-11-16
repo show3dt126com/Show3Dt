@@ -78,6 +78,16 @@ typedef ushort *    pushort;
 typedef uint *      puint;
 typedef ulong *     pulong;
 
+typedef uchar       U1B;
+typedef ushort      U2B;
+typedef uint        U4B;
+typedef ulong       U8B;
+
+typedef char        S1B;
+typedef short       S2B;
+typedef int         S4B;
+typedef long        S8B;
+
 // 定义几种使用的视图，每种视图都有单独的控制界面
 enum EViewType
 {
@@ -307,6 +317,8 @@ struct Field
     double depth;
 
     void merge(Field & f);
+    double width();
+    double height();
 };
 
 // 长方体声场区域的大小，被切去的部分
@@ -318,9 +330,12 @@ struct Field
 //
 struct CutField
 {
+    // 界面选择或者指定采用合并场区时，设置到本处
+    void setField(Field field);
     // 立方体场景中的两个顶点，决定了整个区域，经纬度
     Field field;
-    // 水面中心点，经纬度
+    // 水面中心点，经纬度，如果界面指定用合并场区范围，则为合并后的中心点
+    // 如果界面指定采用某场区为代表，则采用代表场区的中心点
     LBH centerP;
 
     // 切去顶部部分

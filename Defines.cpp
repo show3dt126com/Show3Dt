@@ -1,5 +1,5 @@
 #include "Defines.h"
-
+#include "ToolBox.h"
 
 int compareColorKey( const void *arg1, const void *arg2)
 {
@@ -128,4 +128,22 @@ void Field::merge(Field & f)
         lon1 = f.lon1;
     if (f.depth > depth)
         depth = f.depth;
+}
+
+double Field::width()
+{
+    return distBetween2LB(lon0, lat0, lon1, lat0);
+}
+
+double Field::height()
+{
+    return distBetween2LB(lon0, lat0, lon0, lat1);
+}
+
+void CutField::setField(Field field)
+{
+    this->field = field;
+    centerP.lat = field.lat0/2.0 + field.lat1/2.0;
+    centerP.lon = field.lon0/2.0 + field.lon1/2.0;
+    centerP.height = 0.0;
 }

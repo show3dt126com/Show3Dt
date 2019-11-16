@@ -30,11 +30,18 @@ void CubeModel::initCubeModel()
     triIndexNum = 0;
     stripNum = 0;
 
-    field.lat0 = lats[0];
-    field.lat1 = lats[nLat-1];
-    field.lon0 = lons[0];
-    field.lon1 = lons[nLon-1];
-    field.depth = depths[nDepth-1];
+//    field.lat0 = lats[0];
+//    field.lat1 = lats[nLat-1];
+//    field.lon0 = lons[0];
+//    field.lon1 = lons[nLon-1];
+//    field.depth = depths[nDepth-1];
+
+    field.lat0 = lat0;
+    field.lat1 = lat1;
+    field.lon0 = lon0;
+    field.lon1 = lon1;
+    field.depth = depth;
+
 }
 
 int CubeModel::prepareVertexData()
