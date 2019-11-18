@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <Scene.h>
+#include <QFrame>
 #include <QScrollBar>
 #include "BBS.h"
 
@@ -26,6 +27,8 @@ public:
     QScrollBar * hScrollBar;
     // 深度，俯视图用，侧视图3D模式用
     QScrollBar * dScrollBar;
+
+    QFrame * frameInScrolls;
 
     void resizeEvent(QResizeEvent *event) override;
     void setArea(int w, int h);

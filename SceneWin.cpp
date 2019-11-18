@@ -13,11 +13,6 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
 
     setLayout(layout);
 
-    QIcon icon;
-    icon.addFile("url(:/Clock.png)");
-    QPalette p = palette();
-    p.setBrush(QPalette::Button, QBrush(QPixmap("url(:/Clock.png)")));
-
     conerButton = new QPushButton("*", this);
     conerButton->setStyleSheet(
         //"QPushButton{color: white;font: bold 10pt;border:none;"
@@ -29,6 +24,8 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     zoomOutBut = new QPushButton("", this);
     turnClockBut = new QPushButton("", this);
     turnAClockBut = new QPushButton(this);
+
+    frameInScrolls = new QFrame(this);
 
     zoomOutBut->setStyleSheet(
                 "QPushButton{border-image:url(:/ZoomOut.png);}"
@@ -47,7 +44,11 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
                 "QPushButton:hover{border-image:url(:/Clock-H.png);}"
                 "QPushButton:pressed{border-image:url(:/Clock-P.png);}");
 
-    int maxsz = 30;
+    frameInScrolls->setStyleSheet("background-color: rgb(42, 42, 42);");
+    frameInScrolls->setMaximumWidth(5);
+    frameInScrolls->setMinimumWidth(5);
+
+    int maxsz = 40;
     conerButton->setMinimumWidth(maxsz);
     conerButton->setMinimumHeight(maxsz);
     turnClockBut->setMinimumWidth(maxsz);
@@ -59,7 +60,7 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     zoomOutBut->setMinimumWidth(maxsz);
     zoomOutBut->setMinimumHeight(maxsz);
 
-    maxsz = 30;
+    maxsz = 40;
     conerButton->setMaximumWidth(maxsz);
     conerButton->setMaximumHeight(maxsz);
     turnClockBut->setMaximumWidth(maxsz);
@@ -85,13 +86,14 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addWidget(hScrollBar, 8, 0, 1, 1);
 
     layout->addWidget(vScrollBar, 0, 1, 1, 1);
-    layout->addWidget(dScrollBar, 0, 2, 1, 1);
+    layout->addWidget(frameInScrolls, 0, 2, 1, 1);
+    layout->addWidget(dScrollBar, 0, 3, 1, 1);
 
-    layout->addWidget(zoomInBut, 1, 1, 2, 2);
-    layout->addWidget(zoomOutBut, 3, 1, 2, 2);
+    layout->addWidget(zoomInBut, 1, 1, 2, 3);
+    layout->addWidget(zoomOutBut, 3, 1, 2, 3);
 
-    layout->addWidget(turnAClockBut, 5, 1, 2, 2);
-    layout->addWidget(turnClockBut, 7, 1, 2, 2);
+    layout->addWidget(turnAClockBut, 5, 1, 2, 3);
+    layout->addWidget(turnClockBut, 7, 1, 2, 3);
 
     //layout->addWidget(conerButton, 3, 4, 1, 1);
 
