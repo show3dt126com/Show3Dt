@@ -1,14 +1,6 @@
 #ifndef BBS_H
 #define BBS_H
 
-
-// CXB
-// CXB123
-// sxd  OK
-// CXB 12
-// CXB 2
-
-
 /*
   消息交换中心，
 */
@@ -38,10 +30,13 @@ enum EBBSVarty
     EBV_Last
 };
 
-// BBS sender type
+// BBS sender, 参与BBS发送接收的对象，都在这。
 enum EBBSSource
 {
+    // 3D 窗口
     EBS_Scene,
+    // 3D 窗口外窗口
+    EBS_SceneWin,
     EBS_Camera,
     EBS_Main,
     EBS_LookDownControl,

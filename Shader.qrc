@@ -1,6 +1,18 @@
 <RCC>
     <qresource prefix="/">
         <file>Shader.all</file>
+        <file>ZoomOut.png</file>
+        <file>Start.png</file>
+        <file>Clock.png</file>
+        <file>Clock-H.png</file>
+        <file>Clock-P.png</file>
         <file>ZoomIn.png</file>
+        <file>ZoomIn-H.png</file>
+        <file>ZoomIn-P.png</file>
+        <file>ZoomOut-H.png</file>
+        <file>ZoomOut-P.png</file>
+        <file>ClockA.png</file>
+        <file>ClockA-H.png</file>
+        <file>ClockA-P.png</file>
     </qresource>
 </RCC>

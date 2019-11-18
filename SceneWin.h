@@ -14,8 +14,18 @@ public:
     explicit SceneWin(QWidget *parent = nullptr);
     Scene * scene;
     QPushButton * conerButton;
+
+    // 顺时针，逆时针旋转，俯视图、侧视图都可
+    QPushButton * turnClockBut;
+    QPushButton * turnAClockBut;
+
+    QPushButton * zoomInBut;
+    QPushButton * zoomOutBut;
+
     QScrollBar * vScrollBar;
     QScrollBar * hScrollBar;
+    // 深度，俯视图用，侧视图3D模式用
+    QScrollBar * dScrollBar;
 
     void resizeEvent(QResizeEvent *event) override;
     void setArea(int w, int h);
@@ -29,6 +39,11 @@ signals:
 public slots:
     void onVScroll(int v);
     void onHScroll(int v);
+    void onDScroll(int v);
+    void onZoomIn();
+    void onZoomOut();
+    void onTurnClock();
+    void onTurnAClock();
 
 public slots:
     int onBBSMessage(BBSMessage bbsMsg);
