@@ -29,7 +29,7 @@ void Camera::updateCameraVectors()
     double pitchR = qDegreesToRadians(pitch);
     //GLfloat rollR = qDegreesToRadians(roll);
 
-    QVector3D front3(float(cos(yawR) * cos(pitchR)), float(sin(pitchR)), float(sin(yawR) * cos(pitchR)));
+    QVector3D front3(float(cos(yawR)*cos(pitchR)), float(sin(pitchR)), float(sin(yawR)*cos(pitchR)));
     front = front3.normalized();
     QVector3D wUp = worldUp;
     if (abs(pitch+90) < 0.5 || abs(pitch-90) < 0.5)

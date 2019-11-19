@@ -88,7 +88,7 @@ public:
     //
     void procRotatePitch(double dPitch);
 
-    // 摄像机的位置
+    // 摄像机的位置，在世界坐标系定义
     QVector3D position;
     // 摄像机不进行roll操作
     QVector3D worldUp;

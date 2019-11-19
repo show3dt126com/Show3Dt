@@ -306,7 +306,6 @@ struct VertexColor
     GLfloat r, g, b;
 };
 
-
 //
 struct Field
 {
@@ -337,6 +336,8 @@ struct CutField
     // 水面中心点，经纬度，如果界面指定用合并场区范围，则为合并后的中心点
     // 如果界面指定采用某场区为代表，则采用代表场区的中心点
     LBH centerP;
+    // 合并或选定场区的对角线，作为俯视图移动区域，侧视图水平移动区域大小
+    int maxHMoveRange;
 
     // 切去顶部部分
     double hCutDepth;
