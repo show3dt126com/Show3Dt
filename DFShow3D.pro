@@ -121,5 +121,6 @@ RESOURCES += \
     Shader.qrc
 
 DISTFILES += \
-    ../../ShuiJingZhu-GoogleMap/GoogleMap-05/World-L05-000-000.txt
+    ../../ShuiJingZhu-GoogleMap/GoogleMap-05/World-L05-000-000.txt \
+    Design.txt
 
