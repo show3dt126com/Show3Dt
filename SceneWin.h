@@ -6,6 +6,7 @@
 #include <Scene.h>
 #include <QFrame>
 #include <QScrollBar>
+#include <QLineEdit>
 #include "BBS.h"
 
 class SceneWin : public QWidget
@@ -20,15 +21,34 @@ public:
     QPushButton * turnClockBut;
     QPushButton * turnAClockBut;
 
+    // 相机位置移动
+    QPushButton * forwardBut;
+    QPushButton * backwardBut;
+
+    // 相机俯仰角调整
+    QPushButton * cameraUpBut;
+    QPushButton * cameraDownBut;
+    // 高度比例尺调整
+    QPushButton * zoomInDepthBut;
+    QPushButton * zoomOutDepthBut;
+
+    // 视窗放大缩小
     QPushButton * zoomInBut;
     QPushButton * zoomOutBut;
 
+    // 视窗区域移动
     QScrollBar * vScrollBar;
     QScrollBar * hScrollBar;
+
     // 深度，俯视图用，侧视图3D模式用
     QScrollBar * dScrollBar;
 
-    QFrame * frameInScrolls;
+    QFrame * frameInScrollsH;
+    QFrame * frameInScrollsV;
+
+    // 显示一些重要信息的文字框
+    QLineEdit * info1;
+    QLineEdit * info2;
 
     void resizeEvent(QResizeEvent *event) override;
     void setArea(int w, int h);
@@ -47,6 +67,12 @@ public slots:
     void onZoomOut();
     void onTurnClock();
     void onTurnAClock();
+    void onForward();
+    void onBackward();
+    void onCameraUp();
+    void onCameraDown();
+    void onZoomInDepth();
+    void onZoomOutDepth();
 
 public slots:
     int onBBSMessage(BBSMessage bbsMsg);

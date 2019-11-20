@@ -80,7 +80,6 @@ public:
 
 signals:
     void bbsMessage(BBSMessage bbsMsg);
-
 };
 
 #endif // BBS_H
