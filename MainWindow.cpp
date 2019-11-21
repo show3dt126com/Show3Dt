@@ -8,6 +8,7 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include "SchemeSaveDlg.h"
+#include "PythonIf.h"
 
 //#include <qopengl.h>
 //#include <QOpenGLWidget>
@@ -223,7 +224,8 @@ void MainWindow::on_actionLoad_BSI_DB_triggered()
 
 void MainWindow::on_actionTest_triggered()
 {
-    T.test(1);
+    //T.test(1);
+    PythonIf::callFun1();
 }
 
 void MainWindow::on_actionTest_2_triggered()

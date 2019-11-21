@@ -15,6 +15,10 @@ INCLUDEPATH += .\FreeType
 LIBS += -L$$PWD\FreeType -lfreetype
 DESTDIR = D:\DFShow3DRun
 
+INCLUDEPATH += -I  "C:/Program Files/Python37/include"
+
+LIBS += -L"C:/Program Files/Python37/libs" -lpython37
+
 #QMAKE_CXXFLAGS -= -Wunused-parameter -Wconversion -Wunused-variable
 QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-unused-variable -Wno-return-type -Wno-switch -Wno-sign-compare
 
@@ -65,7 +69,8 @@ SOURCES += \
     SideEye.cpp \
     Scene.cpp \
     SchemeSaveDlg.cpp \
-    SceneWin.cpp
+    SceneWin.cpp \
+    PythonIf.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -101,7 +106,8 @@ HEADERS += \
     EagleEye.h \
     SideEye.h \
     SchemeSaveDlg.h \
-    SceneWin.h
+    SceneWin.h \
+    PythonIf.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \
@@ -122,5 +128,6 @@ RESOURCES += \
 
 DISTFILES += \
     ../../ShuiJingZhu-GoogleMap/GoogleMap-05/World-L05-000-000.txt \
-    Design.txt
+    Design.txt \
+    Python/kde.py
 

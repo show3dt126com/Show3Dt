@@ -2,6 +2,7 @@
 #include <QApplication>
 #include "Global.h"
 #include "Test.h"
+#include "PythonIf.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,5 +25,8 @@ int main(int argc, char *argv[])
 
     T.init();
 
+    PythonIf::initPython();
+
     return a.exec();
+    PythonIf::finalizePython();
 }
