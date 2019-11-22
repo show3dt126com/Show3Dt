@@ -13,6 +13,7 @@ public:
     static void initPython();
     static void finalizePython();
     static PyObject * convertLabelData(QVector<double> *labels);
+
     static void callFun1();
     static void callFun2();
 };

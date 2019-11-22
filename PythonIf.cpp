@@ -35,43 +35,41 @@ PyObject * PythonIf::convertLabelData(QVector<double> *labels)
     return pArgs;
 }
 
-PyObject *pModule;
-PyObject *pFunc;
+
+
 
 void PythonIf::callFun1()
 {
-    // 加载模块，即loadtraindata.py
+    // 加载模块
     PyRun_SimpleString("import sys");
-    //PyRun_SimpleString("sys.path.append('./')");
+    PyRun_SimpleString("sys.path.append('./')");
     PyRun_SimpleString("sys.argv = ['python.py']");
-    pModule = PyImport_ImportModule("kde");
+    PyObject * pModule = PyImport_ImportModule("kde");
     qDebug() << "pModule" << pModule;
     // 加载函数loadData()
-    pFunc = PyObject_GetAttrString(pModule, "plotKDE2");
+    PyObject *pFunc = PyObject_GetAttrString(pModule, "plotKDE");
     qDebug() << "pFunc" << pFunc;
 
     // QVector<double> pKDE中存放了选中列的所有数据
     QVector<double> pKDE;
-    pKDE << 1.0 << 10.0 << 50.0 << 30.0 << 5.0;
+    pKDE << 1.0 << 10.0 << 12. << 18. << 22.  << 42 << 43  << 44 << 22. << 22. <<48. << 48. << 48. << 50<< 50.0 << 30.0 << 5.0;
     PyObject *pKDEdata = convertLabelData(&pKDE); // 类型转换
     PyObject *pArg = PyTuple_New(3);
     PyTuple_SetItem(pArg, 0, pKDEdata);
     // int column表示选中的列的索引
-    int column = 0;
+    int column = 1;
     PyTuple_SetItem(pArg, 1, Py_BuildValue("i", column));
     // Qstring kernel表示核类型
     QString kernel = "gaussian";
     PyTuple_SetItem(pArg, 2, Py_BuildValue("s", kernel.toStdString().c_str()));
 
-    PyObject * v = PyObject_CallObject(pFunc, NULL);
+    PyObject * v = PyObject_CallObject(pFunc, pArg);
 
     int i = PyLong_AsLong(v);
     qDebug() << "i=" << i;
 
-    //Py_DECREF(pModule);
-    //Py_DECREF(pFunc);
-
-    //PythonIf::finalizePython();
+    Py_DECREF(pModule);
+    Py_DECREF(pFunc);
 }
 
 void PythonIf::callFun2()
@@ -79,8 +77,8 @@ void PythonIf::callFun2()
     QVector<QVector<double>> * trainData; // 存储python脚本读入的数据
 
     // 添加当前路径(读文件的时候才需要)
-    PyRun_SimpleString("import sys");
-    //PyRun_SimpleString("sys.path.append('./')");
+    //PyRun_SimpleString("import sys");
+    PyRun_SimpleString("sys.path.append('./')");
 
     //PyRun_SimpleString("sys.path.append('C:/Program Files/Python37')");
 
