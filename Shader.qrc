@@ -14,5 +14,13 @@
         <file>ClockA.png</file>
         <file>ClockA-H.png</file>
         <file>ClockA-P.png</file>
+        <file>ZViewType-H.png</file>
+        <file>ZViewType-HH.png</file>
+        <file>ZViewType-V.png</file>
+        <file>ZViewType-VH.png</file>
+        <file>ZDimension-H.png</file>
+        <file>ZDimension-V.png</file>
+        <file>ZDimension-HH.png</file>
+        <file>ZDimension-VH.png</file>
     </qresource>
 </RCC>

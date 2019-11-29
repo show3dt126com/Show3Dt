@@ -44,6 +44,23 @@ void setButtonMinMaxIcon(QPushButton * w, int minSz, int maxSz, const char * ico
     }
 }
 
+void setCheckBoxMinMaxIcon(QPushButton * w, int minSz, int maxSz, const char * icon=nullptr)
+{
+    w->setMinimumSize(minSz, minSz);
+    w->setMaximumSize(maxSz, maxSz);
+    w->setCheckable(true);
+    if (icon)
+    {
+        char style[300];
+        sprintf(style, "QPushButton{border-image:url(:/%s-H.png);}"
+                       "QPushButton::hover{border-image:url(:/%s-HH.png);}"
+                       "QPushButton::checked:hover{border-image:url(:/%s-VH.png);}"
+                       "QPushButton:checked{border-image:url(:/%s-V.png);}",
+                icon, icon, icon,icon);
+        w->setStyleSheet(style);
+    }
+}
+
 SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
 {
     QGridLayout *layout = new QGridLayout();
@@ -51,7 +68,7 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->setSpacing(2);
     layout->setRowStretch(0, 100);
     layout->setColumnStretch(0, 100);
-    layout->setColumnStretch(1, 70);
+    layout->setColumnStretch(1, 100);
     layout->setColumnMinimumWidth(1, 300);
 
     QHBoxLayout * layoutA = new QHBoxLayout();
@@ -61,6 +78,11 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     frameInScrollsH = new QFrame(this);
     frameInScrollsV = new QFrame(this);
 
+    viewTypeToggle = new QPushButton(this);
+    viewTypeToggle->setToolTip("切换俯视图/侧视图模式");
+    dimensionModeToggle = new QPushButton(this);
+    dimensionModeToggle->setToolTip("切换2D/3D模式");
+
     conerButton = new QPushButton("*", this);
     conerButton->setStyleSheet(
         //"QPushButton{color: white;font: bold 10pt;border:none;"
@@ -69,19 +91,32 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
         "border-image:url(:/Start.png);}");
 
     zoomInBut = new QPushButton("", this);
+    zoomInBut->setToolTip("放大视窗范围");
     zoomOutBut = new QPushButton("", this);
+    zoomOutBut->setToolTip("缩小视窗范围");
+
     turnClockBut = new QPushButton(this);
+    turnClockBut->setToolTip("视区方向/相机朝向顺时针旋转");
     turnAClockBut = new QPushButton(this);
+    turnAClockBut->setToolTip("视区方向/相机朝向逆时针旋转");
 
     forwardBut = new QPushButton(">>", this);
     backwardBut = new QPushButton("<<", this);
 
     cameraUpBut = new QPushButton("↑", this);
+    cameraUpBut->setToolTip("增加相机抬头角度");
     cameraDownBut = new QPushButton("↓", this);
+    cameraDownBut->setToolTip("减小相机抬头角度");
+    cameraMidBut = new QPushButton("=", this);
+    cameraMidBut->setToolTip("相机俯仰角归零");
+
     zoomInDepthBut = new QPushButton("×", this);
+    zoomInDepthBut->setToolTip("放大深度放大系数");
     zoomOutDepthBut = new QPushButton("÷", this);
+    zoomOutDepthBut->setToolTip("减小深度放大系数");
 
     frameInScrollsV->setStyleSheet("background-color: rgb(42, 42, 42);");
+    frameInScrollsV->setToolTip("");
     frameInScrollsV->setMaximumWidth(5);
     frameInScrollsV->setMinimumWidth(5);
     frameInScrollsH->setStyleSheet("background-color: rgb(42, 42, 42);");
@@ -99,16 +134,29 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     setButtonMinMaxIcon(backwardBut, minSz, maxSz);
     setButtonMinMaxIcon(cameraUpBut, minSz, maxSz);
     setButtonMinMaxIcon(cameraDownBut, minSz, maxSz);
+    setButtonMinMaxIcon(cameraMidBut, minSz, maxSz);
     setButtonMinMaxIcon(zoomInDepthBut, minSz, maxSz);
     setButtonMinMaxIcon(zoomOutDepthBut, minSz, maxSz);
 
+    setCheckBoxMinMaxIcon(viewTypeToggle, minSz, maxSz, "ZViewType");
+    setCheckBoxMinMaxIcon(dimensionModeToggle, minSz, maxSz, "ZDimension");
+
     maxSz = 18;
     vScrollBar = new QScrollBar(Qt::Vertical, this);
+    vScrollBar->setToolTip("视区往相机前方/上方移动");
     vScrollBar->setMaximumWidth(maxSz);
+
     hScrollBar =new QScrollBar(Qt::Horizontal, this);
+    hScrollBar->setToolTip("视区往相机侧方/水平方向移动");
     hScrollBar->setMaximumHeight(maxSz);
+
     dScrollBar = new QScrollBar(Qt::Vertical, this);
     dScrollBar->setMaximumWidth(maxSz);
+    dScrollBar->setToolTip("深度切面上下移动");
+
+    rScrollBar = new QScrollBar(Qt::Horizontal, this);
+    rScrollBar->setMaximumHeight(maxSz);
+    rScrollBar->setToolTip("纵切面前后移动");
 
     scene = new Scene(this);
 
@@ -119,8 +167,14 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     info2->setText("相机参数");
 
     layoutA->addSpacing(20);
+    layoutA->addWidget(viewTypeToggle, 0, Qt::AlignVCenter);
+    layoutA->addWidget(dimensionModeToggle, 0, Qt::AlignVCenter);
+
+    layoutA->addSpacing(20);
     layoutA->addWidget(cameraUpBut, 0, Qt::AlignVCenter);
     layoutA->addWidget(cameraDownBut, 0, Qt::AlignVCenter);
+    layoutA->addWidget(cameraMidBut, 0, Qt::AlignVCenter);
+
     layoutA->addSpacing(20);
     layoutA->addWidget(zoomInDepthBut, 0, Qt::AlignVCenter);
     layoutA->addWidget(zoomOutDepthBut, 0, Qt::AlignVCenter);
@@ -140,7 +194,8 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addWidget(info1, 2, 0, 1, 1);
     layout->addWidget(hScrollBar, 2, 1, 1, 1);
     layout->addWidget(frameInScrollsH, 3, 0, 1, 2);
-    layout->addWidget(info2, 4, 0, 1, 2);
+    layout->addWidget(info2, 4, 0, 1, 1);
+    layout->addWidget(rScrollBar, 4, 1, 1, 1);
     layout->addLayout(layoutA, 2, 2, 3, 1);
 
     layout->addWidget(vScrollBar, 0, 3, 1, 1);
@@ -151,26 +206,26 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addWidget(conerButton, 2, 3, 3, 3);
 
     /*
-        ┌─────────────────────────────────────────────────────────┬──┬┬──┐
-        │                                                         │  ││  │
-        │                                                         │  ││  │
-        │                                                         │  ││  │
-        │                                                         │  ││  │
-        │                                                         │  ││  │
-        │                                                         │  ││  │
-        │                                                         │  ││  │
-        │                                                         ├──┴┴──┤
-        │                                                         │  B   │
-        │                                                         ├──────┤
-        │                                                         │  B   │
-        │                                                         ├──────┤
-        │                                                         │  B   │
-        ├──────────────┬────────────────────────┬─────┬─────┬─────┼──────┤
-        │              │                        │     │     │     │      │
-        ├──────────────┴────────────────────────┤  A  │  A  │  A  │  C   │
-        ├───────────────────────────────────────┤     │     │     │      │
-        │                                       │     │     │     │      │
-        └───────────────────────────────────────┴─────┴─────┴─────┴──────┘
+        ┌───────────────────────────────────────────────────┬──┬┬──┐
+        │                                                   │  ││  │
+        │                                                   │  ││  │
+        │                                                   │  ││  │
+        │                                                   │  ││  │
+        │                                                   │  ││  │
+        │                                                   │  ││  │
+        │                                                   │  ││  │
+        │                                                   ├──┴┴──┤
+        │                                                   │  B   │
+        │                                                   ├──────┤
+        │                                                   │  B   │
+        │                                                   ├──────┤
+        │                                                   │  B   │
+        ├──────────────┬──────────────────┬─────┬─────┬─────┼──────┤
+        │              │                  │     │     │     │      │
+        ├──────────────┴──────────────────┤  A  │  A  │  A  │  C   │
+        ├──────────────┬──────────────────┤     │     │     │      │
+        │              │                  │     │     │     │      │
+        └──────────────┴──────────────────┴─────┴─────┴─────┴──────┘
     */
 
 
@@ -188,8 +243,11 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
 
     connect(forwardBut, SIGNAL(pressed()), this, SLOT(onForward()));
     connect(backwardBut, SIGNAL(pressed()), this, SLOT(onBackward()));
+
     connect(cameraUpBut, SIGNAL(pressed()), this, SLOT(onCameraUp()));
     connect(cameraDownBut, SIGNAL(pressed()), this, SLOT(onCameraDown()));
+    connect(cameraMidBut, SIGNAL(pressed()), this, SLOT(onCameraMid()));
+
     connect(zoomInDepthBut, SIGNAL(pressed()), this, SLOT(onZoomInDepth()));
     connect(zoomOutDepthBut, SIGNAL(pressed()), this, SLOT(onZoomOutDepth()));
 
@@ -263,6 +321,11 @@ void SceneWin::onCameraUp()
 }
 
 void SceneWin::onCameraDown()
+{
+
+}
+
+void SceneWin::onCameraMid()
 {
 
 }

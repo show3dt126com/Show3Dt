@@ -6,6 +6,7 @@
 #include <Scene.h>
 #include <QFrame>
 #include <QScrollBar>
+#include <QCheckBox>
 #include <QLineEdit>
 #include "BBS.h"
 
@@ -16,6 +17,9 @@ public:
     explicit SceneWin(QWidget *parent = nullptr);
     Scene * scene;
     QPushButton * conerButton;
+
+    QPushButton * viewTypeToggle;
+    QPushButton * dimensionModeToggle;
 
     // 顺时针，逆时针旋转，俯视图、侧视图都可
     QPushButton * turnClockBut;
@@ -28,6 +32,8 @@ public:
     // 相机俯仰角调整
     QPushButton * cameraUpBut;
     QPushButton * cameraDownBut;
+    QPushButton * cameraMidBut;
+
     // 高度比例尺调整
     QPushButton * zoomInDepthBut;
     QPushButton * zoomOutDepthBut;
@@ -42,7 +48,10 @@ public:
 
     // 深度，俯视图用，侧视图3D模式用
     QScrollBar * dScrollBar;
+    // 纵切，侧视图用，侧视图3D模式用
+    QScrollBar * rScrollBar;
 
+    // 保留一些间隔
     QFrame * frameInScrollsH;
     QFrame * frameInScrollsV;
 
@@ -63,14 +72,20 @@ public slots:
     void onVScroll(int v);
     void onHScroll(int v);
     void onDScroll(int v);
+
     void onZoomIn();
     void onZoomOut();
+
     void onTurnClock();
     void onTurnAClock();
+
     void onForward();
     void onBackward();
+
     void onCameraUp();
     void onCameraDown();
+    void onCameraMid();
+
     void onZoomInDepth();
     void onZoomOutDepth();
 

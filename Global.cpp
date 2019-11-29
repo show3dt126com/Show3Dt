@@ -21,7 +21,7 @@ Global::Global()
 
 Global::~Global()
 {
-
+    PythonIf::finalizePython();
 }
 
 int Global::init()
@@ -36,6 +36,8 @@ int Global::init()
     showSky = false;
     showDem = false;
     showLine = true;
+
+    PythonIf::initPython();
 
     return 1;
 }

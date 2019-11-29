@@ -35,9 +35,6 @@ PyObject * PythonIf::convertLabelData(QVector<double> *labels)
     return pArgs;
 }
 
-
-
-
 void PythonIf::callFun1()
 {
     // 加载模块
@@ -74,7 +71,7 @@ void PythonIf::callFun1()
 
 void PythonIf::callFun2()
 {
-    QVector<QVector<double>> * trainData; // 存储python脚本读入的数据
+    QVector<QVector<double>> trainData; // 存储python脚本读入的数据
 
     // 添加当前路径(读文件的时候才需要)
     //PyRun_SimpleString("import sys");
@@ -109,6 +106,6 @@ void PythonIf::callFun2()
             double item = PyFloat_AsDouble(singleItem);
             tmpVect.push_back(item);
         }
-        trainData->push_back(tmpVect);
+        trainData.push_back(tmpVect);
     }
 }
