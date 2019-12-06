@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     G.initWinBox();
     G.initSence();
     G.scene->show();
-    //w.restoreGeometryAndState("Layout1");
+    w.restoreGeometryAndState("Layout1");
     w.show();
 
     T.init();
