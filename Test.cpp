@@ -61,6 +61,7 @@ int  BBS2::onBBSMessage(BBSMessage bbsMsg)
 
 BBS3::BBS3(QObject *parent) : BBSBase(parent)
 {}
+
 int  BBS3::onBBSMessage(BBSMessage bbsMsg)
 {
     if (bbsMsg.sender == this)
@@ -68,7 +69,6 @@ int  BBS3::onBBSMessage(BBSMessage bbsMsg)
     qDebug() << "BBS3" << bbsMsg.source << bbsMsg.varity;
     return 1;
 }
-
 
 int Test::testSchemeSaveLoad()
 {
@@ -79,23 +79,13 @@ int Test::testSchemeSaveLoad()
     scheme.soundSourceFiles.append("444.snd");
     scheme.soundSourceFiles.append("555.snd");
     ViewPot vp;
-    vp.lat = 30;
-    vp.lon = 100;
-    vp.roll = 0;
-    vp.pitch = 45;
-    vp.yaw = 56;
     scheme.viewPots.append(vp);
-    vp.lat = 31;
-    vp.lon = 101;
-    vp.pitch = 46;
-    vp.yaw = 57;
     scheme.viewPots.append(vp);
 
     scheme.saveToFile("./test/1.sch");
 
     Scheme scheme1;
     scheme1.loadFromFile("./test/1.sch");
-    qDebug() << scheme1.viewPots[1].yaw;
     qDebug() << scheme1.cubeFiles[1];
 }
 

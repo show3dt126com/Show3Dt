@@ -37,12 +37,18 @@ enum EBBSSource
     EBS_Scene,
     // 3D 窗口外窗口
     EBS_SceneWin,
+    // 暂时不考虑相机操作
     EBS_Camera,
+    // 主窗口菜单、列表界面
     EBS_Main,
+    // 俯视图参数界面
     EBS_LookDownControl,
+    // 侧视图参数界面
     EBS_LooSideControl,
-    EBS_Look3DControl,
+    // 3D参数界面
     EBS_Look3DValue,
+
+    //
     EBS_Last
 };
 

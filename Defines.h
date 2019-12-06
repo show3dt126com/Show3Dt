@@ -126,8 +126,8 @@ enum EViewType
     EVT_Iso3D = 13
 };
 
-// 维度模式参数，控制模型生成
-enum EDimensionMode
+// 维度模式参数，控制模型生成 dimension
+enum EDimMode
 {
     // 仅显示相应的表面
     EDM_2D,
@@ -342,7 +342,7 @@ struct VertexColor
     GLfloat r, g, b;
 };
 
-//
+// 一个 Cube 的范围，或者多个 Cube 的合并范围
 struct Field
 {
     double lat0;
@@ -390,8 +390,44 @@ struct CutField
 
 #define NOTEMAX  32
 
+// CameraPar 相机的控制参数，是合适用户角度操作的参数。
+// 注：Camera 是OpenGL概念上相机参数，做相关矩阵计算用。
+// CameraPar 是 Camera 的输入。
+
+struct CameraPar
+{
+    // 相机在世界坐标系的坐标。
+    double x, y, z;
+    // 俯仰角，度。相机抬头的角度，不抬头为0。
+    double pitch;
+    // 偏转角，度。侧视图模式下，相机的朝向。垂直切开的角度。
+    double yaw;
+    // 滚动角，度。俯视图模式下，视窗的角度。侧视图为0。
+    double roll;
+    // 视窗尺寸，米，othro
+    double viewW, viewH;
+
+};
+
+// 视景参数，相机的参数
 // 视景参数，相机的参数
 struct ViewPot
+{
+    // 当前显示的第几个 cube的数据，每次只能选择一个显示
+    int cubeIndex;
+    // 俯视图、侧视图选择
+    EViewType viewType;
+    // 2D、3D选择
+    EDimMode dimMode;
+    // 场区以及切面参数
+    CutField cutField;
+    // 相机参数
+    CameraPar cameraPar;
+    // 文字说明
+    char note[NOTEMAX];
+};
+
+struct ViewPotAcu
 {
     //
     int cubeIndex;

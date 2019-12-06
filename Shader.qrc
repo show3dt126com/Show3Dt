@@ -22,5 +22,9 @@
         <file>ZDimension-V.png</file>
         <file>ZDimension-HH.png</file>
         <file>ZDimension-VH.png</file>
+        <file>ZKeepDist-H.png</file>
+        <file>ZKeepDist-HH.png</file>
+        <file>ZKeepDist-V.png</file>
+        <file>ZKeepDist-VH.png</file>
     </qresource>
 </RCC>

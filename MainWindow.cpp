@@ -128,7 +128,7 @@ bool MainWindow::restoreGeometryAndState(QString set)
     G.winBox->restoreState(settings.value(QString("WinBox/State") + set).toByteArray());
     G.eyeBox->restoreGeometry(settings.value(QString("EyeBox/Geometry") + set).toByteArray());
     G.eyeBox->restoreState(settings.value(QString("EyeBox/State") + set).toByteArray());
-    G.sceneWin->restoreGeometry(settings.value(QString("SceneWin/Geometry") + set).toByteArray());
+    //G.sceneWin->restoreGeometry(settings.value(QString("SceneWin/Geometry") + set).toByteArray());
     return 1;
 }
 
