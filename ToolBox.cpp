@@ -74,7 +74,8 @@ QPointF ll2map(const QPointF & geo)
 
 double distBetween2LB(double l0, double b0, double l1, double b1)
 {
-    double distance = acos(sin(b0*D2R)*sin(b1*D2R) + cos(b0*D2R)*cos(b1*D2R)*cos((l0-l1)*D2R)) * EARTH_R;
+    double distance = acos(sin(b0*D2R)*sin(b1*D2R)
+           + cos(b0*D2R)*cos(b1*D2R)*cos((l0-l1)*D2R)) * EARTH_R;
     return distance;
 }
 

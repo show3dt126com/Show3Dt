@@ -18,7 +18,7 @@ QPointF map211(const QPointF & map);
 //地理坐标与地图坐标之间的转换函数
 QPointF ll2map(const QPointF & geo);
 
-// 计算2点之间的距离
+// 计算2点之间的距离，单位米
 double distBetween2LB(double l0, double b0, double l1, double b1);
 
 // 水经注地图批量下载配置文件的辅助构建

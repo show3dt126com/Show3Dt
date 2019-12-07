@@ -1,4 +1,5 @@
 #include "SceneWin.h"
+#include "Global.h"
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -126,28 +127,29 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     setCheckBoxMinMaxIcon(keepDistToggle, minSz, maxSz, "ZKeepDist");
 
     maxSz = 18;
-    vScrollBar = new QScrollBar(Qt::Vertical, this);
+    vScrollBar = new ScrollBarV(Qt::Vertical, this);
     vScrollBar->setToolTip("视区往相机前方/上方移动");
     vScrollBar->setMaximumWidth(maxSz);
     vScrollBar->setMinimum(0);
     vScrollBar->setMaximum(1000);
     vScrollBar->setPageStep(50);
 
-    dScrollBar = new QScrollBar(Qt::Vertical, this);
+    dScrollBar = new ScrollBarV(Qt::Vertical, this);
     dScrollBar->setMaximumWidth(maxSz);
     dScrollBar->setToolTip("深度切面上下移动");
     dScrollBar->setMinimum(0);
     dScrollBar->setMaximum(1000);
     dScrollBar->setPageStep(50);
 
-    zoomDepthScrollBar = new QScrollBar(Qt::Vertical, this);
+    zoomDepthScrollBar = new ScrollBarV(Qt::Vertical, this);
     zoomDepthScrollBar->setMaximumWidth(maxSz);
-    zoomDepthScrollBar->setToolTip("深度放大系数\n100%..1000%");
+    zoomDepthScrollBar->fmt = "深度放大%d%%";
+    zoomDepthScrollBar->setToolTip("深度放大系数\n100%..5000%");
     zoomDepthScrollBar->setMinimum(100);
-    zoomDepthScrollBar->setMaximum(1000);
-    zoomDepthScrollBar->setPageStep(50);
+    zoomDepthScrollBar->setMaximum(5000);
+    zoomDepthScrollBar->setPageStep(100);
 
-    turnScrollBar = new QScrollBarV(Qt::Vertical, this);
+    turnScrollBar = new ScrollBarV(Qt::Vertical, this);
     turnScrollBar->fmt = "旋转%d°";
     turnScrollBar->setMaximumWidth(maxSz);
     turnScrollBar->setToolTip("旋转视窗\n0(北)..359");
@@ -155,27 +157,28 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     turnScrollBar->setMaximum(359);
     turnScrollBar->setStatusTip("159");
 
-    hScrollBar =new QScrollBar(Qt::Horizontal, this);
+    hScrollBar =new ScrollBarV(Qt::Horizontal, this);
     hScrollBar->setToolTip("视区往相机侧方/水平方向移动");
     hScrollBar->setMaximumHeight(maxSz);
     hScrollBar->setMinimum(0);
     hScrollBar->setMaximum(1000);
     hScrollBar->setPageStep(50);
 
-    zoomViewScrollBar = new QScrollBar(Qt::Horizontal, this);
+    zoomViewScrollBar = new ScrollBarV(Qt::Horizontal, this);
     zoomViewScrollBar->setMaximumHeight(maxSz);
-    zoomViewScrollBar->setToolTip("视窗放大系数\n1000(全部)..1");
+    zoomViewScrollBar->setToolTip("视窗放大系数\n1..100(全部)");
     zoomViewScrollBar->setMinimum(1);
-    zoomViewScrollBar->setMaximum(1000);
+    zoomViewScrollBar->setMaximum(100);
+    zoomViewScrollBar->fmt = "视区占%d%%";
 
-    rScrollBar = new QScrollBar(Qt::Horizontal, this);
+    rScrollBar = new ScrollBarV(Qt::Horizontal, this);
     rScrollBar->setMaximumHeight(maxSz);
     rScrollBar->setToolTip("纵切面前后移动");
     rScrollBar->setMinimum(0);
     rScrollBar->setMaximum(1000);
     rScrollBar->setPageStep(50);
 
-    headUpScrollBar = new QScrollBarV(Qt::Horizontal, this);
+    headUpScrollBar = new ScrollBarV(Qt::Horizontal, this);
     headUpScrollBar->fmt = "俯仰%d°";
     headUpScrollBar->setMaximumHeight(maxSz);
     headUpScrollBar->setToolTip("相机抬头角度\n 范围：-45..45");
@@ -256,11 +259,11 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
 
     layoutV1->addWidget(hScrollBar);
     layoutV1->addSpacing(scrollSpace);
-    layoutV1->addWidget(zoomViewScrollBar);
+    layoutV1->addWidget(rScrollBar);
 
     layoutV2->addWidget(headUpScrollBar);
     layoutV2->addSpacing(scrollSpace);
-    layoutV2->addWidget(rScrollBar);
+    layoutV2->addWidget(zoomViewScrollBar);
 
     frameV1->setLayout(layoutV1);
     frameV2->setLayout(layoutV2);
@@ -308,6 +311,15 @@ void SceneWin::resizeEvent(QResizeEvent *event)
     adjustPageStep();
 }
 
+
+void SceneWin::updateFieldRange()
+{
+    double w = G.cutField.field.width();
+    double h = G.cutField.field.height();
+    double depth = G.cutField.field.depth;
+
+}
+
 void SceneWin::adjustPageStep()
 {
     hScrollBar->setPageStep(width()/2);
@@ -321,7 +333,7 @@ void SceneWin::onDimModeTogggle(bool checked)
 
 void SceneWin::onViewTypeToggle(bool checked)
 {
-
+    //if (checked)
 }
 
 void SceneWin::onKeepDistToggle(bool checked)

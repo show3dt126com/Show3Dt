@@ -22,6 +22,7 @@
 
 // 地球尺寸
 #define EARTH_RPI   20037508.34
+// 单位米
 #define EARTH_R      6378136.999
 
 // 赤道上的度与米的转换
@@ -352,7 +353,9 @@ struct Field
     double depth;
 
     void merge(Field & f);
+    // 单位米
     double width();
+    // 单位米
     double height();
 };
 

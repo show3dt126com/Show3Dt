@@ -9,7 +9,7 @@
 #include <QCheckBox>
 #include <QLineEdit>
 
-#include "QScrollBarV.h"
+#include "ScrollBarV.h"
 #include "BBS.h"
 
 class SceneWin : public QWidget
@@ -40,22 +40,22 @@ public:
     QPushButton * cameraMidBut;
 
     // 视窗区域移动
-    QScrollBar * vScrollBar;
-    QScrollBar * hScrollBar;
+    ScrollBarV * vScrollBar;
+    ScrollBarV * hScrollBar;
 
     // 深度，俯视图用，侧视图3D模式用
-    QScrollBar * dScrollBar;
+    ScrollBarV * dScrollBar;
     // 纵切，侧视图用，侧视图3D模式用
-    QScrollBar * rScrollBar;
+    ScrollBarV * rScrollBar;
 
     // 抬头角度，-45..45
-    QScrollBarV * headUpScrollBar;
+    ScrollBarV * headUpScrollBar;
     // 深度放大，100..1000
-    QScrollBar * zoomDepthScrollBar;
+    ScrollBarV * zoomDepthScrollBar;
     // 视窗放大  1000..1
-    QScrollBar * zoomViewScrollBar;
+    ScrollBarV * zoomViewScrollBar;
     // 旋转视窗 0..360
-    QScrollBarV * turnScrollBar;
+    ScrollBarV * turnScrollBar;
 
     // 显示一些重要信息的文字框
     QLineEdit * info1;
@@ -65,6 +65,9 @@ public:
     void setArea(int w, int h);
     void setValue(int x, int y);
     void adjustPageStep();
+
+    // 刷新声场区域的范围显示
+    void updateFieldRange();
 
     BBSBase bbsUser;
 

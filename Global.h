@@ -75,8 +75,11 @@ public:
     // 程序启动时创建一个新的空的，可以打开已有的
     Scheme scheme;
 
-    // 数据场区域(根据界面指定是合并场区范围，或者选择某场区为代表)，要切去的部分的参数
+    // 数据场区域(根据界面指定是合并场区范围，或者选择某场区为代表);
+    // 要切去的部分的参数
+    // 中心点为世界坐标系原点
     CutField cutField;
+
     // CutField 的 Field 是 CubeModelMan 的所有Cube 的
     CubeModel * cutFiledUseCubeModel;
 
@@ -100,6 +103,9 @@ public:
 
     // 当前显示的视图类型
     EViewType viewType;
+
+    // 当前的
+    ViewPot viewPot;
 
     LookDownControl * lookDownCtrl;
     LookIso3DCamera * lookIso3DCmr;

@@ -71,7 +71,7 @@ SOURCES += \
     SchemeSaveDlg.cpp \
     SceneWin.cpp \
     PythonIf.cpp \
-    QScrollBarV.cpp
+    ScrollBarV.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -109,7 +109,7 @@ HEADERS += \
     SchemeSaveDlg.h \
     SceneWin.h \
     PythonIf.h \
-    QScrollBarV.h
+    ScrollBarV.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \
