@@ -37,6 +37,9 @@ int Global::init()
     showDem = false;
     showLine = true;
 
+    viewPot.viewType = EVT_Side;
+    viewPot.dimMode = EDM_2D;
+
     PythonIf::initPython();
 
     return 1;

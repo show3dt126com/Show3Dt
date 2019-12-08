@@ -1,5 +1,6 @@
 #include "Defines.h"
 #include "ToolBox.h"
+#include <math.h>
 
 int compareColorKey( const void *arg1, const void *arg2)
 {
@@ -140,10 +141,19 @@ double Field::height()
     return distBetween2LB(lon0, lat0, lon0, lat1);
 }
 
+double Field::radius()
+{
+    double fw = width();
+    double fh = height();
+    double r = sqrt(fw*fw + fh*fh)/2;
+    return r;
+}
+
 void CutField::setField(Field field)
 {
     this->field = field;
     centerP.lat = field.lat0/2.0 + field.lat1/2.0;
     centerP.lon = field.lon0/2.0 + field.lon1/2.0;
     centerP.height = 0.0;
+    fieldRadius = field.radius();
 }

@@ -21,9 +21,11 @@ enum EBBSVarty
     // 3D 显示参数
     EVB_3DValue,
     // 视图切换
-    EBV_View,
+    EBV_ViewType,
+    // 2D/3D模式变化
+    EBV_DimMode,
     // 颜色映射
-    EBV_Color,
+    EBV_ColorMap,
     // 数据模型变化，
     EBV_Data,
     //

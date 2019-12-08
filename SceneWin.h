@@ -35,6 +35,7 @@ public:
 
     // 相机跟随
     QPushButton * keepDistToggle;
+    bool keepDist;
 
     // 相机俯仰角调整
     QPushButton * cameraMidBut;
@@ -45,8 +46,14 @@ public:
 
     // 深度，俯视图用，侧视图3D模式用
     ScrollBarV * dScrollBar;
+
+    // 相机上下或者前后移动
+    ScrollBarV * cameraVScrollBar;
+    ScrollBarV * cameraHScrollBar;
+
     // 纵切，侧视图用，侧视图3D模式用
-    ScrollBarV * rScrollBar;
+    ScrollBarV * cutRadiusScrollBar;
+    ScrollBarV * cutAngleScrollBar;
 
     // 抬头角度，-45..45
     ScrollBarV * headUpScrollBar;
@@ -66,8 +73,14 @@ public:
     void setValue(int x, int y);
     void adjustPageStep();
 
+    void updateScrollToolTip();
+
     // 刷新声场区域的范围显示
     void updateFieldRange();
+    // 根据滚动条控件的变化，刷新相机参数
+    void calculateCameraPos();
+    // 根据相机参数变化刷新滚动条等显示
+    void updateFromCameraPos();
 
     BBSBase bbsUser;
 
@@ -76,26 +89,23 @@ signals:
 public slots:
     void onViewAreaVScroll(int v);
     void onViewAreaHScroll(int v);
+
     void onViewDepthScroll(int v);
 
-    void onViewZoomIn();
-    void onViewZoomOut();
+    void onCutRadiusScroll(int v);
+    void onCutAngleScroll(int v);
 
-    void onTurnClock();
-    void onTurnAClock();
+    void onCameraTurnScroll(int v);
+    void onCameraVScroll(int v);
+    void onCameraHScroll(int v);
 
-    void onForward();
-    void onBackward();
+    void onHeadUpScroll(int v);
+    void onZoomDepthScroll(int v);
+    void onZoomViewScroll(int v);
 
-    void onCameraUp();
-    void onCameraDown();
-    void onCameraMid();
-
-    void onZoomInDepth();
-    void onZoomOutDepth();
-
+    void onCameraPitchMid();
     void onDimModeTogggle(bool checked);
-    void onViewTypeToggle(bool checked);
+    void onViewTypeTogle(bool checked);
     void onKeepDistToggle(bool checked);
 
 public slots:

@@ -101,9 +101,6 @@ public:
     Scene * scene;
     SceneWin * sceneWin;
 
-    // 当前显示的视图类型
-    EViewType viewType;
-
     // 当前的
     ViewPot viewPot;
 

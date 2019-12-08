@@ -120,11 +120,9 @@ enum EViewType
     // 2D模式下，高度固定，在水平面上移动；
     // 3D模式下有俯仰角；
     // 3D模式下，高度在水面(+0.1倍深度)以上，2倍深度一下范围移动。
-    EVT_Down2D = 11,
+    EVT_Down = 11,
     // 侧视图2D，相机水平，有偏转角，显示垂直的切面；3D模式下有俯仰角；
-    EVT_Side2D = 12,
-    // 等值体切空3D，相机任意移动和旋转
-    EVT_Iso3D = 13
+    EVT_Side = 12,
 };
 
 // 维度模式参数，控制模型生成 dimension
@@ -357,6 +355,8 @@ struct Field
     double width();
     // 单位米
     double height();
+    // 半径，米
+    double radius();
 };
 
 // 长方体声场区域的大小，被切去的部分
@@ -372,6 +372,10 @@ struct CutField
     void setField(Field field);
     // 立方体场景中的两个顶点，决定了整个区域，经纬度
     Field field;
+    // 为了简化，俯视图的移动范围，仅依赖field参数
+    // 不随视窗角和相机中心点而变化,单位米。
+    double fieldRadius;
+
     // 水面中心点，经纬度，如果界面指定用合并场区范围，则为合并后的中心点
     // 如果界面指定采用某场区为代表，则采用代表场区的中心点
     LBH centerP;
@@ -403,17 +407,18 @@ struct CameraPar
     double x, y, z;
     // 俯仰角，度。相机抬头的角度，不抬头为0。
     double pitch;
-    // 偏转角，度。侧视图模式下，相机的朝向。垂直切开的角度。
+    // 偏转角，度。俯视图模式下仅滚动无偏转。
+    // 侧视图模式下，相机的朝向。垂直切开的角度。
     double yaw;
     // 滚动角，度。俯视图模式下，视窗的角度。侧视图为0。
     double roll;
-    // 视窗尺寸，米，othro
-    double viewW, viewH;
-
+    // 视窗尺寸，米。viewH根据当前视窗比例尺计算。
+    double viewW;
 };
 
-// 视景参数，相机的参数
-// 视景参数，相机的参数
+// 视景点参数，包含当前显示的全部参数：
+// 相机的参数
+//
 struct ViewPot
 {
     // 当前显示的第几个 cube的数据，每次只能选择一个显示
