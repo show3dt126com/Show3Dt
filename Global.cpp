@@ -21,7 +21,7 @@ Global::Global()
 
 Global::~Global()
 {
-    PythonIf::finalizePython();
+    //PythonIf::finalizePython();
 }
 
 int Global::init()
@@ -40,7 +40,7 @@ int Global::init()
     viewPot.viewType = EVT_Side;
     viewPot.dimMode = EDM_2D;
 
-    PythonIf::initPython();
+    //PythonIf::initPython();
 
     return 1;
 }

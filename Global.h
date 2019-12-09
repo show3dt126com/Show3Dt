@@ -7,7 +7,7 @@
 #include <QList>
 #include <QSettings>
 
-#include "PythonIf.h"
+//#include "PythonIf.h"
 #include "Defines.h"
 #include "Scene.h"
 #include "Shader.h"

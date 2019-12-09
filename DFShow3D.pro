@@ -15,9 +15,11 @@ INCLUDEPATH += .\FreeType
 LIBS += -L$$PWD\FreeType -lfreetype
 DESTDIR = D:\DFShow3DRun
 
-INCLUDEPATH += -I  "C:/Program Files/Python37/include"
+#INCLUDEPATH += -I  "C:/Program Files/Python37/include"
+#LIBS += -L"C:/Program Files/Python37/libs" -lpython37
+#INCLUDEPATH += -I "D:\Python3.7\include"
+#LIBS += -L"D:\Python3.7\libs" -lpython37
 
-LIBS += -L"C:/Program Files/Python37/libs" -lpython37
 
 #QMAKE_CXXFLAGS -= -Wunused-parameter -Wconversion -Wunused-variable
 QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-unused-variable -Wno-return-type -Wno-switch -Wno-sign-compare
@@ -70,7 +72,6 @@ SOURCES += \
     Scene.cpp \
     SchemeSaveDlg.cpp \
     SceneWin.cpp \
-    PythonIf.cpp \
     ScrollBarV.cpp
 
 HEADERS += \
@@ -108,7 +109,6 @@ HEADERS += \
     SideEye.h \
     SchemeSaveDlg.h \
     SceneWin.h \
-    PythonIf.h \
     ScrollBarV.h
 FORMS += \
         MainWindow.ui \
