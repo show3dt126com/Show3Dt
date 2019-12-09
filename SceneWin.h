@@ -48,8 +48,7 @@ public:
     ScrollBarV * dScrollBar;
 
     // 相机上下或者前后移动
-    ScrollBarV * cameraVScrollBar;
-    ScrollBarV * cameraHScrollBar;
+    ScrollBarV * cameraForwardScrollBar;
 
     // 纵切，侧视图用，侧视图3D模式用
     ScrollBarV * cutRadiusScrollBar;
@@ -96,8 +95,7 @@ public slots:
     void onCutAngleScroll(int v);
 
     void onCameraTurnScroll(int v);
-    void onCameraVScroll(int v);
-    void onCameraHScroll(int v);
+    void onCameraForwardScroll(int v);
 
     void onHeadUpScroll(int v);
     void onZoomDepthScroll(int v);
