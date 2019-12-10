@@ -33,6 +33,17 @@
 //PyRun_SimpleString("sys.path.append('./')");
 //PyRun_SimpleString("sys.argv = ['python.py']");
 
+// 不能 Debug 的问题，改名： C:\Program Files\Python37A 后
+// Qt kit 的调试器 正常，可以进入调试状态
+// python37.lib 改名 python37d.lib
+// 将  C:\Program Files\Python37 复制到 C:\Program Files\Python3.7\include libs
+
+//win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Python3.7/libs/ -lpython37
+//else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Python3.7/libs/ -lpython37d
+
+//INCLUDEPATH += $$PWD/../Python3.7/include
+//DEPENDPATH += $$PWD/../Python3.7/include
+
 class PythonIf
 {
 public:

@@ -382,9 +382,6 @@ struct CutField
     // 合并或选定场区的对角线，作为俯视图移动区域，侧视图水平移动区域大小
     // 移动范围的中心点为过场区中心点的垂直交点
     int maxHMoveRange;
-    // 相机在俯视图，3D模式下，可俯仰一定的角度，如-60~+60°
-    // 需要换算到相机参数的pitch
-    int pitch;
 
     // 切去顶部部分
     double hCutDepth;
@@ -429,6 +426,8 @@ struct ViewPot
     EDimMode dimMode;
     // 场区以及切面参数
     CutField cutField;
+    // 深度放大系数，不放大为：1.0
+    double zoomDepth;
     // 相机参数
     CameraPar cameraPar;
     // 文字说明

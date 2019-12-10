@@ -72,7 +72,8 @@ SOURCES += \
     Scene.cpp \
     SchemeSaveDlg.cpp \
     SceneWin.cpp \
-    ScrollBarV.cpp
+    ScrollBarV.cpp \
+    PythonIf.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -109,7 +110,8 @@ HEADERS += \
     SideEye.h \
     SchemeSaveDlg.h \
     SceneWin.h \
-    ScrollBarV.h
+    ScrollBarV.h \
+    PythonIf.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \
@@ -133,3 +135,9 @@ DISTFILES += \
     Design.txt \
     Python/kde.py
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Python3.7/libs/ -lpython37
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Python3.7/libs/ -lpython37d
+
+INCLUDEPATH += $$PWD/../Python3.7/include
+DEPENDPATH += $$PWD/../Python3.7/include

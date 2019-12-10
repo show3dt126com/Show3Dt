@@ -40,7 +40,8 @@ int Global::init()
     viewPot.viewType = EVT_Side;
     viewPot.dimMode = EDM_2D;
 
-    //PythonIf::initPython();
+
+    PythonIf::initPython();
 
     return 1;
 }

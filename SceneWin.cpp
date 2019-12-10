@@ -11,30 +11,6 @@
 /*
  SceneWin 是 Scene 窗口外围包裹的操作窗口。
  外围的小操控是各种操作安装、滚动条、信息内容
-
-┌────────────────────────────────────────────────────────┐
-│ Scene Caption: some static information                 │
-├─────────────────────────────────────────────────┬──┬┬──┤
-│                                                 │  ││  │
-│                                                 │  ││  │
-│                                                 │  ││  │
-│                                                 │  ││  │
-│                Scene                            │  ││  │
-│                                                 │  ││  │
-│                                                 ├──┴┴──┤
-│                                                 │  B   │
-│                                                 ├──────┤
-│                                                 │  B   │
-│                                                 ├──────┤
-│                                                 │  B   │
-├──────────────┬────────────────┬─────┬─────┬─────┼──────┤
-│              │                │     │     │     │      │
-├──────────────┴────────────────┤  A  │  A  │  A  │  C   │
-├──────────────┬────────────────┤     │     │     │      │
-│              │                │     │     │     │      │
-└──────────────┴────────────────┴─────┴─────┴─────┴──────┘
-
-
 ┌───────────────────────────────────────────────────────┐
 │ Scene Caption: some static information                │
 ├─────────────────────────────────────────────────┬──┬──┤
@@ -144,9 +120,9 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     zoomDepthScrollBar = new ScrollBarV(Qt::Vertical, this);
     zoomDepthScrollBar->setMaximumWidth(maxSz);
     zoomDepthScrollBar->fmt = "深度放大%d%%";
-    zoomDepthScrollBar->setToolTip("深度放大系数\n100%..5000%");
+    zoomDepthScrollBar->setToolTip("深度放大系数\n100%..1000%");
     zoomDepthScrollBar->setMinimum(100);
-    zoomDepthScrollBar->setMaximum(5000);
+    zoomDepthScrollBar->setMaximum(1000);
     zoomDepthScrollBar->setPageStep(100);
 
     turnScrollBar = new ScrollBarV(Qt::Vertical, this);
@@ -363,6 +339,11 @@ void SceneWin::updateScrollToolTip()
         vScrollBar->fmt = "视窗前后位置%d";
         hScrollBar->fmt = "视窗左右位置%d";
         dScrollBar->fmt = "深度切面%d";
+
+        int camOff = G.viewPot.cutField.field.depth*0.1;
+        cameraForwardScrollBar->setMinimum(-camOff);
+        cameraForwardScrollBar->setMaximum(camOff * 11);
+        cameraForwardScrollBar->setPageStep(camOff/10);
     }
     // EVT_Side
     else if (G.viewPot.viewType == EVT_Side)
@@ -371,10 +352,15 @@ void SceneWin::updateScrollToolTip()
         hScrollBar->setToolTip("视区水平方向移动");
 
         dScrollBar->setToolTip("深度切面上下移动");
-        cameraForwardScrollBar->setToolTip("本操作在侧视图无效");
+        cameraForwardScrollBar->setToolTip("相机前后移动");
         vScrollBar->fmt = "视窗上下位置%d";
         hScrollBar->fmt = "视窗水平位置%d";
         dScrollBar->fmt = "深度切面%d";
+
+        int camOff = G.viewPot.cutField.fieldRadius*1.1;
+        cameraForwardScrollBar->setMinimum(-camOff);
+        cameraForwardScrollBar->setMaximum(camOff);
+        cameraForwardScrollBar->setPageStep(G.viewPot.cutField.fieldRadius/100);
     }
 }
 
@@ -448,16 +434,93 @@ void SceneWin::calculateCameraPos()
         G.viewPot.cameraPar.x = v * sin(G.viewPot.cameraPar.roll*D2R);
         G.viewPot.cameraPar.z = v * cos(G.viewPot.cameraPar.roll*D2R);
         G.viewPot.cameraPar.y = camDist;
+        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
+
+        G.viewPot.cameraPar.pitch = head;
+        G.viewPot.cameraPar.yaw = 0.0;
+        G.viewPot.cameraPar.roll = cutA;
+
+        G.viewPot.zoomDepth = 0.01 * zoomD;
+
+        G.viewPot.cutField.hCutDepth = d;
+        G.viewPot.cutField.vCutAngle = cutA;
+        G.viewPot.cutField.vCutPoint.y = 0.0;
+        G.viewPot.cutField.vCutPoint.x = cutR*cos(cutA*D2R);
+        G.viewPot.cutField.vCutPoint.z = cutR*sin(cutA*D2R);
     }
     // EVT_Side
     else
     {
-        G.viewPot.cameraPar.y = v;
+        G.viewPot.cameraPar.x = v * sin(G.viewPot.cameraPar.roll*D2R);
+        G.viewPot.cameraPar.z = v * cos(G.viewPot.cameraPar.roll*D2R);
+        G.viewPot.cameraPar.y = camDist;
+        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
+
+        G.viewPot.cameraPar.pitch = head;
+        G.viewPot.cameraPar.yaw = 0.0;
+        G.viewPot.cameraPar.roll = cutA;
+
+        G.viewPot.zoomDepth = 0.01 * zoomD;
+
+        G.viewPot.cutField.hCutDepth = d;
+        G.viewPot.cutField.vCutAngle = cutA;
+        G.viewPot.cutField.vCutPoint.y = 0.0;
+        G.viewPot.cutField.vCutPoint.x = cutR*cos(cutA*D2R);
+        G.viewPot.cutField.vCutPoint.z = cutR*sin(cutA*D2R);
     }
 }
 
 void SceneWin::updateFromCameraPos()
 {
+    int v = 0;
+    int h = 0;
+    int r = 0;
+    int turn = 0;
+    int camDist = 0;
+
+    int d = 0;
+    int cutR = 0;
+    int cutA = 0;
+
+    int head = 0;
+    int zoomD = 0;
+    int zoomView = 0;
+
+    // EVT_Down
+    if (G.viewPot.viewType == EVT_Down)
+    {
+        v = 0;
+        h = 0;
+        r = 0;
+        turn = 0;
+        camDist = G.viewPot.cameraPar.y;
+
+        d = G.viewPot.cutField.hCutDepth;
+        cutR = 0;
+        cutA = G.viewPot.cameraPar.roll;
+
+        head = G.viewPot.cameraPar.roll;
+        zoomD = G.viewPot.cameraPar.roll;
+        zoomView = 0;
+    }
+    // EVT_Side
+    else
+    {
+
+    }
+    vScrollBar->setValue(v);
+    hScrollBar->setValue(h);
+    cutRadiusScrollBar->setValue(r);
+    turnScrollBar->setValue(turn);
+    cameraForwardScrollBar->setValue(camDist);
+
+    dScrollBar->setValue(d);
+    cutRadiusScrollBar->setValue(cutR);
+    cutAngleScrollBar->setValue(cutA);
+
+    headUpScrollBar->setValue(head);
+    zoomDepthScrollBar->setValue(zoomD);
+    zoomViewScrollBar->setValue(zoomView);
 
 }
 
