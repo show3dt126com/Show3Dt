@@ -19,8 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //ui->comboBoxParts->setCurrentIndex(1);
-    ui->comboBoxParts->setCurrentIndex(0);
+    ui->tabWidgetParts->setCurrentIndex(0);
 
     // Cube 列表的各列属性的宽度
     int cubeInfoColWs[] =
@@ -391,13 +390,6 @@ void MainWindow::on_pushButtonDelDataSet_clicked()
 void MainWindow::on_pushButtonShow3DView_clicked()
 {
     G.initSence();
-}
-
-void MainWindow::on_comboBoxParts_activated(int index)
-{
-    // 利用 ui 编辑器创建了 相关的信号槽实现，下面的代码不需要了
-    //ui->stackedWidget->setCurrentIndex(index);
-    //ui->stackedWidgetParts->setCurrentIndex(index);
 }
 
 void MainWindow::on_actionExitApp_triggered()

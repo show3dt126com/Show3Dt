@@ -56,7 +56,6 @@ private slots:
     void on_actionOpenProject_triggered();
     void on_actionSaveProject_triggered();
     void on_actionSaveAsProject_triggered();
-    void on_comboBoxParts_activated(int index);
 
     void on_actionSaveLayout1_triggered();
     void on_actionUserLayout1_triggered();

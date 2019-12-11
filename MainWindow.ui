@@ -227,267 +227,209 @@
         <number>5</number>
        </property>
        <item>
-        <widget class="QFrame" name="frame_4">
-         <property name="minimumSize">
-          <size>
-           <width>166</width>
-           <height>0</height>
-          </size>
-         </property>
+        <widget class="QTabWidget" name="tabWidgetParts">
          <property name="maximumSize">
           <size>
-           <width>166</width>
+           <width>175</width>
            <height>16777215</height>
           </size>
          </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
+         <property name="tabPosition">
+          <enum>QTabWidget::West</enum>
          </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+         <property name="currentIndex">
+          <number>1</number>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QComboBox" name="comboBoxParts">
-            <item>
-             <property name="text">
-              <string>场区数据集管理</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>声源数据管理</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>视景数据管理</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame">
-            <property name="frameShape">
-             <enum>QFrame::Box</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <property name="leftMargin">
-              <number>11</number>
-             </property>
-             <property name="topMargin">
-              <number>7</number>
-             </property>
-             <property name="rightMargin">
-              <number>7</number>
-             </property>
-             <property name="bottomMargin">
-              <number>7</number>
-             </property>
-             <item>
-              <widget class="QStackedWidget" name="stackedWidget">
-               <property name="currentIndex">
-                <number>0</number>
-               </property>
-               <widget class="QWidget" name="pageDataSetProc">
-                <widget class="QPushButton" name="pushButtonAddDataSet">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>10</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>添加场区数据集</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButtonDelDataSet">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>50</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>删除场区数据集</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButtonShowDataSet">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>90</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>显示选择数据集</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButtonShow3DView">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>130</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>打开3D视图</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="label">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>180</y>
-                   <width>81</width>
-                   <height>81</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="pixmap">
-                  <pixmap resource="Shader.qrc">:/ZoomIn.png</pixmap>
-                 </property>
-                 <property name="scaledContents">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="pageSoundSrcProc">
-                <widget class="QPushButton" name="pushButtonAddSource">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>10</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>添加声源数据</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButtonDelSource">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>50</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>删除声源数据</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButtonSeeSource">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>90</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>声源居中显示</string>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="pageViewPotProc">
-                <widget class="QPushButton" name="pushButtonAddViewPot">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>10</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>添加视景点</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButton_6">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>50</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>删除视景点</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButton_2">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>90</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>存储当前视景</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButtonModViewPot">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>130</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>修改视景点</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButton">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>170</y>
-                   <width>131</width>
-                   <height>28</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>切换到视景点</string>
-                 </property>
-                </widget>
-               </widget>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QWidget" name="tabWidgetPageDataSet" native="true">
+          <attribute name="title">
+           <string>场区数据集</string>
+          </attribute>
+          <widget class="QPushButton" name="pushButtonAddDataSet">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>添加场区数据集</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButtonDelDataSet">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>删除场区数据集</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButtonShowDataSet">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>显示选择数据集</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButtonShow3DView">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>130</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>打开3D视图</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>180</y>
+             <width>81</width>
+             <height>81</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="Shader.qrc">:/ZoomIn.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tabWidgetPageSoundSource" native="true">
+          <attribute name="title">
+           <string>声源</string>
+          </attribute>
+          <widget class="QPushButton" name="pushButtonAddSource">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>添加声源数据</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButtonDelSource">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>删除声源数据</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButtonSeeSource">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>声源居中显示</string>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tabWidgetPageViewPot" native="true">
+          <attribute name="title">
+           <string>视景点</string>
+          </attribute>
+          <widget class="QPushButton" name="pushButtonAddViewPot">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>添加视景点</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButton_6">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>删除视景点</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButton_2">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>存储当前视景</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButtonModViewPot">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>130</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>修改视景点</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButton">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>170</y>
+             <width>131</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>切换到视景点</string>
+           </property>
+          </widget>
+         </widget>
         </widget>
        </item>
        <item>
@@ -499,7 +441,7 @@
           <enum>QFrame::Raised</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="pageDataSetCont">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1002,38 +944,5 @@
  <resources>
   <include location="Shader.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>comboBoxParts</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>stackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>86</x>
-     <y>100</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>112</x>
-     <y>131</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>comboBoxParts</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>stackedWidgetParts</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>133</x>
-     <y>95</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>232</x>
-     <y>89</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -48,7 +48,7 @@ public:
     ScrollBarV * dScrollBar;
 
     // 相机上下或者前后移动
-    ScrollBarV * cameraForwardScrollBar;
+    ScrollBarV * forwardScrollBar;
 
     // 纵切，侧视图用，侧视图3D模式用
     ScrollBarV * cutRadiusScrollBar;
@@ -76,10 +76,17 @@ public:
 
     // 刷新声场区域的范围显示
     void updateFieldRange();
+
+
     // 根据滚动条控件的变化，刷新相机参数
     void calculateCameraPos();
+    // 根据滚动条计算切空参数
+    void calculateCutFileld();
+
     // 根据相机参数变化刷新滚动条等显示
     void updateFromCameraPos();
+    // 根据切空参数变化，刷新滚动条等显示
+    void updateFromCutField();
 
     BBSBase bbsUser;
 

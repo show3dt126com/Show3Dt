@@ -424,10 +424,10 @@ struct ViewPot
     EViewType viewType;
     // 2D、3D选择
     EDimMode dimMode;
-    // 场区以及切面参数
-    CutField cutField;
     // 深度放大系数，不放大为：1.0
     double zoomDepth;
+    // 场区以及切面参数
+    CutField cutField;
     // 相机参数
     CameraPar cameraPar;
     // 文字说明
