@@ -131,6 +131,7 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     turnScrollBar->setToolTip("旋转视窗\n0(北)..359");
     turnScrollBar->setMinimum(0);
     turnScrollBar->setMaximum(359);
+    turnScrollBar->setPageStep(10);
     turnScrollBar->setStatusTip("159");
 
     forwardScrollBar = new ScrollBarV(Qt::Vertical, this);
@@ -294,9 +295,10 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addWidget(spliterH, 0,1);
     layout->addLayout(layoutB, 1,0,1,2);
 
-    updateScrollToolTip();
 
     scene->show();
+
+    connect(conerButton, SIGNAL(pressed()), this, SLOT(onConor()));
 
     connect(viewTypeToggle, SIGNAL(toggled(bool)), this, SLOT(onViewTypeTogle(bool)));
     connect(dimModeToggle, SIGNAL(toggled(bool)), this, SLOT(onDimModeTogggle(bool)));
@@ -319,6 +321,28 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
 
     setArea(10000, 10000);
     setValue(500, 500);
+
+    Field field;
+    field.lat0 = 30;
+    field.lat1 = 32;
+    field.lon0 = 115;
+    field.lon1 = 117;
+    G.viewPot.cutField.setField(field);
+
+    G.viewPot.viewType = EVT_Down;
+    G.viewPot.dimMode = EDM_2D;
+    G.viewPot.zoomDepth = 1.0;
+    G.viewPot.cameraPar.x = 0;
+    G.viewPot.cameraPar.y = 0;
+    G.viewPot.cameraPar.z = 0;
+    G.viewPot.cameraPar.yaw = 0;
+    G.viewPot.cameraPar.roll = 0;
+    G.viewPot.cameraPar.pitch = 0;
+
+    updateScrollToolTip();
+    updateFieldRange();
+    updateFromCameraPos();
+    updateFromCutField();
 }
 
 void SceneWin::resizeEvent(QResizeEvent *event)
@@ -406,6 +430,12 @@ void SceneWin::onKeepDistToggle(bool checked)
         keepDist = true;
 }
 
+void SceneWin::onConor()
+{
+    updateFromCameraPos();
+    updateFromCutField();
+}
+
 void SceneWin::onCameraPitchMid()
 {
     headUpScrollBar->setValue(
@@ -416,112 +446,98 @@ void SceneWin::calculateCameraPos()
 {
     int v = vScrollBar->value();
     int h = hScrollBar->value();
-    int d = dScrollBar->value();
 
-    int turn = turnScrollBar->value();
+    int t = turnScrollBar->value();
     int camDist = forwardScrollBar->value();
-
     int head = headUpScrollBar->value();
+
     int zoomView = zoomViewScrollBar->value();
+    double zoomD = zoomDepthScrollBar->value() / 100.0;
 
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
-        G.viewPot.cameraPar.roll = turn;
-        G.viewPot.cameraPar.x = v * sin(G.viewPot.cameraPar.roll*D2R);
-        G.viewPot.cameraPar.z = v * cos(G.viewPot.cameraPar.roll*D2R);
+        G.viewPot.cameraPar.x = h*cos(t*D2R) + v*sin(t*D2R);
+        G.viewPot.cameraPar.z = -h*sin(t*D2R) + v*cos(t*D2R);
         G.viewPot.cameraPar.y = - camDist;
-        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
 
-        G.viewPot.cameraPar.pitch = head;
+        G.viewPot.cameraPar.roll = t;
+        G.viewPot.cameraPar.pitch = -90 + head;
         G.viewPot.cameraPar.yaw = 0.0;
-        //G.viewPot.cameraPar.roll = cutA;
 
-        //G.viewPot.zoomDepth = 0.01 * zoomD;
+        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
+        G.viewPot.zoomDepth = 0.01 * zoomD;
     }
     // EVT_Side
     else
     {
-        G.viewPot.cameraPar.x = v * sin(G.viewPot.cameraPar.roll*D2R);
-        G.viewPot.cameraPar.z = v * cos(G.viewPot.cameraPar.roll*D2R);
-        G.viewPot.cameraPar.y = camDist;
-        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
+        double t1 = 90 - t;
+        G.viewPot.cameraPar.y = -v;
+        G.viewPot.cameraPar.x = camDist*cos(t1*D2R) + h*sin(t1*D2R);
+        G.viewPot.cameraPar.z = h*cos(t1*D2R) - camDist*sin(t1*D2R);
 
         G.viewPot.cameraPar.pitch = head;
-        G.viewPot.cameraPar.yaw = 0.0;
-        //G.viewPot.cameraPar.roll = cutA;
+        G.viewPot.cameraPar.yaw = t;
+        G.viewPot.cameraPar.roll = 0;
 
-        //G.viewPot.zoomDepth = 0.01 * zoomD;
+        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
+        G.viewPot.zoomDepth = 0.01 * zoomD;
     }
+    QString camS;
+    camS.sprintf("XYZ=%4.1lf %4.1lf %4.1lf RPY=%4.1lf %4.1lf %4.1lf WD=%4.1lf %4.1lf",
+                 G.viewPot.cameraPar.x, G.viewPot.cameraPar.y, G.viewPot.cameraPar.z,
+                 G.viewPot.cameraPar.roll, G.viewPot.cameraPar.pitch,
+                 G.viewPot.cameraPar.yaw, G.viewPot.cameraPar.viewW,
+                 G.viewPot.zoomDepth);
+    info1->setText(camS);
 }
 
 void SceneWin::updateFromCameraPos()
 {
-    int v = 0;
-    int h = 0;
-    int r = 0;
-    int turn = 0;
-    int camDist = 0;
-
-    int d = 0;
-    int cutR = 0;
-    int cutA = 0;
-
-    int head = 0;
-    int zoomD = 0;
-    int zoomView = 0;
-
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
-        v = 0;
-        h = 0;
-        r = 0;
-        turn = 0;
-        camDist = G.viewPot.cameraPar.y;
-
-        d = G.viewPot.cutField.hCutDepth;
-        cutR = 0;
-        cutA = G.viewPot.cameraPar.roll;
-
-        head = G.viewPot.cameraPar.roll;
-        zoomD = G.viewPot.cameraPar.roll;
-        zoomView = 0;
+        double t = G.viewPot.cameraPar.roll;
+        double v = G.viewPot.cameraPar.x*sin(t*D2R) + G.viewPot.cameraPar.z*cos(t*D2R);
+        double h = G.viewPot.cameraPar.x*cos(t*D2R) - G.viewPot.cameraPar.z*sin(t*D2R);
+        vScrollBar->setValue(v);
+        hScrollBar->setValue(h);
+        turnScrollBar->setValue(G.viewPot.cameraPar.roll);
+        forwardScrollBar->setValue(-G.viewPot.cameraPar.y);
+        headUpScrollBar->setValue(G.viewPot.cameraPar.pitch + 90);
     }
     // EVT_Side
     else
     {
+        vScrollBar->setValue(-G.viewPot.cameraPar.y);
+        turnScrollBar->setValue(G.viewPot.cameraPar.yaw);
+        headUpScrollBar->setValue(G.viewPot.cameraPar.pitch);
 
+        double t1 = 90 - G.viewPot.cameraPar.yaw;
+        double comDist = G.viewPot.cameraPar.x*cos(t1*D2R)
+                -G.viewPot.cameraPar.z*sin(t1*D2R);
+        double h = G.viewPot.cameraPar.x*sin(t1*D2R)
+                +G.viewPot.cameraPar.z*cos(t1*D2R);
+        hScrollBar->setValue(h);
+        forwardScrollBar->setValue(comDist);
+        G.viewPot.cameraPar.roll = 0;
     }
-    vScrollBar->setValue(v);
-    hScrollBar->setValue(h);
-    cutRadiusScrollBar->setValue(r);
-    turnScrollBar->setValue(turn);
-    forwardScrollBar->setValue(camDist);
-
-    dScrollBar->setValue(d);
-    cutRadiusScrollBar->setValue(cutR);
-    cutAngleScrollBar->setValue(cutA);
-
-    headUpScrollBar->setValue(head);
-    zoomDepthScrollBar->setValue(zoomD);
-    zoomViewScrollBar->setValue(zoomView);
-
+    zoomDepthScrollBar->setValue(G.viewPot.zoomDepth * 100.0);
+    zoomViewScrollBar->setValue(G.viewPot.cameraPar.viewW * 100
+                                / G.viewPot.cutField.fieldRadius);
 }
 
 void SceneWin::calculateCutFileld()
 {
     int cutR = cutRadiusScrollBar->value();
     int cutA = cutAngleScrollBar->value();
-    int zoomD = zoomDepthScrollBar->value();
-
-    int r = cutRadiusScrollBar->value();
+    int d = dScrollBar->value();
 
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
-        //G.viewPot.cutField.hCutDepth = d;
-        //G.viewPot.cutField.vCutAngle = cutA;
+        G.viewPot.cutField.hCutDepth = d;
+        G.viewPot.cutField.vCutAngle = cutA;
         G.viewPot.cutField.vCutPoint.y = 0.0;
         G.viewPot.cutField.vCutPoint.x = cutR*cos(cutA*D2R);
         G.viewPot.cutField.vCutPoint.z = cutR*sin(cutA*D2R);
@@ -529,20 +545,42 @@ void SceneWin::calculateCutFileld()
     // EVT_Side
     else
     {
-        //G.viewPot.cutField.hCutDepth = d;
-        //G.viewPot.cutField.vCutAngle = cutA;
+        G.viewPot.cutField.hCutDepth = d;
+        G.viewPot.cutField.vCutAngle = cutA;
         G.viewPot.cutField.vCutPoint.y = 0.0;
         G.viewPot.cutField.vCutPoint.x = cutR*cos(cutA*D2R);
         G.viewPot.cutField.vCutPoint.z = cutR*sin(cutA*D2R);
     }
-
+    QString cutS;
+    cutS.sprintf("D=%4.1lf A=%4.1lf XYZ=%4.1lf %4.1lf %4.1lf",
+                 G.viewPot.cutField.hCutDepth, G.viewPot.cutField.vCutAngle,
+                 G.viewPot.cutField.vCutPoint.x, G.viewPot.cutField.vCutPoint.y,
+                 G.viewPot.cutField.vCutPoint.z);
+    info2->setText(cutS);
 }
 
 void SceneWin::updateFromCutField()
 {
-
+    if (G.viewPot.viewType == EVT_Down)
+    {
+        double cutA = G.viewPot.cutField.vCutAngle;
+        double x = G.viewPot.cutField.vCutPoint.x;
+        double z = G.viewPot.cutField.vCutPoint.z;
+        cutRadiusScrollBar->setValue(sqrt(x*x + z*z));
+        cutAngleScrollBar->setValue(cutA);
+        dScrollBar->setValue(G.viewPot.cutField.hCutDepth);
+    }
+    // EVT_Side
+    else
+    {
+        double cutA = G.viewPot.cutField.vCutAngle;
+        double x = G.viewPot.cutField.vCutPoint.x;
+        double z = G.viewPot.cutField.vCutPoint.z;
+        cutRadiusScrollBar->setValue(sqrt(x*x + z*z));
+        cutAngleScrollBar->setValue(cutA);
+        dScrollBar->setValue(G.viewPot.cutField.hCutDepth);
+    }
 }
-
 
 void SceneWin::onViewAreaVScroll(int v)
 {
@@ -558,44 +596,59 @@ void SceneWin::onViewAreaHScroll(int v)
     bbsUser.sendBBSMessage(msg);
 }
 
-void SceneWin::onViewDepthScroll(int v)
+void SceneWin::onZoomDepthScroll(int v)
 {
+    calculateCameraPos();
+    BBSMessage msg(EBS_SceneWin, EBV_Camera);
+    bbsUser.sendBBSMessage(msg);
+}
+
+void SceneWin::onCameraTurnScroll(int v)
+{
+    calculateCameraPos();
     BBSMessage msg(EBS_SceneWin, EBV_Camera);
     bbsUser.sendBBSMessage(msg);
 }
 
 void SceneWin::onCameraForwardScroll(int v)
 {
-
+    calculateCameraPos();
+    BBSMessage msg(EBS_SceneWin, EBV_Camera);
+    bbsUser.sendBBSMessage(msg);
 }
 
-void SceneWin::onCutRadiusScroll(int v)
+void SceneWin::onViewDepthScroll(int v)
 {
-
-}
-
-void SceneWin::onCutAngleScroll(int v)
-{
-
-}
-
-void SceneWin::onHeadUpScroll(int v)
-{
-
-}
-void SceneWin::onZoomDepthScroll(int v)
-{
-
+    BBSMessage msg(EBS_SceneWin, EBV_Camera);
+    bbsUser.sendBBSMessage(msg);
 }
 
 void SceneWin::onZoomViewScroll(int v)
 {
-
+    calculateCutFileld();
+    BBSMessage msg(EBS_SceneWin, EBV_Camera);
+    bbsUser.sendBBSMessage(msg);
 }
 
-void SceneWin::onCameraTurnScroll(int v)
+void SceneWin::onCutRadiusScroll(int v)
 {
+    calculateCutFileld();
+    BBSMessage msg(EBS_SceneWin, EBV_HCut);
+    bbsUser.sendBBSMessage(msg);
+}
 
+void SceneWin::onCutAngleScroll(int v)
+{
+    calculateCutFileld();
+    BBSMessage msg(EBS_SceneWin, EBV_HCut);
+    bbsUser.sendBBSMessage(msg);
+}
+
+void SceneWin::onHeadUpScroll(int v)
+{
+    calculateCutFileld();
+    BBSMessage msg(EBS_SceneWin, EBV_HCut);
+    bbsUser.sendBBSMessage(msg);
 }
 
 void SceneWin::setArea(int w, int h)

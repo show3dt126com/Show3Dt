@@ -93,6 +93,7 @@ public:
 signals:
 
 public slots:
+
     void onViewAreaVScroll(int v);
     void onViewAreaHScroll(int v);
 
@@ -108,6 +109,7 @@ public slots:
     void onZoomDepthScroll(int v);
     void onZoomViewScroll(int v);
 
+    void onConor();
     void onCameraPitchMid();
     void onDimModeTogggle(bool checked);
     void onViewTypeTogle(bool checked);
