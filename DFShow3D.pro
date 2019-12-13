@@ -73,7 +73,9 @@ SOURCES += \
     SchemeSaveDlg.cpp \
     SceneWin.cpp \
     ScrollBarV.cpp \
-    PythonIf.cpp
+    PythonIf.cpp \
+    BubbleTip.cpp \
+    ShapeButton.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -111,7 +113,9 @@ HEADERS += \
     SchemeSaveDlg.h \
     SceneWin.h \
     ScrollBarV.h \
-    PythonIf.h
+    PythonIf.h \
+    BubbleTip.h \
+    ShapeButton.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \

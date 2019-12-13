@@ -8,6 +8,7 @@
 #include <QScrollBar>
 #include <QCheckBox>
 #include <QLineEdit>
+#include <ShapeButton.h>
 
 #include "ScrollBarV.h"
 #include "BBS.h"
@@ -18,6 +19,8 @@ class SceneWin : public QWidget
 public:
     explicit SceneWin(QWidget *parent = nullptr);
     Scene * scene;
+
+    ShapeButton * moveLeft, * moveRight, * moveUp, * moveBottom;
 
     //
     QPushButton * conerButton;

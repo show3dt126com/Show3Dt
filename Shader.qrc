@@ -26,5 +26,8 @@
         <file>ZKeepDist-HH.png</file>
         <file>ZKeepDist-V.png</file>
         <file>ZKeepDist-VH.png</file>
+        <file>ZButDown1.png</file>
+        <file>ZButDown2.png</file>
+        <file>ZButDown3.png</file>
     </qresource>
 </RCC>

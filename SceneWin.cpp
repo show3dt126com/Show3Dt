@@ -132,13 +132,11 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     turnScrollBar->setMinimum(0);
     turnScrollBar->setMaximum(359);
     turnScrollBar->setPageStep(10);
-    turnScrollBar->setStatusTip("159");
 
     forwardScrollBar = new ScrollBarV(Qt::Vertical, this);
     forwardScrollBar->setMaximumWidth(maxSz);
-    forwardScrollBar->setMinimum(0);
-    forwardScrollBar->setMaximum(1000);
-    forwardScrollBar->setPageStep(50);
+    forwardScrollBar->fmt = "相机位置%d";
+
 
     hScrollBar =new ScrollBarV(Qt::Horizontal, this);
     hScrollBar->setMaximumHeight(maxSz);
@@ -295,6 +293,11 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addWidget(spliterH, 0,1);
     layout->addLayout(layoutB, 1,0,1,2);
 
+    moveBottom = new ShapeButton("ZButDown", 68, 68, this);
+    moveBottom->setGeometry(100, 100, 168, 168);
+    moveBottom->show();
+    //moveRight, * moveUp, * moveBottom;
+
 
     scene->show();
 
@@ -327,6 +330,7 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     field.lat1 = 32;
     field.lon0 = 115;
     field.lon1 = 117;
+    field.depth = 15000;
     G.viewPot.cutField.setField(field);
 
     G.viewPot.viewType = EVT_Down;
@@ -353,6 +357,7 @@ void SceneWin::resizeEvent(QResizeEvent *event)
 
 void SceneWin::updateScrollToolTip()
 {
+
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
@@ -494,6 +499,8 @@ void SceneWin::calculateCameraPos()
 
 void SceneWin::updateFromCameraPos()
 {
+
+
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
