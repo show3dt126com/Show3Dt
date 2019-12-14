@@ -75,7 +75,8 @@ SOURCES += \
     ScrollBarV.cpp \
     PythonIf.cpp \
     BubbleTip.cpp \
-    ShapeButton.cpp
+    ShapeButton.cpp \
+    RotatePanel.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -115,7 +116,8 @@ HEADERS += \
     ScrollBarV.h \
     PythonIf.h \
     BubbleTip.h \
-    ShapeButton.h
+    ShapeButton.h \
+    RotatePanel.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \

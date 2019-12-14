@@ -12,6 +12,7 @@
 
 #include "ScrollBarV.h"
 #include "BBS.h"
+#include "RotatePanel.h"
 
 class SceneWin : public QWidget
 {
@@ -19,6 +20,8 @@ class SceneWin : public QWidget
 public:
     explicit SceneWin(QWidget *parent = nullptr);
     Scene * scene;
+
+    RotatePanel * rotatePanel;
 
     ShapeButton * moveLeft, * moveRight, * moveUp, * moveBottom;
 

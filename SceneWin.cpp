@@ -294,9 +294,10 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addLayout(layoutB, 1,0,1,2);
 
     moveBottom = new ShapeButton("ZButDown", 68, 68, this);
-    moveBottom->setGeometry(100, 100, 168, 168);
     moveBottom->show();
     //moveRight, * moveUp, * moveBottom;
+
+    rotatePanel = new RotatePanel(100,100, this);
 
 
     scene->show();
