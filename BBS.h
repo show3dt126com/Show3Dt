@@ -39,6 +39,8 @@ enum EBBSSource
     EBS_Scene,
     // 3D 窗口外窗口
     EBS_SceneWin,
+    // 旋转盘
+    EBS_RotatePanel,
     // 暂时不考虑相机操作
     EBS_Camera,
     // 主窗口菜单、列表界面
@@ -78,16 +80,22 @@ public slots:
     void onBBSMessage(BBSMessage bbsMsg);
 };
 
+typedef void (* ProcBBSMessageFun)(BBSMessage bbsMsg);
+
 class BBSBase : public QObject
 {
     Q_OBJECT
 public:
     explicit BBSBase(QObject *parent = nullptr);
-    void init();
+    void init(ProcBBSMessageFun proc=nullptr);
     void sendBBSMessage(BBSMessage bbsMsg);
+    ProcBBSMessageFun procBBSMessage;
 
 signals:
     void bbsMessage(BBSMessage bbsMsg);
+
+public slots:
+    int onBBSMessage(BBSMessage bbsMsg);
 };
 
 #endif // BBS_H

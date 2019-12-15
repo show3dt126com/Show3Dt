@@ -293,9 +293,14 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addWidget(spliterH, 0,1);
     layout->addLayout(layoutB, 1,0,1,2);
 
-    moveBottom = new ShapeButton("ZButDown", 68, 68, this);
+    moveBottom = new ShapeButton("ZButDown", 32, 32, this);
+    moveRight = new ShapeButton("ZButDown", 32, 32, this);
+    moveUp = new ShapeButton("ZButDown", 32, 32, this);
+    moveLeft = new ShapeButton("ZButDown", 32, 32, this);
     moveBottom->show();
-    //moveRight, * moveUp, * moveBottom;
+    moveRight->show();
+    moveUp->show();
+    moveLeft->show();
 
     rotatePanel = new RotatePanel(100,100, this);
 
@@ -313,6 +318,7 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     connect(hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onViewAreaHScroll(int)));
     connect(dScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onViewDepthScroll(int)));
 
+    connect(cutAngleScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onCutAngleScroll(int)));
     connect(cutRadiusScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onCutRadiusScroll(int)));
     connect(forwardScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onCameraForwardScroll(int)));
 
@@ -321,7 +327,19 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     connect(zoomViewScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onZoomViewScroll(int)));
     connect(turnScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onCameraTurnScroll(int)));
 
-    connect(&bbsUser, SIGNAL(bbsMessage(BBSMessage)), this, SLOT(onBBSMessage(BBSMessage)));
+    vScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    hScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    dScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    cutAngleScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    cutRadiusScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    forwardScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    headUpScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    zoomDepthScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    zoomViewScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    turnScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+
+    bbsUser.init();
+    connect(&G.bbs, SIGNAL(bbsMessage(BBSMessage)), this, SLOT(onBBSMessage(BBSMessage)));
 
     setArea(10000, 10000);
     setValue(500, 500);
@@ -354,6 +372,15 @@ void SceneWin::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     adjustPageStep();
+    rotatePanel->move(2, scene->height()-rotatePanel->height()-2);
+
+    moveBottom->move(scene->width()/2-moveBottom->width()/2,
+                     scene->height()-moveBottom->height()-2);
+    moveUp->move(scene->width()/2-moveUp->width()/2, 2);
+
+    moveLeft->move(2, scene->height()/2-moveLeft->height()/2);
+    moveRight->move(scene->width()-moveRight->width(),
+                    scene->height()/2-moveRight->height()/2);
 }
 
 void SceneWin::updateScrollToolTip()
@@ -500,8 +527,6 @@ void SceneWin::calculateCameraPos()
 
 void SceneWin::updateFromCameraPos()
 {
-
-
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
@@ -641,14 +666,14 @@ void SceneWin::onZoomViewScroll(int v)
 void SceneWin::onCutRadiusScroll(int v)
 {
     calculateCutFileld();
-    BBSMessage msg(EBS_SceneWin, EBV_HCut);
+    BBSMessage msg(EBS_SceneWin, EBV_VCut);
     bbsUser.sendBBSMessage(msg);
 }
 
 void SceneWin::onCutAngleScroll(int v)
 {
     calculateCutFileld();
-    BBSMessage msg(EBS_SceneWin, EBV_HCut);
+    BBSMessage msg(EBS_SceneWin, EBV_VCut);
     bbsUser.sendBBSMessage(msg);
 }
 
@@ -677,5 +702,9 @@ int SceneWin::onBBSMessage(BBSMessage bbsMsg)
 {
     if (bbsMsg.sender == &bbsUser)
         return 0;
+    if (bbsMsg.varity == EBV_Camera)
+        updateFromCameraPos();
+    if (bbsMsg.varity == EBV_VCut)
+        updateFromCutField();
     return 1;
 }

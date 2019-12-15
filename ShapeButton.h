@@ -7,7 +7,7 @@
 class ShapeButton : public QPushButton
 {
 public:
-    ShapeButton(QString shape, int x, int y, QWidget *parent = nullptr);
+    ShapeButton(QString shape, int w, int h, QWidget *parent = nullptr);
 
 };
 
