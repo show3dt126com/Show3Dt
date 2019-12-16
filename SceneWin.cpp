@@ -65,7 +65,8 @@ void setCheckBoxMinMaxIcon(QPushButton * w, int minSz, int maxSz, const char * i
     }
 }
 
-SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
+SceneWin::SceneWin(QWidget *parent)
+    : QWidget(parent), BBSMessageProc()
 {
     QGridLayout *layout = new QGridLayout();
     layout->setMargin(2);
@@ -304,7 +305,6 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
 
     rotatePanel = new RotatePanel(100,100, this);
 
-
     scene->show();
 
     connect(conerButton, SIGNAL(pressed()), this, SLOT(onConor()));
@@ -338,8 +338,8 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     zoomViewScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
     turnScrollBar->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    bbsUser.init();
-    connect(&G.bbs, SIGNAL(bbsMessage(BBSMessage)), this, SLOT(onBBSMessage(BBSMessage)));
+    bbsUser.init(this);
+    //connect(&G.bbs, SIGNAL(bbsMessage(BBSMessage)), this, SLOT(onBBSMessage(BBSMessage)));
 
     setArea(10000, 10000);
     setValue(500, 500);
@@ -667,16 +667,14 @@ void SceneWin::onHeadUpScroll(int v)
     bbsUser.sendBBSMessage(msg);
 }
 
-
-int SceneWin::onBBSMessage(BBSMessage bbsMsg)
+void SceneWin::procBBSMessage(BBSMessage bbsMsg)
 {
     if (bbsMsg.sender == &bbsUser)
-        return 0;
+        return;
     if (bbsMsg.varity == EBV_Camera)
         updateFromCameraPos();
     if (bbsMsg.varity == EBV_VCut)
         updateFromCutField();
-    return 1;
 }
 
 void SceneWin::setArea(int w, int h)

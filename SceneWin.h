@@ -14,7 +14,7 @@
 #include "BBS.h"
 #include "RotatePanel.h"
 
-class SceneWin : public QWidget
+class SceneWin : public QWidget, public BBSMessageProc
 {
     Q_OBJECT
 public:
@@ -83,7 +83,6 @@ public:
     // 刷新声场区域的范围显示
     void updateFieldRange();
 
-
     // 根据滚动条控件的变化，刷新相机参数
     void calculateCameraPos();
     // 根据滚动条计算切空参数
@@ -94,6 +93,8 @@ public:
     // 根据切空参数变化，刷新滚动条等显示
     void updateFromCutField();
 
+    // bbsUser 当接收到 G.BBS 信号时回调下面的函数
+    void procBBSMessage(BBSMessage bbsMsg) override;
     BBSBase bbsUser;
 
 signals:
@@ -120,9 +121,6 @@ public slots:
     void onDimModeTogggle(bool checked);
     void onViewTypeTogle(bool checked);
     void onKeepDistToggle(bool checked);
-
-public slots:
-    int onBBSMessage(BBSMessage bbsMsg);
 };
 
 #endif // SCENEWIN_H

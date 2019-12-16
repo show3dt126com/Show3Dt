@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     w.show();
 
     T.init();
+    T.testSceneWin();
 
     return a.exec();
 }

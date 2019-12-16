@@ -8,7 +8,7 @@
 #include "Global.h"
 
 RotatePanel::RotatePanel(int x, int y, QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), BBSMessageProc()
 {
     m_background = Qt::black;
     m_foreground = Qt::green;
@@ -31,20 +31,17 @@ RotatePanel::RotatePanel(int x, int y, QWidget *parent)
     cutA = 90;
     camA = 45;
 
-    bbsUser.init();
-    connect(&G.bbs, SIGNAL(bbsMessage(BBSMessage)), this, SLOT(onBBSMessage(BBSMessage)));
+    bbsUser.init(this);
 }
 
-int RotatePanel::onBBSMessage(BBSMessage bbsMsg)
+void RotatePanel::procBBSMessage(BBSMessage bbsMsg)
 {
-    //qDebug() << "RotatePanel::onBBSMessage" <<
     if (bbsMsg.sender == &bbsUser)
-        return 0;
+        return;
     if (bbsMsg.varity == EBV_Camera)
         updateFromCameraPos();
     if (bbsMsg.varity == EBV_VCut)
         updateFromCutField();
-    return 1;
 }
 
 void RotatePanel::updateFromCutField()

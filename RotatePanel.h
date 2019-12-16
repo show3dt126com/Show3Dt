@@ -7,7 +7,7 @@
 #include "ShapeButton.h"
 #include "BBS.h"
 
-class RotatePanel : public QWidget
+class RotatePanel : public QWidget, public BBSMessageProc
 {
     Q_OBJECT
 public:
@@ -20,7 +20,10 @@ public:
 
     int camA;
     int cutA;
+
+    // bbsUser 当接收到 G.BBS 信号时回调下面的函数
     BBSBase bbsUser;
+    void procBBSMessage(BBSMessage bbsMsg) override;
 
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -34,7 +37,6 @@ public:
     void drawIndicator(QPainter *painter);
     void drawCam(QPainter *painter);
 
-
 public:
     QColor m_background;
     QColor m_foreground;
@@ -44,8 +46,6 @@ public:
 signals:
 
 public slots:
-    int onBBSMessage(BBSMessage bbsMsg);
-
 };
 
 #endif // ROTATEPANEL_H

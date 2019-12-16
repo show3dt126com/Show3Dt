@@ -65,7 +65,6 @@ struct BBSMessage
     QObject * sender;
 };
 
-
 // the BBS center, all message sent to here,
 // all objects who need BBS message connect to BBS
 class BBS : public QObject
@@ -80,21 +79,38 @@ public slots:
     void onBBSMessage(BBSMessage bbsMsg);
 };
 
-typedef void (* ProcBBSMessageFun)(BBSMessage bbsMsg);
+// 如果一个 BBS 客户端不能继承于 BBSBase，则继承该接口。
+// 同时定义一个 BBSBase 对象成员，由 BBSBase 回调客户端的 procBBSMessage 函数
+class BBSMessageProc
+{
+public:
+    BBSMessageProc();
+    virtual ~ BBSMessageProc();
+    // 当客户端派生于 BBSMessageProc 时，实现下面的函数
+    virtual void procBBSMessage(BBSMessage bbsMsg) = 0;
+};
 
+// BBS 客户端对象，可以向 G.BBS 发送信号。
+// 可以用两种方式之一处理 G.BBS 的信号：
+// 1、客户端派生于 BBSMessageProc，并实现 procBBSMessage 函数；
+// 2、客户端派生于 BBSBase，并重载 slot int onBBSMessage(BBSMessage bbsMsg);
 class BBSBase : public QObject
 {
     Q_OBJECT
 public:
     explicit BBSBase(QObject *parent = nullptr);
-    void init(ProcBBSMessageFun proc=nullptr);
+    void init(BBSMessageProc * proc=nullptr);
+    // 作为客户端，发送信号到 G.BBS
     void sendBBSMessage(BBSMessage bbsMsg);
-    ProcBBSMessageFun procBBSMessage;
+    void sendBBSMessage(EBBSSource source, EBBSVarty varity);
+    // 当客户端派生于 BBSMessageProc 时，有下面的指针
+    BBSMessageProc * bbsProc;
 
 signals:
     void bbsMessage(BBSMessage bbsMsg);
 
 public slots:
+    // 当客户端派生于 BBSBase，需要重载下面的处理函数
     int onBBSMessage(BBSMessage bbsMsg);
 };
 

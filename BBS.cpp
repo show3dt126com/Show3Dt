@@ -15,12 +15,12 @@ BBSMessage::BBSMessage(EBBSSource source, EBBSVarty varity)
 
 BBSBase::BBSBase(QObject *parent) : QObject(parent)
 {
-    procBBSMessage = nullptr;
+    bbsProc = nullptr;
 }
 
-void BBSBase::init(ProcBBSMessageFun proc)
+void BBSBase::init(BBSMessageProc * proc)
 {
-    procBBSMessage = proc;
+    bbsProc = proc;
     connect(this, SIGNAL(bbsMessage(BBSMessage)), &G.bbs, SLOT(onBBSMessage(BBSMessage)));
     connect(&G.bbs, SIGNAL(bbsMessage(BBSMessage)), this, SLOT(onBBSMessage(BBSMessage)));
 }
@@ -31,14 +31,29 @@ void BBSBase::sendBBSMessage(BBSMessage bbsMsg)
     emit bbsMessage(bbsMsg);
 }
 
+void BBSBase::sendBBSMessage(EBBSSource source, EBBSVarty varity)
+{
+    BBSMessage bbsMsg(source, varity);
+    bbsMsg.sender = this;
+    emit bbsMessage(bbsMsg);
+}
+
 int BBSBase::onBBSMessage(BBSMessage bbsMsg)
 {
-    if (procBBSMessage != nullptr)
+    if (bbsProc != nullptr)
     {
-        (*procBBSMessage)(bbsMsg);
+        bbsProc->procBBSMessage(bbsMsg);
         return 1;
     }
     return 0;
+}
+
+BBSMessageProc::BBSMessageProc()
+{
+}
+
+BBSMessageProc::~BBSMessageProc()
+{
 }
 
 BBS::BBS(QObject *parent) : QObject(parent)
