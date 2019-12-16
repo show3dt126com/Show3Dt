@@ -1,6 +1,6 @@
 #include "Test.h"
 #include <QDebug>
-
+#include "Global.h"
 
 Test T;
 
@@ -37,6 +37,32 @@ int Test::testBBS(int p)
         T.bbs2.sendBBSMessage(msg);
     }
     return 1;
+}
+
+int Test::testSceneWin()
+{
+    Field field;
+    field.lat0 = 30;
+    field.lat1 = 32;
+    field.lon0 = 115;
+    field.lon1 = 117;
+    field.depth = 15000;
+    G.viewPot.cutField.setField(field);
+
+    G.viewPot.viewType = EVT_Down;
+    G.viewPot.dimMode = EDM_2D;
+    G.viewPot.zoomDepth = 1.0;
+    G.viewPot.cameraPar.x = 0;
+    G.viewPot.cameraPar.y = 0;
+    G.viewPot.cameraPar.z = 0;
+    G.viewPot.cameraPar.yaw = 0;
+    G.viewPot.cameraPar.roll = 0;
+    G.viewPot.cameraPar.pitch = 0;
+
+    G.sceneWin->updateScrollToolTip();
+    G.sceneWin->updateFieldRange();
+    G.sceneWin->updateFromCameraPos();
+    G.sceneWin->updateFromCutField();
 }
 
 BBS1::BBS1(QObject *parent) : BBSBase(parent)

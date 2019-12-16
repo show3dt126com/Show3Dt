@@ -294,9 +294,9 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
     layout->addLayout(layoutB, 1,0,1,2);
 
     moveBottom = new ShapeButton("ZButDown", 32, 32, this);
-    moveRight = new ShapeButton("ZButDown", 32, 32, this);
-    moveUp = new ShapeButton("ZButDown", 32, 32, this);
-    moveLeft = new ShapeButton("ZButDown", 32, 32, this);
+    moveRight = new ShapeButton("ZButRight", 32, 32, this);
+    moveUp = new ShapeButton("ZButUp", 32, 32, this);
+    moveLeft = new ShapeButton("ZButLeft", 32, 32, this);
     moveBottom->show();
     moveRight->show();
     moveUp->show();
@@ -343,29 +343,6 @@ SceneWin::SceneWin(QWidget *parent) : QWidget(parent)
 
     setArea(10000, 10000);
     setValue(500, 500);
-
-    Field field;
-    field.lat0 = 30;
-    field.lat1 = 32;
-    field.lon0 = 115;
-    field.lon1 = 117;
-    field.depth = 15000;
-    G.viewPot.cutField.setField(field);
-
-    G.viewPot.viewType = EVT_Down;
-    G.viewPot.dimMode = EDM_2D;
-    G.viewPot.zoomDepth = 1.0;
-    G.viewPot.cameraPar.x = 0;
-    G.viewPot.cameraPar.y = 0;
-    G.viewPot.cameraPar.z = 0;
-    G.viewPot.cameraPar.yaw = 0;
-    G.viewPot.cameraPar.roll = 0;
-    G.viewPot.cameraPar.pitch = 0;
-
-    updateScrollToolTip();
-    updateFieldRange();
-    updateFromCameraPos();
-    updateFromCutField();
 }
 
 void SceneWin::resizeEvent(QResizeEvent *event)
@@ -385,7 +362,6 @@ void SceneWin::resizeEvent(QResizeEvent *event)
 
 void SceneWin::updateScrollToolTip()
 {
-
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
@@ -487,77 +463,80 @@ void SceneWin::calculateCameraPos()
     int zoomView = zoomViewScrollBar->value();
     double zoomD = zoomDepthScrollBar->value() / 100.0;
 
+    CameraPar & gCamPar = G.viewPot.cameraPar;
+    CutField & gCutField = G.viewPot.cutField;
+
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
-        G.viewPot.cameraPar.x = h*cos(t*D2R) + v*sin(t*D2R);
-        G.viewPot.cameraPar.z = -h*sin(t*D2R) + v*cos(t*D2R);
-        G.viewPot.cameraPar.y = - camDist;
+        gCamPar.x = h*cos(t*D2R) + v*sin(t*D2R);
+        gCamPar.z = -h*sin(t*D2R) + v*cos(t*D2R);
+        gCamPar.y = - camDist;
 
-        G.viewPot.cameraPar.roll = t;
-        G.viewPot.cameraPar.pitch = -90 + head;
-        G.viewPot.cameraPar.yaw = 0.0;
+        gCamPar.roll = t;
+        gCamPar.pitch = -90 + head;
+        gCamPar.yaw = 0.0;
 
-        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
+        gCamPar.viewW = gCutField.fieldRadius * zoomView / 100;
         G.viewPot.zoomDepth = 0.01 * zoomD;
     }
     // EVT_Side
     else
     {
         double t1 = 90 - t;
-        G.viewPot.cameraPar.y = -v;
-        G.viewPot.cameraPar.x = camDist*cos(t1*D2R) + h*sin(t1*D2R);
-        G.viewPot.cameraPar.z = h*cos(t1*D2R) - camDist*sin(t1*D2R);
+        gCamPar.y = -v;
+        gCamPar.x = camDist*cos(t1*D2R) + h*sin(t1*D2R);
+        gCamPar.z = h*cos(t1*D2R) - camDist*sin(t1*D2R);
 
-        G.viewPot.cameraPar.pitch = head;
-        G.viewPot.cameraPar.yaw = t;
-        G.viewPot.cameraPar.roll = 0;
+        gCamPar.pitch = head;
+        gCamPar.yaw = t;
+        gCamPar.roll = 0;
 
-        G.viewPot.cameraPar.viewW = G.viewPot.cutField.fieldRadius * zoomView / 100;
+        gCamPar.viewW = gCutField.fieldRadius * zoomView / 100;
         G.viewPot.zoomDepth = 0.01 * zoomD;
     }
     QString camS;
-    camS.sprintf("XYZ=%4.1lf %4.1lf %4.1lf RPY=%4.1lf %4.1lf %4.1lf WD=%4.1lf %4.1lf",
-                 G.viewPot.cameraPar.x, G.viewPot.cameraPar.y, G.viewPot.cameraPar.z,
-                 G.viewPot.cameraPar.roll, G.viewPot.cameraPar.pitch,
-                 G.viewPot.cameraPar.yaw, G.viewPot.cameraPar.viewW,
-                 G.viewPot.zoomDepth);
+    camS.sprintf("XYZ=%4.1lf %4.1lf %4.1lf "
+            "RPY=%4.1lf %4.1lf %4.1lf WD=%4.1lf %4.1lf",
+            gCamPar.x, gCamPar.y, gCamPar.z,
+            gCamPar.roll, gCamPar.pitch, gCamPar.yaw,
+            gCamPar.viewW, G.viewPot.zoomDepth);
     info1->setText(camS);
 }
 
 void SceneWin::updateFromCameraPos()
 {
+    CameraPar & gCamPar = G.viewPot.cameraPar;
+
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
-        double t = G.viewPot.cameraPar.roll;
-        double v = G.viewPot.cameraPar.x*sin(t*D2R) + G.viewPot.cameraPar.z*cos(t*D2R);
-        double h = G.viewPot.cameraPar.x*cos(t*D2R) - G.viewPot.cameraPar.z*sin(t*D2R);
+        double t = gCamPar.roll;
+        double v = gCamPar.x*sin(t*D2R) + gCamPar.z*cos(t*D2R);
+        double h = gCamPar.x*cos(t*D2R) - gCamPar.z*sin(t*D2R);
         vScrollBar->setValue(v);
         hScrollBar->setValue(h);
-        turnScrollBar->setValue(G.viewPot.cameraPar.roll);
-        forwardScrollBar->setValue(-G.viewPot.cameraPar.y);
-        headUpScrollBar->setValue(G.viewPot.cameraPar.pitch + 90);
+        turnScrollBar->setValue(gCamPar.roll);
+        forwardScrollBar->setValue(-gCamPar.y);
+        headUpScrollBar->setValue(gCamPar.pitch + 90);
     }
     // EVT_Side
     else
     {
-        vScrollBar->setValue(-G.viewPot.cameraPar.y);
-        turnScrollBar->setValue(G.viewPot.cameraPar.yaw);
-        headUpScrollBar->setValue(G.viewPot.cameraPar.pitch);
+        vScrollBar->setValue(-gCamPar.y);
+        turnScrollBar->setValue(gCamPar.yaw);
+        headUpScrollBar->setValue(gCamPar.pitch);
 
-        double t1 = 90 - G.viewPot.cameraPar.yaw;
-        double comDist = G.viewPot.cameraPar.x*cos(t1*D2R)
-                -G.viewPot.cameraPar.z*sin(t1*D2R);
-        double h = G.viewPot.cameraPar.x*sin(t1*D2R)
-                +G.viewPot.cameraPar.z*cos(t1*D2R);
+        double t1 = 90 - gCamPar.yaw;
+        double comDist = gCamPar.x*cos(t1*D2R) -gCamPar.z*sin(t1*D2R);
+        double h = gCamPar.x*sin(t1*D2R) +gCamPar.z*cos(t1*D2R);
         hScrollBar->setValue(h);
         forwardScrollBar->setValue(comDist);
-        G.viewPot.cameraPar.roll = 0;
+        gCamPar.roll = 0;
     }
-    zoomDepthScrollBar->setValue(G.viewPot.zoomDepth * 100.0);
-    zoomViewScrollBar->setValue(G.viewPot.cameraPar.viewW * 100
-                                / G.viewPot.cutField.fieldRadius);
+    zoomDepthScrollBar->setValue(G.viewPot.zoomDepth * 100);
+    zoomViewScrollBar->setValue(gCamPar.viewW * 100
+            / G.viewPot.cutField.fieldRadius);
 }
 
 void SceneWin::calculateCutFileld()
@@ -566,52 +545,56 @@ void SceneWin::calculateCutFileld()
     int cutA = cutAngleScrollBar->value();
     int d = dScrollBar->value();
 
+    CutField & gCutField = G.viewPot.cutField;
+
     // EVT_Down
     if (G.viewPot.viewType == EVT_Down)
     {
-        G.viewPot.cutField.hCutDepth = d;
-        G.viewPot.cutField.vCutAngle = cutA;
-        G.viewPot.cutField.vCutPoint.y = 0.0;
-        G.viewPot.cutField.vCutPoint.x = cutR*cos(cutA*D2R);
-        G.viewPot.cutField.vCutPoint.z = cutR*sin(cutA*D2R);
+        gCutField.hCutDepth = d;
+        gCutField.vCutAngle = cutA;
+        gCutField.vCutPoint.y = 0.0;
+        gCutField.vCutPoint.x = cutR*cos(cutA*D2R);
+        gCutField.vCutPoint.z = cutR*sin(cutA*D2R);
     }
     // EVT_Side
     else
     {
-        G.viewPot.cutField.hCutDepth = d;
-        G.viewPot.cutField.vCutAngle = cutA;
-        G.viewPot.cutField.vCutPoint.y = 0.0;
-        G.viewPot.cutField.vCutPoint.x = cutR*cos(cutA*D2R);
-        G.viewPot.cutField.vCutPoint.z = cutR*sin(cutA*D2R);
+        gCutField.hCutDepth = d;
+        gCutField.vCutAngle = cutA;
+        gCutField.vCutPoint.y = 0.0;
+        gCutField.vCutPoint.x = cutR*cos(cutA*D2R);
+        gCutField.vCutPoint.z = cutR*sin(cutA*D2R);
     }
     QString cutS;
     cutS.sprintf("D=%4.1lf A=%4.1lf XYZ=%4.1lf %4.1lf %4.1lf",
-                 G.viewPot.cutField.hCutDepth, G.viewPot.cutField.vCutAngle,
-                 G.viewPot.cutField.vCutPoint.x, G.viewPot.cutField.vCutPoint.y,
-                 G.viewPot.cutField.vCutPoint.z);
+            gCutField.hCutDepth, gCutField.vCutAngle,
+            gCutField.vCutPoint.x, gCutField.vCutPoint.y,
+            gCutField.vCutPoint.z);
     info2->setText(cutS);
 }
 
 void SceneWin::updateFromCutField()
 {
+    CutField & gCutField = G.viewPot.cutField;
+
     if (G.viewPot.viewType == EVT_Down)
     {
-        double cutA = G.viewPot.cutField.vCutAngle;
-        double x = G.viewPot.cutField.vCutPoint.x;
-        double z = G.viewPot.cutField.vCutPoint.z;
+        double cutA = gCutField.vCutAngle;
+        double x = gCutField.vCutPoint.x;
+        double z = gCutField.vCutPoint.z;
         cutRadiusScrollBar->setValue(sqrt(x*x + z*z));
         cutAngleScrollBar->setValue(cutA);
-        dScrollBar->setValue(G.viewPot.cutField.hCutDepth);
+        dScrollBar->setValue(gCutField.hCutDepth);
     }
     // EVT_Side
     else
     {
-        double cutA = G.viewPot.cutField.vCutAngle;
-        double x = G.viewPot.cutField.vCutPoint.x;
-        double z = G.viewPot.cutField.vCutPoint.z;
+        double cutA = gCutField.vCutAngle;
+        double x = gCutField.vCutPoint.x;
+        double z = gCutField.vCutPoint.z;
         cutRadiusScrollBar->setValue(sqrt(x*x + z*z));
         cutAngleScrollBar->setValue(cutA);
-        dScrollBar->setValue(G.viewPot.cutField.hCutDepth);
+        dScrollBar->setValue(gCutField.hCutDepth);
     }
 }
 
@@ -684,6 +667,18 @@ void SceneWin::onHeadUpScroll(int v)
     bbsUser.sendBBSMessage(msg);
 }
 
+
+int SceneWin::onBBSMessage(BBSMessage bbsMsg)
+{
+    if (bbsMsg.sender == &bbsUser)
+        return 0;
+    if (bbsMsg.varity == EBV_Camera)
+        updateFromCameraPos();
+    if (bbsMsg.varity == EBV_VCut)
+        updateFromCutField();
+    return 1;
+}
+
 void SceneWin::setArea(int w, int h)
 {
     hScrollBar->setMinimum(0);
@@ -696,15 +691,4 @@ void SceneWin::setValue(int x, int y)
 {
     hScrollBar->setValue(x);
     vScrollBar->setValue(y);
-}
-
-int SceneWin::onBBSMessage(BBSMessage bbsMsg)
-{
-    if (bbsMsg.sender == &bbsUser)
-        return 0;
-    if (bbsMsg.varity == EBV_Camera)
-        updateFromCameraPos();
-    if (bbsMsg.varity == EBV_VCut)
-        updateFromCutField();
-    return 1;
 }

@@ -42,6 +42,7 @@ public:
     void init();
     int test(int p);
     int testBBS(int p);
+    int testSceneWin();
 
     BBS1 bbs1;
     BBS2 bbs2;
