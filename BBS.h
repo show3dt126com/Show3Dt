@@ -10,6 +10,8 @@
 // BBS Message Type
 enum EBBSVarty
 {
+    // 场区变化
+    EBV_Field,
     // 相机参数变化
     EBV_Camera,
     // 俯视图，水平切空参数变化

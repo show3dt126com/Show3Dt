@@ -359,6 +359,29 @@ struct Field
     double radius();
 };
 
+// 一个 Field 决定了其中中心点位置、半径、相机移动范围、切空参数范围
+// 为了方便使用，在 Field 确定之后，一次性计算出相关参数
+struct FieldRange
+{
+    FieldRange();
+    // 界面选择或者指定采用合并场区时，设置到本处
+    void setField(Field & field);
+    // 为了简化，俯视图的移动范围，仅依赖field参数
+    // 不随视窗角和相机中心点而变化,单位米。
+    double radius;
+
+    // 相机超出场区上下最大值，俯视图、侧视图
+    double aboveField;
+    double belowField;
+
+    // 相机水平超出半径最大值，俯视图、侧视图
+    double outRadius;
+
+    // 水面中心点，经纬度，如果界面指定用合并场区范围，则为合并后的中心点
+    // 如果界面指定采用某场区为代表，则采用代表场区的中心点
+    LBH centerP;
+};
+
 // 长方体声场区域的大小，被切去的部分
 // 包含多个 Cube 数据，
 // 可以其中指定的某 Cube 作为范围参数，或者第一个，或者求并集得到
@@ -366,25 +389,10 @@ struct Field
 // 也允许选择其它场区，或者合并场区作为工程的场区范围
 // 合并的场区范围在 CubeModelMan 中计算
 //
-struct CutField
+struct FieldCut
 {
-    // 界面选择或者指定采用合并场区时，设置到本处
-    void setField(Field field);
-    // 立方体场景中的两个顶点，决定了整个区域，经纬度
-    Field field;
-    // 为了简化，俯视图的移动范围，仅依赖field参数
-    // 不随视窗角和相机中心点而变化,单位米。
-    double fieldRadius;
-
-    // 水面中心点，经纬度，如果界面指定用合并场区范围，则为合并后的中心点
-    // 如果界面指定采用某场区为代表，则采用代表场区的中心点
-    LBH centerP;
-    // 合并或选定场区的对角线，作为俯视图移动区域，侧视图水平移动区域大小
-    // 移动范围的中心点为过场区中心点的垂直交点
-    int maxHMoveRange;
-
     // 切去顶部部分
-    double hCutDepth;
+    double cutDepth;
 
     // 垂直切去经过的点，在世界坐标系定义，
     DVec3 vCutPoint;
@@ -427,7 +435,7 @@ struct ViewPot
     // 深度放大系数，不放大为：1.0
     double zoomDepth;
     // 场区以及切面参数
-    CutField cutField;
+    FieldCut fieldCut;
     // 相机参数
     CameraPar cameraPar;
     // 文字说明

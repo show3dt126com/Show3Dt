@@ -47,7 +47,7 @@ void CubeModel::initCubeModel()
 int CubeModel::prepareVertexData()
 {
     // 原始数据在各轴上的点，转换为单位为米，中心在声场区中心的直角坐标系
-    LBH & centerP = G.cutField.centerP;
+    LBH & centerP = G.fieldRange.centerP;
     double latCo = cos(centerP.lat*D2R);
     for (int i=0; i<nLon; i++)
         xs[i] = D2M * (lons[i] - centerP.lon) * latCo;
@@ -77,7 +77,7 @@ void CubeModel::makeModel()
 void CubeModel::makeModelDown2D()
 {
     // 深度插值
-    double hCutDepth = G.cutField.hCutDepth;
+    double hCutDepth = G.fieldCut.cutDepth;
     // 查找插值的2个深度的索引
     int minDi = -1, maxDi = -1;
     // 插值计算系数
@@ -158,8 +158,8 @@ void CubeModel::makeModelDown2D()
 void CubeModel::makeModelSide2D()
 {
     // 一定是经过一个点、由正北开始的某角度定义一条垂直切线
-    DVec3 vCutPoint = G.cutField.vCutPoint;
-    double vCutAngle = G.cutField.vCutAngle;
+    DVec3 vCutPoint = G.fieldCut.vCutPoint;
+    double vCutAngle = G.fieldCut.vCutAngle;
 
     // 一层的点数
     int nLL = nLat*nLon;

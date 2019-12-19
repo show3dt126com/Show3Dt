@@ -4,6 +4,8 @@
 #include <QMainWindow>
 
 #include "Global.h"
+#include "CustomStyleDlg.h"
+#include "BBS.h"
 
 #define RecentMAX  5
 
@@ -11,13 +13,12 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public BBSMessageProc
 {
     Q_OBJECT
-
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
     void closeEvent(QCloseEvent *event);
 
     void updateRecentFile(QString newFile);
@@ -26,6 +27,11 @@ public:
 
     void addDataSetFile(QString filename);
     void openProjectFile(QString projectFile);
+
+    // bbsUser 当接收到 G.BBS 信号时回调下面的函数
+    void procBBSMessage(BBSMessage bbsMsg) override;
+    BBSBase bbsUser;
+    CustomStyleDlg dlg;
 
 public:
     QString recentFile[RecentMAX];
@@ -69,6 +75,8 @@ private slots:
     void on_actionUseChooseCubeField_triggered();
 
     void onOpenRecentFile();
+
+    void on_actionStyle_triggered();
 
 private:
     Ui::MainWindow *ui;

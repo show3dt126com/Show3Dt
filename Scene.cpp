@@ -85,6 +85,7 @@ Scene::~Scene()
 
 int Scene::init()
 {
+    setFocusPolicy(Qt::FocusPolicy::ClickFocus);
     return 1;
 }
 

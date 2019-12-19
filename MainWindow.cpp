@@ -10,16 +10,18 @@
 #include "SchemeSaveDlg.h"
 #include "PythonIf.h"
 
+
 //#include <qopengl.h>
 //#include <QOpenGLWidget>
 //#include <QOpenGLFunctions_4_0_Core>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+    QMainWindow(parent), BBSMessageProc(),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->tabWidgetParts->setCurrentIndex(0);
+    bbsUser.init(this);
 
     // Cube 列表的各列属性的宽度
     int cubeInfoColWs[] =
@@ -46,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(recentFileActions[i], SIGNAL(triggered()), this, SLOT(onOpenRecentFile()));
         ui->menuProjectMan->insertAction(ui->actionUseMergeCubeField, recentFileActions[i]);
     }
-
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +62,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
     G.sceneWin->close();
     event->accept();
     saveConfig();
+}
+
+void MainWindow::procBBSMessage(BBSMessage bbsMsg)
+{
+    if (bbsMsg.sender == &bbsUser)
+        return;
+    //if (bbsMsg.varity == EBV_Camera)
+    //    updateFromCameraPos();
 }
 
 void MainWindow::updateRecentFile(QString newFile)
@@ -224,7 +233,7 @@ void MainWindow::on_actionLoad_BSI_DB_triggered()
 void MainWindow::on_actionTest_triggered()
 {
     //T.test(1);
-    //PythonIf::callFun1();
+    PythonIf::callFun1();
 }
 
 void MainWindow::on_actionTest_2_triggered()
@@ -401,9 +410,10 @@ void MainWindow::on_actionUseMergeCubeField_triggered()
 {
     ui->actionUseMergeCubeField->setChecked(true);
     ui->actionUseChooseCubeField->setChecked(false);
-    G.cutField.setField(G.cubeModelMan.mergedField);
     for (int i=0; i<ui->tableWidgetDataSet->rowCount(); i++)
         ui->tableWidgetDataSet->item(i, 0)->setText("√");
+    G.fieldRange.setField(G.cubeModelMan.mergedField);
+    bbsUser.sendBBSMessage(EBS_Main, EBV_Field);
 }
 
 void MainWindow::on_actionUseChooseCubeField_triggered()
@@ -414,7 +424,13 @@ void MainWindow::on_actionUseChooseCubeField_triggered()
 
     ui->actionUseMergeCubeField->setChecked(false);
     ui->actionUseChooseCubeField->setChecked(true);
-    G.cutField.setField(G.cubeModelMan.cubeModels[selCube]->field);
     for (int i=0; i<ui->tableWidgetDataSet->rowCount(); i++)
         ui->tableWidgetDataSet->item(i, 0)->setText(i==selCube?"√":"");
+    G.fieldRange.setField(G.cubeModelMan.cubeModels[selCube]->field);
+}
+
+void MainWindow::on_actionStyle_triggered()
+{
+
+    dlg.show();
 }

@@ -45,6 +45,7 @@ public:
 
     // 相机俯仰角调整
     QPushButton * cameraMidBut;
+    QPushButton * someTestBut;
 
     // 视窗区域移动
     ScrollBarV * vScrollBar;
@@ -76,9 +77,8 @@ public:
     void resizeEvent(QResizeEvent *event) override;
     void setArea(int w, int h);
     void setValue(int x, int y);
-    void adjustPageStep();
 
-    void updateScrollToolTip();
+    void updateControlToolTip();
 
     // 刷新声场区域的范围显示
     void updateFieldRange();
@@ -121,6 +121,10 @@ public slots:
     void onDimModeTogggle(bool checked);
     void onViewTypeTogle(bool checked);
     void onKeepDistToggle(bool checked);
+
+    void onArrowMove();
+
+    void onSomeTest();
 };
 
 #endif // SCENEWIN_H

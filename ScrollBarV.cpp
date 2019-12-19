@@ -1,11 +1,14 @@
 #include "ScrollBarV.h"
 #include <QPainter>
 #include <QDebug>
+#include "Global.h"
 
-ScrollBarV::ScrollBarV(Qt::Orientation o, QWidget *parent)
+ScrollBarV::ScrollBarV(Qt::Orientation o, QString tag, QWidget *parent)
     : QScrollBar (o, parent)
 {
     fmt = "";
+    this->tag = tag;
+    setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
 void ScrollBarV::paintEvent(QPaintEvent * pe)
@@ -42,4 +45,31 @@ void ScrollBarV::paintEvent(QPaintEvent * pe)
     }
     // y = baseline
     pntr.drawText(x, y, vs);
+}
+
+void ScrollBarV::focusInEvent(QFocusEvent *event)
+{
+    if (this->orientation() == Qt::Horizontal)
+        setStyleSheet(G.activeScrollBarStyleH);
+    else
+        setStyleSheet(G.activeScrollBarStyleV);
+}
+
+void ScrollBarV::focusOutEvent(QFocusEvent *event)
+{
+    setStyleSheet("");
+}
+
+void ScrollBarV::setValue(int value)
+{
+    //setTracking(false);
+    QScrollBar::setValue(value);
+    //setSliderPosition(value);
+    //qDebug() << "setValue()" << tag << value;
+    //setTracking(true);
+}
+
+void ScrollBarV::setSliderPos(int pos)
+{
+    setSliderPosition(pos);
 }

@@ -10,9 +10,6 @@
 RotatePanel::RotatePanel(int x, int y, QWidget *parent)
     : QWidget(parent), BBSMessageProc()
 {
-    m_background = Qt::black;
-    m_foreground = Qt::green;
-
     m_title = "方向";
     setWindowFlags(Qt::FramelessWindowHint);//无窗体
     setAttribute(Qt::WA_TranslucentBackground);//背景透明
@@ -31,7 +28,9 @@ RotatePanel::RotatePanel(int x, int y, QWidget *parent)
     cutA = 90;
     camA = 45;
 
+    setFocusPolicy(Qt::FocusPolicy::ClickFocus);
     bbsUser.init(this);
+    setNotFocusedColor();
 }
 
 void RotatePanel::procBBSMessage(BBSMessage bbsMsg)
@@ -46,7 +45,7 @@ void RotatePanel::procBBSMessage(BBSMessage bbsMsg)
 
 void RotatePanel::updateFromCutField()
 {
-    cutA = G.viewPot.cutField.vCutAngle;
+    cutA = G.viewPot.fieldCut.vCutAngle;
     repaint();
 }
 
@@ -59,9 +58,9 @@ void RotatePanel::updateFromCameraPos()
     repaint();
 }
 
-void RotatePanel::calculateCutFidld()
+void RotatePanel::calculateCutField()
 {
-    G.viewPot.cutField.vCutAngle = cutA;
+    G.viewPot.fieldCut.vCutAngle = cutA;
     BBSMessage msg(EBS_RotatePanel, EBV_VCut);
     bbsUser.sendBBSMessage(msg);
 }
@@ -75,6 +74,7 @@ void RotatePanel::calculateCameraPos()
     BBSMessage msg(EBS_RotatePanel, EBV_Camera);
     bbsUser.sendBBSMessage(msg);
     qDebug() << "RotatePanel::calculateCameraPos()" << camA;
+    qDebug() <<"";
 }
 
 void RotatePanel::mousePressEvent(QMouseEvent *event)
@@ -82,12 +82,13 @@ void RotatePanel::mousePressEvent(QMouseEvent *event)
     bool isCut = event->modifiers() == Qt::AltModifier;
     //int xpos = event->x();
     //int ypos = event->y();
+    qDebug() << "RotatePanel::mousePressEvent";
     if (event->button() == Qt::LeftButton)
     {
         if (isCut)
         {
             cutA = (cutA+10) % 360;
-            calculateCutFidld();
+            calculateCutField();
         }
         else
         {
@@ -102,7 +103,7 @@ void RotatePanel::mousePressEvent(QMouseEvent *event)
         if (isCut)
         {
             cutA = (cutA+350) % 360;
-            calculateCutFidld();
+            calculateCutField();
         }
         else
         {
@@ -110,35 +111,35 @@ void RotatePanel::mousePressEvent(QMouseEvent *event)
             calculateCameraPos();
         }
         repaint();
-        calculateCutFidld();
+        calculateCutField();
     }
 }
 
 void RotatePanel::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Left)
+    if(event->key() == Qt::Key_Minus)//Key_Left)
     {
         camA = (camA+10) % 360;
         repaint();
         calculateCameraPos();
     }
-    else if(event->key() == Qt::Key_Right)
+    else if(event->key() == Qt::Key_Equal)//Key_Right)
     {
         camA = (camA+350) % 360;
         repaint();
         calculateCameraPos();
     }
-    else if(event->key() == Qt::Key_Up)
+    else if(event->key() == Qt::Key_BracketLeft)//Key_Up)
     {
         cutA = (cutA+10) % 360;
         repaint();
-        calculateCutFidld();
+        calculateCutField();
     }
-    else if(event->key() == Qt::Key_Down)
+    else if(event->key() == Qt::Key_BracketRight)//Key_Down)
     {
         cutA = (cutA+350) % 360;
         repaint();
-        calculateCutFidld();
+        calculateCutField();
     }
 }
 
@@ -161,13 +162,47 @@ void RotatePanel::paintEvent(QPaintEvent *event)
     drawCam(&painter);
 }
 
+void RotatePanel::focusInEvent(QFocusEvent *event)
+{
+    QWidget::focusInEvent(event);
+    setFocusedColor();
+}
+
+void RotatePanel::focusOutEvent(QFocusEvent *event)
+{
+    QWidget::focusOutEvent(event);
+    setNotFocusedColor();
+}
+
+void RotatePanel::setFocusedColor()
+{
+    backColor = Qt::black;
+    fontColor = Qt::green;
+    camColor = QColor(255,255,0);
+    arrowColor = QColor(220,60,60);
+    crownColor1 = Qt::white;
+    crownColor2 = Qt::yellow;
+    update();
+}
+
+void RotatePanel::setNotFocusedColor()
+{
+    backColor = Qt::gray;
+    fontColor = Qt::green;
+    camColor = QColor(105,105,0);
+    arrowColor = QColor(120,60,60);
+    crownColor1 = Qt::white;
+    crownColor2 = Qt::gray;
+    update();
+}
+
 void RotatePanel::drawCrown(QPainter *painter)
 {
     painter->save();
     int radius = 100;
     QLinearGradient lg1(0,-radius, 0,radius);
-    lg1.setColorAt(0.2, Qt::white);
-    lg1.setColorAt(1, Qt::yellow);
+    lg1.setColorAt(0.2, crownColor1);
+    lg1.setColorAt(1, crownColor2);
     painter->setBrush(lg1);
     painter->drawEllipse(-99, -99, 198, 198);
     painter->restore();
@@ -176,7 +211,7 @@ void RotatePanel::drawCrown(QPainter *painter)
 void RotatePanel::drawBackground(QPainter *painter)
 {
     painter->save();
-    painter->setBrush(m_background);
+    painter->setBrush(backColor);
     int z = 3;
     painter->drawEllipse(-90-z, -90-z, 180+z+z, 180+z+z);
     painter->restore();
@@ -185,7 +220,7 @@ void RotatePanel::drawBackground(QPainter *painter)
 void RotatePanel::drawScaleNum(QPainter *painter)
 {
     painter->save();
-    painter->setPen(m_foreground);
+    painter->setPen(fontColor);
     QFont font("Times New Roman", 18, 500);
     painter->setFont(font);
     QFontMetricsF fm(font);
@@ -205,7 +240,7 @@ void RotatePanel::drawScale(QPainter *painter)
     painter->rotate(0);
     int steps = 12;
     double angleStep = 360.0 / steps;
-    painter->setPen(m_foreground); //
+    painter->setPen(fontColor); //
     QPen pen = painter->pen();
     for (int i = 0; i <= steps; i++)
     {
@@ -232,7 +267,7 @@ void RotatePanel::drawScale(QPainter *painter)
 void RotatePanel::drawTitle(QPainter *painter)
 {
     painter->save();
-    painter->setPen(m_foreground);
+    painter->setPen(fontColor);
     //painter->setBrush(m_foreground);
     QFont font("黑体", 18, 500);
     painter->setFont(font);
@@ -252,7 +287,7 @@ void RotatePanel::drawIndicator(QPainter *painter)
     //画指针 //顺时针旋转坐标系统
     painter->rotate(cutA);
     QRadialGradient haloGradient(0, 0, 60, 0, 0);  //辐射渐变
-    haloGradient.setColorAt(0, QColor(220,60,60));
+    haloGradient.setColorAt(0, arrowColor);
     haloGradient.setColorAt(1, QColor(160,160,160)); //灰
     painter->setPen(Qt::white); //定义线条文本颜色  设置线条的颜色
     painter->setBrush(haloGradient);//刷子定义形状如何填满 填充后的颜色
@@ -276,7 +311,7 @@ void RotatePanel::drawCam(QPainter *painter)
 {
     painter->save();
     painter->rotate(90 + camA);
-    painter->setBrush(QBrush(QColor(255,255,0)));
+    painter->setBrush(QBrush(camColor));
     int x = -92;
     int w = 26;
     int h = 40;

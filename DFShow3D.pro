@@ -76,7 +76,8 @@ SOURCES += \
     PythonIf.cpp \
     BubbleTip.cpp \
     ShapeButton.cpp \
-    RotatePanel.cpp
+    RotatePanel.cpp \
+    CustomStyleDlg.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -117,7 +118,8 @@ HEADERS += \
     PythonIf.h \
     BubbleTip.h \
     ShapeButton.h \
-    RotatePanel.h
+    RotatePanel.h \
+    CustomStyleDlg.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \
@@ -126,7 +128,8 @@ FORMS += \
     LookIso3DControl.ui \
     LookIso3DValue.ui \
     LookSideControl.ui \
-    SchemeSaveDlg.ui
+    SchemeSaveDlg.ui \
+    CustomStyleDlg.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

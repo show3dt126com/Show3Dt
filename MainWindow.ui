@@ -240,7 +240,7 @@
          <property name="currentIndex">
           <number>1</number>
          </property>
-         <widget class="QWidget" name="tabWidgetPageDataSet" native="true">
+         <widget class="QWidget" name="tabWidgetPageDataSet">
           <attribute name="title">
            <string>场区数据集</string>
           </attribute>
@@ -316,7 +316,7 @@
            </property>
           </widget>
          </widget>
-         <widget class="QWidget" name="tabWidgetPageSoundSource" native="true">
+         <widget class="QWidget" name="tabWidgetPageSoundSource">
           <attribute name="title">
            <string>声源</string>
           </attribute>
@@ -360,7 +360,7 @@
            </property>
           </widget>
          </widget>
-         <widget class="QWidget" name="tabWidgetPageViewPot" native="true">
+         <widget class="QWidget" name="tabWidgetPageViewPot">
           <attribute name="title">
            <string>视景点</string>
           </attribute>
@@ -677,7 +677,7 @@
      <x>0</x>
      <y>0</y>
      <width>909</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFileMan">
@@ -705,6 +705,7 @@
     <addaction name="actionConfig"/>
     <addaction name="actionTest"/>
     <addaction name="actionTest_2"/>
+    <addaction name="actionStyle"/>
    </widget>
    <widget class="QMenu" name="menuProjectMan">
     <property name="title">
@@ -937,6 +938,11 @@
    </property>
    <property name="text">
     <string>选择场区作为场区范围</string>
+   </property>
+  </action>
+  <action name="actionStyle">
+   <property name="text">
+    <string>设置界面风格</string>
    </property>
   </action>
  </widget>

@@ -12,8 +12,8 @@ Test::Test()
 void Test::init()
 {
     bbs1.init();
-    bbs2.init();
-    bbs3.init();
+    //bbs2.init();
+    //bbs3.init();
 }
 
 int Test::test(int p)
@@ -47,7 +47,7 @@ int Test::testSceneWin()
     field.lon0 = 115;
     field.lon1 = 117;
     field.depth = 15000;
-    G.viewPot.cutField.setField(field);
+    G.setField(field);
 
     G.viewPot.viewType = EVT_Down;
     G.viewPot.dimMode = EDM_2D;
@@ -59,10 +59,11 @@ int Test::testSceneWin()
     G.viewPot.cameraPar.roll = 0;
     G.viewPot.cameraPar.pitch = 0;
 
-    G.sceneWin->updateScrollToolTip();
+    G.sceneWin->updateControlToolTip();
     G.sceneWin->updateFieldRange();
     G.sceneWin->updateFromCameraPos();
     G.sceneWin->updateFromCutField();
+    return 1;
 }
 
 BBS1::BBS1(QObject *parent) : BBSBase(parent)

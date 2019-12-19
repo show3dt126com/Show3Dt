@@ -15,7 +15,7 @@ public:
 
     void updateFromCutField();
     void updateFromCameraPos();
-    void calculateCutFidld();
+    void calculateCutField();
     void calculateCameraPos();
 
     int camA;
@@ -37,11 +37,21 @@ public:
     void drawIndicator(QPainter *painter);
     void drawCam(QPainter *painter);
 
+    void setFocusedColor();
+    void setNotFocusedColor();
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+
 public:
-    QColor m_background;
-    QColor m_foreground;
 
     QString m_title;
+
+    QColor backColor;
+    QColor fontColor;
+    QColor camColor;
+    QColor crownColor1;
+    QColor crownColor2;
+    QColor arrowColor;
 
 signals:
 

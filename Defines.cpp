@@ -101,7 +101,6 @@ void VertexPC::init(GLfloat x, GLfloat y, GLfloat z, GLfloat v)
     this->v = v;
 }
 
-
 VertexColor::VertexColor(GLfloat x, GLfloat y, GLfloat z, GLfloat r, GLfloat g, GLfloat b)
 {
     init(x, y, z, r, g, b);
@@ -149,11 +148,19 @@ double Field::radius()
     return r;
 }
 
-void CutField::setField(Field field)
+FieldRange::FieldRange()
 {
-    this->field = field;
+
+}
+
+void FieldRange::setField(Field & field)
+{
     centerP.lat = field.lat0/2.0 + field.lat1/2.0;
     centerP.lon = field.lon0/2.0 + field.lon1/2.0;
     centerP.height = 0.0;
-    fieldRadius = field.radius();
+    aboveField = field.height() * 0.1;
+    belowField = field.height() * 0.1;
+
+    radius = field.radius();
+    outRadius = radius * 0.1;
 }

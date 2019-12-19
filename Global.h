@@ -46,6 +46,7 @@ public:
     int initGL();
     int initSence();
     int initWinBox();
+    void setField(Field field);
 
     // 从 shaderAll 中解析指定名称的代码，返回
     QString parseShaderCode(QString name);
@@ -72,13 +73,11 @@ public:
     // 当前正在使用的，全局缺省的颜色映射表
     ColorMap colorMap;
 
+    QString activeScrollBarStyleH;
+    QString activeScrollBarStyleV;
+
     // 程序启动时创建一个新的空的，可以打开已有的
     Scheme scheme;
-
-    // 数据场区域(根据界面指定是合并场区范围，或者选择某场区为代表);
-    // 要切去的部分的参数
-    // 中心点为世界坐标系原点
-    CutField cutField;
 
     // CutField 的 Field 是 CubeModelMan 的所有Cube 的
     CubeModel * cutFiledUseCubeModel;
@@ -102,7 +101,14 @@ public:
     SceneWin * sceneWin;
 
     // 当前的
+    Field field;
     ViewPot viewPot;
+    FieldRange fieldRange;
+
+    // 数据场区域(根据界面指定是合并场区范围，或者选择某场区为代表);
+    // 要切去的部分的参数
+    // 中心点为世界坐标系原点
+    FieldCut fieldCut;
 
     LookDownControl * lookDownCtrl;
     LookIso3DCamera * lookIso3DCmr;
