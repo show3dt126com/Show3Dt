@@ -9,6 +9,7 @@
 #include <QCheckBox>
 #include <QLineEdit>
 #include <ShapeButton.h>
+#include <QTextEdit>
 
 #include "ScrollBarV.h"
 #include "BBS.h"
@@ -26,7 +27,7 @@ public:
     ShapeButton * moveLeft, * moveRight, * moveUp, * moveBottom;
 
     //
-    QPushButton * conerButton;
+    QPushButton * toDefaultButton;
     // 切换俯视图、侧视图模式
     QPushButton * viewTypeToggle;
     // 切换 2D、3D模式
@@ -47,8 +48,9 @@ public:
     QPushButton * cameraMidBut;
     QPushButton * someTestBut;
 
-    // 视窗区域移动
+    // 视窗区域移动，前后或者上下
     ScrollBarV * vScrollBar;
+    // 水平或者左右
     ScrollBarV * hScrollBar;
 
     // 深度，俯视图用，侧视图3D模式用
@@ -63,21 +65,19 @@ public:
 
     // 抬头角度，-45..45
     ScrollBarV * headUpScrollBar;
-    // 深度放大，100..1000
+    // 深度放大，1..10
     ScrollBarV * zoomDepthScrollBar;
-    // 视窗放大  1000..1
+    // 视窗放大  1..100
     ScrollBarV * zoomViewScrollBar;
     // 旋转视窗 0..360
     ScrollBarV * turnScrollBar;
 
     // 显示一些重要信息的文字框
-    QLineEdit * info1;
-    QLineEdit * info2;
+    QTextEdit * textIinfo;
 
     void resizeEvent(QResizeEvent *event) override;
-    void setArea(int w, int h);
-    void setValue(int x, int y);
 
+    // 根据具体情况更新控件的提示信息
     void updateControlToolTip();
 
     // 刷新声场区域的范围显示
@@ -92,6 +92,11 @@ public:
     void updateFromCameraPos();
     // 根据切空参数变化，刷新滚动条等显示
     void updateFromCutField();
+    // 根据视点参数刷新按钮
+    void updateViewPot();
+
+    // 更新文字信息的显示，
+    void updateTextInfo();
 
     // bbsUser 当接收到 G.BBS 信号时回调下面的函数
     void procBBSMessage(BBSMessage bbsMsg) override;
@@ -116,14 +121,13 @@ public slots:
     void onZoomDepthScroll(int v);
     void onZoomViewScroll(int v);
 
-    void onConor();
+    void onToDefault();
     void onCameraPitchMid();
     void onDimModeTogggle(bool checked);
     void onViewTypeTogle(bool checked);
     void onKeepDistToggle(bool checked);
 
     void onArrowMove();
-
     void onSomeTest();
 };
 

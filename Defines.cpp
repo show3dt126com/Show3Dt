@@ -163,4 +163,6 @@ void FieldRange::setField(Field & field)
 
     radius = field.radius();
     outRadius = radius * 0.1;
+    width = field.width();
+    height = field.height();
 }

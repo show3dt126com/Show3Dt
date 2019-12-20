@@ -18,7 +18,9 @@ public:
     void calculateCutField();
     void calculateCameraPos();
 
+    // 相机的朝向
     int camA;
+    // 垂直切线的角度
     int cutA;
 
     // bbsUser 当接收到 G.BBS 信号时回调下面的函数

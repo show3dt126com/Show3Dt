@@ -46,7 +46,7 @@ enum EBBSSource
     // 暂时不考虑相机操作
     EBS_Camera,
     // 主窗口菜单、列表界面
-    EBS_Main,
+    EBS_MainWindow,
     // 俯视图参数界面
     EBS_LookDownControl,
     // 侧视图参数界面

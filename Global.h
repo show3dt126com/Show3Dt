@@ -100,16 +100,19 @@ public:
     Scene * scene;
     SceneWin * sceneWin;
 
-    // 当前的
+    // 当前的场区以及相关设置
+    // 当前的场区
     Field field;
-    ViewPot viewPot;
+    // 根据当前场区的参数计算的固定参数
     FieldRange fieldRange;
+    // 根据当前场区参数计算的缺省视图参数，2个方向
+    ViewPot defaultViewPotH;
+    ViewPot defaultViewPotV;
 
-    // 数据场区域(根据界面指定是合并场区范围，或者选择某场区为代表);
-    // 要切去的部分的参数
-    // 中心点为世界坐标系原点
-    FieldCut fieldCut;
+    // 当前的视图参数
+    ViewPot viewPot;
 
+    // 参数设置对话框界面
     LookDownControl * lookDownCtrl;
     LookIso3DCamera * lookIso3DCmr;
     LookIso3DControl * lookIso3DCtrl;
@@ -154,7 +157,6 @@ public:
 
     double comjd2 ;      //计算后的经度
     double comwd2 ;      //计算后的纬度
-
 };
 
 extern QOpenGLFunctions_4_0_Core * C;

@@ -25,8 +25,8 @@ RotatePanel::RotatePanel(int x, int y, QWidget *parent)
     setMask(shapeB);
     setToolTip("用箭头控制旋转");
 
-    cutA = 90;
-    camA = 45;
+    cutA = 0;
+    camA = 0;
 
     setFocusPolicy(Qt::FocusPolicy::ClickFocus);
     bbsUser.init(this);
@@ -74,68 +74,34 @@ void RotatePanel::calculateCameraPos()
     BBSMessage msg(EBS_RotatePanel, EBV_Camera);
     bbsUser.sendBBSMessage(msg);
     qDebug() << "RotatePanel::calculateCameraPos()" << camA;
-    qDebug() <<"";
 }
 
 void RotatePanel::mousePressEvent(QMouseEvent *event)
 {
-    bool isCut = event->modifiers() == Qt::AltModifier;
-    //int xpos = event->x();
-    //int ypos = event->y();
-    qDebug() << "RotatePanel::mousePressEvent";
-    if (event->button() == Qt::LeftButton)
-    {
-        if (isCut)
-        {
-            cutA = (cutA+10) % 360;
-            calculateCutField();
-        }
-        else
-        {
-            camA = (camA+10) % 360;
-            calculateCameraPos();
-        }
-        repaint();
-
-    }
-    else if (event->button() == Qt::RightButton)
-    {
-        if (isCut)
-        {
-            cutA = (cutA+350) % 360;
-            calculateCutField();
-        }
-        else
-        {
-            camA = (camA+350) % 360;
-            calculateCameraPos();
-        }
-        repaint();
-        calculateCutField();
-    }
+    QWidget::mousePressEvent(event);
 }
 
 void RotatePanel::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Minus)//Key_Left)
+    if(event->key() == Qt::Key_Left)
     {
         camA = (camA+10) % 360;
         repaint();
         calculateCameraPos();
     }
-    else if(event->key() == Qt::Key_Equal)//Key_Right)
+    else if(event->key() == Qt::Key_Right)
     {
         camA = (camA+350) % 360;
         repaint();
         calculateCameraPos();
     }
-    else if(event->key() == Qt::Key_BracketLeft)//Key_Up)
+    else if(event->key() == Qt::Key_Up)
     {
         cutA = (cutA+10) % 360;
         repaint();
         calculateCutField();
     }
-    else if(event->key() == Qt::Key_BracketRight)//Key_Down)
+    else if(event->key() == Qt::Key_Down)
     {
         cutA = (cutA+350) % 360;
         repaint();
@@ -282,7 +248,7 @@ void RotatePanel::drawIndicator(QPainter *painter)
     painter->save();
     QPolygon pts;
     // (-2,0)/(2,0)/(0,60) 第一个参数是 ，坐标的个数。后边的是坐标
-    pts.setPoints(3, -12,0, 12,0, 0,90);
+    pts.setPoints(3, -12,0, 12,0, 0,-90);
 
     //画指针 //顺时针旋转坐标系统
     painter->rotate(cutA);
@@ -310,7 +276,7 @@ void RotatePanel::drawIndicator(QPainter *painter)
 void RotatePanel::drawCam(QPainter *painter)
 {
     painter->save();
-    painter->rotate(90 + camA);
+    painter->rotate(270 + camA);
     painter->setBrush(QBrush(camColor));
     int x = -92;
     int w = 26;

@@ -49,20 +49,11 @@ int Test::testSceneWin()
     field.depth = 15000;
     G.setField(field);
 
+    G.viewPot = G.defaultViewPotV;
     G.viewPot.viewType = EVT_Down;
     G.viewPot.dimMode = EDM_2D;
-    G.viewPot.zoomDepth = 1.0;
-    G.viewPot.cameraPar.x = 0;
-    G.viewPot.cameraPar.y = 0;
-    G.viewPot.cameraPar.z = 0;
-    G.viewPot.cameraPar.yaw = 0;
-    G.viewPot.cameraPar.roll = 0;
-    G.viewPot.cameraPar.pitch = 0;
 
-    G.sceneWin->updateControlToolTip();
-    G.sceneWin->updateFieldRange();
-    G.sceneWin->updateFromCameraPos();
-    G.sceneWin->updateFromCutField();
+
     return 1;
 }
 

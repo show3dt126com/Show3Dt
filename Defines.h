@@ -369,6 +369,9 @@ struct FieldRange
     // 为了简化，俯视图的移动范围，仅依赖field参数
     // 不随视窗角和相机中心点而变化,单位米。
     double radius;
+    //
+    double width;
+    double height;
 
     // 相机超出场区上下最大值，俯视图、侧视图
     double aboveField;
@@ -393,7 +396,6 @@ struct FieldCut
 {
     // 切去顶部部分
     double cutDepth;
-
     // 垂直切去经过的点，在世界坐标系定义，
     DVec3 vCutPoint;
     // 0..360 正北开始，切去射线及反向延长线的右边部分
@@ -409,13 +411,15 @@ struct FieldCut
 struct CameraPar
 {
     // 相机在世界坐标系的坐标。
+    // y 向上为正
     double x, y, z;
     // 俯仰角，度。相机抬头的角度，不抬头为0。
     double pitch;
     // 偏转角，度。俯视图模式下仅滚动无偏转。
-    // 侧视图模式下，相机的朝向。垂直切开的角度。
+    // 侧视图模式下，相机的朝向。正北为0，顺时针。
     double yaw;
-    // 滚动角，度。俯视图模式下，视窗的角度。侧视图为0。
+    // 滚动角，度。俯视图模式下，视窗的角度，正北为0，顺时针。
+    // 侧视图为0。
     double roll;
     // 视窗尺寸，米。viewH根据当前视窗比例尺计算。
     double viewW;
@@ -434,7 +438,7 @@ struct ViewPot
     EDimMode dimMode;
     // 深度放大系数，不放大为：1.0
     double zoomDepth;
-    // 场区以及切面参数
+    // 场区以及切空参数
     FieldCut fieldCut;
     // 相机参数
     CameraPar cameraPar;

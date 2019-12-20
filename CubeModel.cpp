@@ -77,7 +77,7 @@ void CubeModel::makeModel()
 void CubeModel::makeModelDown2D()
 {
     // 深度插值
-    double hCutDepth = G.fieldCut.cutDepth;
+    double hCutDepth = G.viewPot.fieldCut.cutDepth;
     // 查找插值的2个深度的索引
     int minDi = -1, maxDi = -1;
     // 插值计算系数
@@ -158,8 +158,8 @@ void CubeModel::makeModelDown2D()
 void CubeModel::makeModelSide2D()
 {
     // 一定是经过一个点、由正北开始的某角度定义一条垂直切线
-    DVec3 vCutPoint = G.fieldCut.vCutPoint;
-    double vCutAngle = G.fieldCut.vCutAngle;
+    DVec3 vCutPoint = G.viewPot.fieldCut.vCutPoint;
+    double vCutAngle = G.viewPot.fieldCut.vCutAngle;
 
     // 一层的点数
     int nLL = nLat*nLon;

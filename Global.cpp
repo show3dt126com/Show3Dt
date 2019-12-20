@@ -62,9 +62,8 @@ int Global::init()
     showDem = false;
     showLine = true;
 
-    viewPot.viewType = EVT_Side;
+    viewPot.viewType = EVT_Down;
     viewPot.dimMode = EDM_2D;
-
 
     PythonIf::initPython();
 
@@ -133,6 +132,38 @@ void Global::setField(Field field)
 {
     this->field = field;
     fieldRange.setField(field);
+
+    // 侧视图，缺省值，相机向北，位域场区正南。
+    strcpy(defaultViewPotH.note, "缺省水平视图");
+    defaultViewPotH.viewType = EVT_Side;
+    defaultViewPotH.dimMode = EDM_2D;
+    defaultViewPotH.cubeIndex = 0;
+    defaultViewPotH.zoomDepth = 1;
+    // 正南方
+    defaultViewPotH.cameraPar.x = 0;
+    defaultViewPotH.cameraPar.y = -field.depth/2;
+    defaultViewPotH.cameraPar.z = fieldRange.height + fieldRange.outRadius;
+    // 相机向北
+    defaultViewPotH.cameraPar.yaw = 0;
+    defaultViewPotH.cameraPar.pitch = 0;
+    defaultViewPotH.cameraPar.roll = 0;
+    defaultViewPotH.cameraPar.viewW = fieldRange.width;
+
+    // 俯视图，相机在正上方，
+    strcpy(defaultViewPotV.note, "缺省垂直视图");
+    defaultViewPotV.viewType = EVT_Down;
+    defaultViewPotV.dimMode = EDM_2D;
+    defaultViewPotV.cubeIndex = 0;
+    defaultViewPotV.zoomDepth = 1;
+    //
+    defaultViewPotV.cameraPar.x = 0;
+    defaultViewPotV.cameraPar.y = fieldRange.aboveField;
+    defaultViewPotV.cameraPar.z = 0;
+    // 相机
+    defaultViewPotV.cameraPar.yaw = 0;
+    defaultViewPotV.cameraPar.pitch = 0;
+    defaultViewPotV.cameraPar.roll = 0;
+    defaultViewPotV.cameraPar.viewW = fieldRange.width;
 }
 
 QString Global::parseShaderCode(QString name)

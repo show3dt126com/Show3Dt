@@ -11,26 +11,24 @@
 /*
  SceneWin 是 Scene 窗口外围包裹的操作窗口。
  外围的小操控是各种操作安装、滚动条、信息内容
-┌───────────────────────────────────────────────────────┐
-│ Scene Caption: some static information                │
-├─────────────────────────────────────────────────┬──┬──┤
-│                                                 │  │  │
-│                                                 │H1│H1│
-│                                                 │-0│-1│
-│                Scene                            │  │  │
-│                                                 ├──┼──┤
-│                                                 │  │  │
-│                                                 │H2│H2│                                                 │-0│  │
-│                                                 │-0│-1│
-│                                                 │  │  │
-├──────────────┬────────────────┬─────┬─────┬─────┼──┴──┤
-│      V1-0    │      V2-0      │     │     │     │     │
-├──────────────┼────────────────┤H3-0 │H3-1 │H3-2 │  C  │
-│      V1-1    │      V2-1      │     │     │     │     │
-└──────────────┴────────────────┴─────┴─────┴─────┴─────┘
-
+┌─────────────────────────────────────────────────────┐
+│ Scene Caption: some static information              │
+├───────────────────────────────────────────────┬──┬──┤
+│                                               │  │  │
+│                                               │H1│H1│
+│                                               │-0│-1│
+│                Scene                          │  │  │
+│                                               ├──┼──┤
+│                                               │  │  │
+│                                               │H2│H2│                                                 │-0│  │
+│                                               │-0│-1│
+│                                               │  │  │
+├──────────────┬──────────────┬─────┬─────┬─────┼──┴──┤
+│      V1-0    │      V2-0    │     │     │     │     │
+├──────────────┼──────────────┤H3-0 │H3-1 │H3-2 │  C  │
+│      V1-1    │      V2-1    │     │     │     │     │
+└──────────────┴──────────────┴─────┴─────┴─────┴─────┘
 */
-
 
 
 // 设置按钮的大小和图片属性
@@ -83,6 +81,9 @@ SceneWin::SceneWin(QWidget *parent)
 
     bbsUser.init(this);
 
+    scene = new Scene(this);
+    scene->show();
+
     viewTypeToggle = new QPushButton(this);
     viewTypeToggle->setToolTip("切换俯视图/侧视图模式");
     dimModeToggle = new QPushButton(this);
@@ -90,23 +91,24 @@ SceneWin::SceneWin(QWidget *parent)
     keepDistToggle = new QPushButton(this);
     keepDistToggle->setToolTip("保持相机与切面距离");
 
-    conerButton = new QPushButton("*", this);
-    conerButton->setStyleSheet(
+    toDefaultButton = new QPushButton("缺省", this);
+    toDefaultButton->setStyleSheet(
         //"QPushButton{color: white;font: bold 10pt;border:none;"
         //"min-height: 24px;min-width: 60px;"
         //"background:url(:images/SimpleButtom.png) -60px 0px no-repeat;}");
         "border-image:url(:/Start.png);}");
-    conerButton->setToolTip("回到对应视图的缺省状态");
+    toDefaultButton->setToolTip("回到对应视图的缺省状态");
 
     cameraMidBut = new QPushButton("=", this);
     cameraMidBut->setToolTip("相机俯仰角归零");
 
     someTestBut = new QPushButton("Test", this);
     someTestBut->setToolTip("Do Some Test");
+    someTestBut->setMaximumWidth(30);
 
     int maxSz = 35;
     int minSz = 35;
-    setButtonMinMaxIcon(conerButton, minSz, maxSz);
+    setButtonMinMaxIcon(toDefaultButton, minSz, maxSz);
     setButtonMinMaxIcon(cameraMidBut, minSz, maxSz);
 
     setCheckBoxMinMaxIcon(viewTypeToggle, minSz, maxSz, "ZViewType");
@@ -119,20 +121,22 @@ SceneWin::SceneWin(QWidget *parent)
     vScrollBar->setMinimum(0);
     vScrollBar->setMaximum(1000);
     vScrollBar->setPageStep(50);
+    vScrollBar->setInvertedAppearance(true);
 
     dScrollBar = new ScrollBarV(Qt::Vertical, "dScrollBar", this);
     dScrollBar->setMaximumWidth(maxSz);
     dScrollBar->setMinimum(0);
     dScrollBar->setMaximum(1000);
     dScrollBar->setPageStep(50);
+    dScrollBar->setInvertedAppearance(true);
 
     zoomDepthScrollBar = new ScrollBarV(Qt::Vertical, "zoomDepth", this);
     zoomDepthScrollBar->setMaximumWidth(maxSz);
     zoomDepthScrollBar->fmt = "深度放大%d%%";
     zoomDepthScrollBar->setToolTip("深度放大系数\n100%..1000%");
-    zoomDepthScrollBar->setMinimum(100);
-    zoomDepthScrollBar->setMaximum(1000);
-    zoomDepthScrollBar->setPageStep(100);
+    zoomDepthScrollBar->setMinimum(1);
+    zoomDepthScrollBar->setMaximum(10);
+    zoomDepthScrollBar->setPageStep(2);
 
     turnScrollBar = new ScrollBarV(Qt::Vertical, "turn", this);
     turnScrollBar->fmt = "旋转%d°";
@@ -152,9 +156,13 @@ SceneWin::SceneWin(QWidget *parent)
     hScrollBar->setMaximum(1000);
     hScrollBar->setPageStep(50);
 
+    vScrollBar->fmt = "视窗上下位置%d";
+    hScrollBar->fmt = "视窗水平位置%d";
+    dScrollBar->fmt = "深度切面%d";
+
     zoomViewScrollBar = new ScrollBarV(Qt::Horizontal, "zoomView", this);
     zoomViewScrollBar->setMaximumHeight(maxSz);
-    zoomViewScrollBar->setToolTip("视窗放大系数\n1..100(全部)");
+    zoomViewScrollBar->setToolTip("视窗放大系数\n1..100(倍)");
     zoomViewScrollBar->setMinimum(1);
     zoomViewScrollBar->setMaximum(100);
     zoomViewScrollBar->fmt = "视区占%d%%";
@@ -183,13 +191,15 @@ SceneWin::SceneWin(QWidget *parent)
     headUpScrollBar->setMaximum(45);
     headUpScrollBar->setPageStep(5);
 
-    scene = new Scene(this);
-
-    info1 = new QLineEdit(this);
-    info1->setMinimumWidth(200);
-    info1->setText("坐标数据");
-    info2 = new QLineEdit(this);
-    info2->setText("相机参数");
+    textIinfo = new QTextEdit(this);
+    textIinfo->setMinimumWidth(200);
+    textIinfo->setMaximumHeight(47);
+    QTextCursor textCursor = textIinfo->textCursor();
+    QTextBlockFormat textBlockFormat;
+    textBlockFormat.setLineHeight(15, QTextBlockFormat::FixedHeight);//设置固定行高
+    textCursor.setBlockFormat(textBlockFormat);
+    textIinfo->setTextCursor(textCursor);
+    textIinfo->setText("坐标数据\r相机参数");
 
     // layout
     QHBoxLayout * layoutH1 = new QHBoxLayout();
@@ -284,15 +294,15 @@ SceneWin::SceneWin(QWidget *parent)
     spliterV->setStretchFactor(1, 30);
     spliterV->setStretchFactor(2, 30);
 
-    layoutVInfo->addWidget(info1);
-    layoutVInfo->addWidget(info2);
+    layoutVInfo->addWidget(textIinfo);
 
     layoutHButtons->setMargin(1);
     layoutHButtons->addWidget(cameraMidBut);
     layoutHButtons->addWidget(viewTypeToggle);
     layoutHButtons->addWidget(dimModeToggle);
     layoutHButtons->addWidget(someTestBut);
-    layoutHButtons->addWidget(conerButton);
+    layoutHButtons->addWidget(keepDistToggle);
+    layoutHButtons->addWidget(toDefaultButton);
 
     layoutB->addLayout(layoutVInfo);
     layoutB->addWidget(spliterV);
@@ -313,14 +323,12 @@ SceneWin::SceneWin(QWidget *parent)
 
     rotatePanel = new RotatePanel(100,100, this);
 
-    scene->show();
-
     connect(moveLeft, SIGNAL(pressed()), this, SLOT(onArrowMove()));
     connect(moveRight, SIGNAL(pressed()), this, SLOT(onArrowMove()));
     connect(moveUp, SIGNAL(pressed()), this, SLOT(onArrowMove()));
     connect(moveBottom, SIGNAL(pressed()), this, SLOT(onArrowMove()));
 
-    connect(conerButton, SIGNAL(pressed()), this, SLOT(onConor()));
+    connect(toDefaultButton, SIGNAL(pressed()), this, SLOT(onToDefault()));
 
     connect(viewTypeToggle, SIGNAL(toggled(bool)), this, SLOT(onViewTypeTogle(bool)));
     connect(dimModeToggle, SIGNAL(toggled(bool)), this, SLOT(onDimModeTogggle(bool)));
@@ -339,28 +347,53 @@ SceneWin::SceneWin(QWidget *parent)
     connect(zoomDepthScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onZoomDepthScroll(int)));
     connect(zoomViewScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onZoomViewScroll(int)));
     connect(turnScrollBar, SIGNAL(valueChanged(int)), this, SLOT(onCameraTurnScroll(int)));
-
-    setArea(10000, 10000);
-    setValue(500, 500);
 }
 
 void SceneWin::updateFieldRange()
 {
-    vScrollBar->setMinimum(-G.fieldRange.aboveField);
-    vScrollBar->setMaximum(G.field.depth + G.fieldRange.belowField);
-    vScrollBar->setPageStep((vScrollBar->maximum() - vScrollBar->minimum())/10);
+    // 前后移动
+    if (G.viewPot.viewType == EVT_Down)
+    {
+        vScrollBar->setMinimum(-G.field.radius() -G.fieldRange.outRadius);
+        vScrollBar->setMaximum(G.field.radius() +G.fieldRange.outRadius);
+        vScrollBar->setPageStep((vScrollBar->maximum() - vScrollBar->minimum())/10);
+    }
+    // 上下移动，
+    else
+    {
+        vScrollBar->setMaximum(G.fieldRange.aboveField);
+        vScrollBar->setMinimum(-G.field.depth - G.fieldRange.belowField);
+        vScrollBar->setPageStep((vScrollBar->maximum() - vScrollBar->minimum())/10);
+    }
 
     hScrollBar->setMinimum(-G.field.radius() -G.fieldRange.outRadius);
     hScrollBar->setMaximum(G.field.radius() +G.fieldRange.outRadius);
     hScrollBar->setPageStep((hScrollBar->maximum() - hScrollBar->minimum())/20);
 
-    dScrollBar->setMinimum(0);
-    dScrollBar->setMaximum(G.field.depth);
+    //
+    dScrollBar->setMaximum(0);
+    dScrollBar->setMinimum(-G.field.depth);
     dScrollBar->setPageStep((dScrollBar->maximum() - dScrollBar->minimum())/10);
 
     cutRadiusScrollBar->setMinimum(-G.field.radius());
     cutRadiusScrollBar->setMaximum(G.field.radius());
     cutRadiusScrollBar->setPageStep((cutRadiusScrollBar->maximum() - cutRadiusScrollBar->minimum())/20);
+
+    if (G.viewPot.viewType == EVT_Down)
+    {
+        int camOff = G.field.depth*0.1;
+        forwardScrollBar->setMinimum(-camOff);
+        forwardScrollBar->setMaximum(camOff * 11);
+        forwardScrollBar->setPageStep(camOff/10);
+    }
+    else
+    {
+        int camOff = G.fieldRange.radius*1.1;
+        forwardScrollBar->setMinimum(-camOff);
+        forwardScrollBar->setMaximum(camOff);
+        forwardScrollBar->setPageStep(G.fieldRange.radius/100);
+    }
+    updateTextInfo();
 }
 
 void SceneWin::resizeEvent(QResizeEvent *event)
@@ -387,11 +420,6 @@ void SceneWin::updateControlToolTip()
         vScrollBar->fmt = "视窗前后位置%d";
         hScrollBar->fmt = "视窗左右位置%d";
         dScrollBar->fmt = "深度切面%d";
-
-        int camOff = G.field.depth*0.1;
-        forwardScrollBar->setMinimum(-camOff);
-        forwardScrollBar->setMaximum(camOff * 11);
-        forwardScrollBar->setPageStep(camOff/10);
     }
     // EVT_Side
     else if (G.viewPot.viewType == EVT_Side)
@@ -404,12 +432,10 @@ void SceneWin::updateControlToolTip()
         vScrollBar->fmt = "视窗上下位置%d";
         hScrollBar->fmt = "视窗水平位置%d";
         dScrollBar->fmt = "深度切面%d";
-
-        int camOff = G.fieldRange.radius*1.1;
-        forwardScrollBar->setMinimum(-camOff);
-        forwardScrollBar->setMaximum(camOff);
-        forwardScrollBar->setPageStep(G.fieldRange.radius/100);
     }
+    vScrollBar->repaint();
+    hScrollBar->repaint();
+    dScrollBar->repaint();
 }
 
 void SceneWin::onDimModeTogggle(bool checked)
@@ -441,73 +467,44 @@ void SceneWin::onKeepDistToggle(bool checked)
         keepDist = true;
 }
 
-void SceneWin::onArrowMove()
-{
-    QPushButton * button = qobject_cast<QPushButton*>(sender());
-    ScrollBarV * scroll = nullptr;
-    int delta = 0;
-
-    if (button ==  moveLeft)
-    {
-        scroll = hScrollBar;
-        delta = -1;
-    }
-    else if (button == moveRight)
-    {
-        scroll = hScrollBar;
-        delta = 1;
-    }
-    else if (button == moveUp)
-    {
-        scroll = vScrollBar;
-        delta = -1;
-    }
-    else if (button == moveBottom)
-    {
-        scroll = vScrollBar;
-        delta = 1;
-    }
-    else
-        return;
-
-    int v = scroll->value() + delta*scroll->pageStep();
-    if (v < scroll->minimum())
-        v = scroll->minimum();
-    if (v > scroll->maximum())
-        v = scroll->maximum();
-    scroll->setValue(v);
-    qDebug() << "onArrowMove scroll=" << scroll->fmt << v;
-}
-
-void SceneWin::onConor()
+void SceneWin::onToDefault()
 {
     if (G.viewPot.viewType == EVT_Down)
-    {
-        G.viewPot.zoomDepth = 1.0;
-        G.viewPot.cameraPar.x = 0;
-        G.viewPot.cameraPar.y = G.field.depth * 0.1;
-        G.viewPot.cameraPar.z = 0;
-        G.viewPot.cameraPar.yaw = 0;
-        G.viewPot.cameraPar.roll = 0;
-        G.viewPot.cameraPar.pitch = 0;
-    }
+        G.viewPot = G.defaultViewPotV;
     else
-    {
-
-    }
+        G.viewPot = G.defaultViewPotH;
+    updateFromCameraPos();
+    updateFromCutField();
+    rotatePanel->repaint();
+    updateViewPot();
 }
 
 void SceneWin::onSomeTest()
 {
     updateFromCameraPos();
     updateFromCutField();
-
+    updateViewPot();
 }
 
 void SceneWin::onCameraPitchMid()
 {
     headUpScrollBar->setValue(
         (headUpScrollBar->minimum()+headUpScrollBar->maximum())/2);
+}
+
+void SceneWin::procBBSMessage(BBSMessage bbsMsg)
+{
+    if (bbsMsg.sender == &bbsUser)
+        return;
+    if (bbsMsg.varity == EBV_Field)
+        updateFieldRange();
+    if (bbsMsg.varity == EBV_Camera)
+        updateFromCameraPos();
+    if (bbsMsg.varity == EBV_VCut)
+        updateFromCutField();
+    if (bbsMsg.varity == EBV_ViewType
+            || bbsMsg.varity == EBV_DimMode)
+        updateViewPot();
 }
 
 void SceneWin::calculateCameraPos()
@@ -554,13 +551,6 @@ void SceneWin::calculateCameraPos()
         gCameraPar.viewW = G.fieldRange.radius * zoomView / 100;
         G.viewPot.zoomDepth = 0.01 * zoomD;
     }
-    QString camS;
-    camS.sprintf("XYZ=%4.1lf %4.1lf %4.1lf "
-            "RPY=%4.1lf %4.1lf %4.1lf WD=%4.1lf %4.1lf",
-            gCameraPar.x, gCameraPar.y, gCameraPar.z,
-            gCameraPar.roll, gCameraPar.pitch, gCameraPar.yaw,
-            gCameraPar.viewW, G.viewPot.zoomDepth);
-    info1->setText(camS);
 }
 
 void SceneWin::updateFromCameraPos()
@@ -596,6 +586,7 @@ void SceneWin::updateFromCameraPos()
     zoomDepthScrollBar->setSliderPos(G.viewPot.zoomDepth * 100);
     zoomViewScrollBar->setSliderPos(gCamPar.viewW * 100
             / G.fieldRange.radius);
+    updateTextInfo();
 }
 
 void SceneWin::calculateCutFileld()
@@ -624,12 +615,7 @@ void SceneWin::calculateCutFileld()
         gCutField.vCutPoint.x = cutR*cos(cutA*D2R);
         gCutField.vCutPoint.z = cutR*sin(cutA*D2R);
     }
-    QString cutS;
-    cutS.sprintf("D=%4.1lf A=%4.1lf XYZ=%4.1lf %4.1lf %4.1lf",
-            gCutField.cutDepth, gCutField.vCutAngle,
-            gCutField.vCutPoint.x, gCutField.vCutPoint.y,
-            gCutField.vCutPoint.z);
-    info2->setText(cutS);
+    updateTextInfo();
 }
 
 void SceneWin::updateFromCutField()
@@ -655,6 +641,87 @@ void SceneWin::updateFromCutField()
         cutAngleScrollBar->setSliderPos(cutA);
         dScrollBar->setSliderPos(gCutField.cutDepth);
     }
+    updateTextInfo();
+}
+
+void SceneWin::updateViewPot()
+{
+    if (G.viewPot.viewType == EVT_Down)
+    {
+        viewTypeToggle->setChecked(false);
+    }
+    else
+    {
+        viewTypeToggle->setChecked(true);
+    }
+
+    if (G.viewPot.dimMode == EDM_2D)
+    {
+        dimModeToggle->setChecked(false);
+    }
+    else
+    {
+        dimModeToggle->setChecked(true);
+    }
+}
+
+void SceneWin::updateTextInfo()
+{
+    CameraPar & gCameraPar = G.viewPot.cameraPar;
+    QString camS;
+    camS.sprintf("Cam: XYZ=%4.1lf %4.1lf %4.1lf "
+            "RPY=%4.1lf %4.1lf %4.1lf WD=%4.1lf %4.1lf\r\n",
+            gCameraPar.x, gCameraPar.y, gCameraPar.z,
+            gCameraPar.roll, gCameraPar.pitch, gCameraPar.yaw,
+            gCameraPar.viewW, G.viewPot.zoomDepth);
+
+    FieldCut & gCutField = G.viewPot.fieldCut;
+    QString cutS;
+    cutS.sprintf("Cut: D=%4.1lf A=%4.1lf XYZ=%4.1lf %4.1lf %4.1lf",
+            gCutField.cutDepth, gCutField.vCutAngle,
+            gCutField.vCutPoint.x, gCutField.vCutPoint.y,
+            gCutField.vCutPoint.z);
+
+    textIinfo->setText(camS + cutS);
+    //info2->setText(cutS);
+}
+
+void SceneWin::onArrowMove()
+{
+    QPushButton * button = qobject_cast<QPushButton*>(sender());
+    ScrollBarV * scroll = nullptr;
+    int delta = 0;
+
+    if (button ==  moveLeft)
+    {
+        scroll = hScrollBar;
+        delta = -1;
+    }
+    else if (button == moveRight)
+    {
+        scroll = hScrollBar;
+        delta = 1;
+    }
+    else if (button == moveUp)
+    {
+        scroll = vScrollBar;
+        delta = -1;
+    }
+    else if (button == moveBottom)
+    {
+        scroll = vScrollBar;
+        delta = 1;
+    }
+    else
+        return;
+
+    int v = scroll->value() + delta*scroll->pageStep();
+    if (v < scroll->minimum())
+        v = scroll->minimum();
+    if (v > scroll->maximum())
+        v = scroll->maximum();
+    scroll->setValue(v);
+    qDebug() << "onArrowMove scroll=" << scroll->fmt << v;
 }
 
 void SceneWin::onViewAreaVScroll(int v)
@@ -725,32 +792,6 @@ void SceneWin::onCutAngleScroll(int v)
 void SceneWin::onHeadUpScroll(int v)
 {
     calculateCutFileld();
-    BBSMessage msg(EBS_SceneWin, EBV_HCut);
+    BBSMessage msg(EBS_SceneWin, EBV_Camera);
     bbsUser.sendBBSMessage(msg);
-}
-
-void SceneWin::procBBSMessage(BBSMessage bbsMsg)
-{
-    if (bbsMsg.sender == &bbsUser)
-        return;
-    if (bbsMsg.varity == EBV_Field)
-        updateFieldRange();
-    if (bbsMsg.varity == EBV_Camera)
-        updateFromCameraPos();
-    if (bbsMsg.varity == EBV_VCut)
-        updateFromCutField();
-}
-
-void SceneWin::setArea(int w, int h)
-{
-    hScrollBar->setMinimum(0);
-    hScrollBar->setMaximum(w);
-    vScrollBar->setMinimum(0);
-    vScrollBar->setMaximum(h);
-}
-
-void SceneWin::setValue(int x, int y)
-{
-    hScrollBar->setValue(x);
-    vScrollBar->setValue(y);
 }

@@ -238,7 +238,8 @@ void MainWindow::on_actionTest_triggered()
 
 void MainWindow::on_actionTest_2_triggered()
 {
-    T.test(2);
+    T.testSceneWin();
+    bbsUser.sendBBSMessage(EBS_MainWindow, EBV_Field);
 }
 
 void MainWindow::on_actionNewProject_triggered()
@@ -413,7 +414,7 @@ void MainWindow::on_actionUseMergeCubeField_triggered()
     for (int i=0; i<ui->tableWidgetDataSet->rowCount(); i++)
         ui->tableWidgetDataSet->item(i, 0)->setText("√");
     G.fieldRange.setField(G.cubeModelMan.mergedField);
-    bbsUser.sendBBSMessage(EBS_Main, EBV_Field);
+    bbsUser.sendBBSMessage(EBS_MainWindow, EBV_Field);
 }
 
 void MainWindow::on_actionUseChooseCubeField_triggered()
