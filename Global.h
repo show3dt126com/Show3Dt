@@ -47,6 +47,7 @@ public:
     int initSence();
     int initWinBox();
     void setField(Field field);
+    void setViewType(EViewType viewType);
 
     // 从 shaderAll 中解析指定名称的代码，返回
     QString parseShaderCode(QString name);
@@ -72,9 +73,6 @@ public:
     ColorMap colorMaps[ColorMap_MAX];
     // 当前正在使用的，全局缺省的颜色映射表
     ColorMap colorMap;
-
-    QString activeScrollBarStyleH;
-    QString activeScrollBarStyleV;
 
     // 程序启动时创建一个新的空的，可以打开已有的
     Scheme scheme;
@@ -111,6 +109,9 @@ public:
 
     // 当前的视图参数
     ViewPot viewPot;
+    // 最近的视图参数，切换时恢复到 viewPot
+    ViewPot lastViewPotH;
+    ViewPot lastViewPotV;
 
     // 参数设置对话框界面
     LookDownControl * lookDownCtrl;

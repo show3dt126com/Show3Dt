@@ -16,7 +16,8 @@ public:
     virtual void prepareDraw() {}
     virtual void draw() {}
 
-    GLuint vbo, vao, ebo;//VBO, VAO, EBO;
+    //VBO, VAO, EBO;
+    GLuint vbo, vao, ebo;
 
     bool dataPrepared;
     bool drawPrepared;

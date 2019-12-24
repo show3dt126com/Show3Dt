@@ -424,7 +424,7 @@ struct CameraPar
     // 滚动角，度。俯视图模式下，视窗的角度，正北为0，顺时针。
     // 侧视图为0。
     double roll;
-    // 视窗水平尺寸，单位：千米。viewH根据当前视窗比例尺计算。
+    // 视窗尺寸，米。viewH根据当前视窗比例尺计算。
     double viewW;
 };
 
@@ -439,7 +439,7 @@ struct ViewPot
     EViewType viewType;
     // 2D、3D选择
     EDimMode dimMode;
-    // 深度放大系数，1..10，不放大为：1.0
+    // 深度放大系数，不放大为：1.0
     double zoomDepth;
     // 场区以及切空参数
     FieldCut fieldCut;

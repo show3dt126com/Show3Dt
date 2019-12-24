@@ -158,11 +158,13 @@ void FieldRange::setField(Field & field)
     centerP.lat = field.lat0/2.0 + field.lat1/2.0;
     centerP.lon = field.lon0/2.0 + field.lon1/2.0;
     centerP.height = 0.0;
-    aboveField = field.height() * 0.1;
-    belowField = field.height() * 0.1;
 
-    radius = field.radius();
+    radius = field.radius()/1000;
+    width = field.width()/1000;
+    height = field.height()/1000;
+    depth = field.depth/100;
+
+    aboveField = depth * 0.1;
+    belowField = depth * 0.1;
     outRadius = radius * 0.1;
-    width = field.width();
-    height = field.height();
 }

@@ -49,10 +49,11 @@ int Test::testSceneWin()
     field.depth = 15000;
     G.setField(field);
 
+    G.scheme.schemeInfo = "台湾海峡周围150km海声场春季温度特性";
     G.viewPot = G.defaultViewPotV;
-    G.viewPot.viewType = EVT_Down;
-    G.viewPot.dimMode = EDM_2D;
 
+    G.lastViewPotH = G.defaultViewPotH;
+    G.lastViewPotV = G.defaultViewPotV;
 
     return 1;
 }

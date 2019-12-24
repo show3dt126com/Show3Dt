@@ -155,6 +155,10 @@ void Scene::initializeGL()
     glInited = true;
 }
 
+void Scene::procBBSMessage(BBSMessage bbsMsg)
+{
+
+}
 
 void Scene::resizeGL(int w, int h)
 {

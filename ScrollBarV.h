@@ -12,7 +12,7 @@ public:
     void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
     void setValue(int value);
-    void setSliderPos(int pos);
+    void setValue(double pos);
     QString fmt;
     QString tag;
 };

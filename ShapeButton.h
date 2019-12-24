@@ -6,6 +6,7 @@
 
 class ShapeButton : public QPushButton
 {
+    Q_OBJECT
 public:
     ShapeButton(QString shape, int w, int h, QWidget *parent = nullptr);
     void focusInEvent(QFocusEvent *event) override;

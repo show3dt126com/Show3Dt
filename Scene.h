@@ -7,6 +7,7 @@
 #include <QObject>
 #include "Defines.h"
 #include "Cube.h"
+#include "BBS.h"
 
 
 // QOpenGLWidget 窗口，负责3D显示，响应鼠标操作键盘操作
@@ -37,7 +38,7 @@ public:
 // 3D窗口，显示当前视图的所有模型，
 // 响应在3D窗口中的鼠标动作、键盘动作，反射成相机位置的变化
 // 响应鼠标点击动作，拾取鼠标位置的数据
-class Scene : public QOpenGLWidget
+class Scene : public QOpenGLWidget, public BBSMessageProc
 {
     Q_OBJECT
 public:
@@ -69,6 +70,10 @@ protected:
     virtual void initializeGL() override;
     virtual void resizeGL(int w, int h) override;
     virtual void paintGL() override;
+
+    // bbsUser 当接收到 G.BBS 信号时回调下面的函数
+    void procBBSMessage(BBSMessage bbsMsg) override;
+    BBSBase bbsUser;
 
     void drawRuler();
 

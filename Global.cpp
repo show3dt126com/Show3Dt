@@ -10,29 +10,6 @@
 QOpenGLFunctions_4_0_Core * C = nullptr;
 Global * GD = nullptr;
 
-const QString ActiveScrollBarStyleV =
-    "QScrollBar::vertical{background:rgb(153,70,87);"
-        "border:1px solid grey;margin:24px 0px 24px 0px;}"
-    "QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{"
-        "background:rgb(192,222,182);}"
-    "QScrollBar::handle:vertical{background:rgb(73,70,197);"
-        "border:1px solid grey;border-radius:2px;min-height:30px;}"
-    "QScrollBar::add-line:vertical{height:22px;subcontrol-origin:margin;}"
-    "QScrollBar::sub-line:vertical{height:22px;subcontrol-origin:margin;}";
-
-const QString ActiveScrollBarStyleH =
-    "QScrollBar::horizontal{background:rgb(153,70,87);"
-        "border:1px solid grey;margin:0px 24px 0px 24px;}"
-    "QScrollBar::add-page:horizontal,QScrollBar::sub-page:horizontal{"
-        "background:rgb(192,222,182);}"
-    "QScrollBar::handle:horizontal{background:rgb(73,70,197);"
-        "border:1px solid grey;border-radius:2px;min-width:30px;}"
-    "QScrollBar::add-line:horizontal{width:22px;subcontrol-origin:margin;"
-        "subcontrol-position:left;}"
-    "QScrollBar::sub-line:horizontal{width:22px;subcontrol-origin:margin;"
-        "subcontrol-position:right;}";
-
-
 Global::Global()
 {
     scene = nullptr;
@@ -53,9 +30,6 @@ int Global::init()
     iniFile = new QSettings(mainPath + "/config/DFShow3D.ini", QSettings::IniFormat);
     dem.initDemData();
     sky.initSkyData();
-
-    activeScrollBarStyleH = ActiveScrollBarStyleH;
-    activeScrollBarStyleV = ActiveScrollBarStyleV;
 
     showBathy = false;
     showSky = false;
@@ -141,13 +115,13 @@ void Global::setField(Field field)
     defaultViewPotH.zoomDepth = 1;
     // 正南方
     defaultViewPotH.cameraPar.x = 0;
-    defaultViewPotH.cameraPar.y = -field.depth/2;
+    defaultViewPotH.cameraPar.y = -fieldRange.depth/2;
     defaultViewPotH.cameraPar.z = fieldRange.height + fieldRange.outRadius;
     // 相机向北
     defaultViewPotH.cameraPar.yaw = 0;
     defaultViewPotH.cameraPar.pitch = 0;
     defaultViewPotH.cameraPar.roll = 0;
-    defaultViewPotH.cameraPar.viewW = fieldRange.width;
+    defaultViewPotH.cameraPar.viewW = 2*fieldRange.width;
 
     // 俯视图，相机在正上方，
     strcpy(defaultViewPotV.note, "缺省垂直视图");
@@ -163,7 +137,23 @@ void Global::setField(Field field)
     defaultViewPotV.cameraPar.yaw = 0;
     defaultViewPotV.cameraPar.pitch = 0;
     defaultViewPotV.cameraPar.roll = 0;
-    defaultViewPotV.cameraPar.viewW = fieldRange.width;
+    defaultViewPotV.cameraPar.viewW = 2*fieldRange.width;
+}
+
+void Global::setViewType(EViewType viewType)
+{
+    if (viewPot.viewType == viewType)
+        return;
+    if (viewPot.viewType == EVT_Down)
+    {
+        lastViewPotV = viewPot;
+        viewPot = lastViewPotH;
+    }
+    else
+    {
+        lastViewPotH = viewPot;
+        viewPot = lastViewPotV;
+    }
 }
 
 QString Global::parseShaderCode(QString name)

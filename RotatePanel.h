@@ -18,6 +18,11 @@ public:
     void calculateCutField();
     void calculateCameraPos();
 
+    // 当鼠标首次点击，使得控件获得焦点时，先不利用鼠标的点击修改参数
+    // 当获得焦点后继续点击时，利用鼠标点击位置所处的象限
+    // 修改不同的参数
+    bool justHasFocus;
+
     // 相机的朝向
     int camA;
     // 垂直切线的角度

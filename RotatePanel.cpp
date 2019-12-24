@@ -23,10 +23,11 @@ RotatePanel::RotatePanel(int x, int y, QWidget *parent)
     painter.drawEllipse(0, 0, width(), height());
     QBitmap shapeB = pix.createHeuristicMask();
     setMask(shapeB);
-    setToolTip("用箭头控制旋转");
+    setToolTip("点击4个区域控制旋转\r亦可用箭头控制旋转");
 
     cutA = 0;
     camA = 0;
+    justHasFocus = false;
 
     setFocusPolicy(Qt::FocusPolicy::ClickFocus);
     bbsUser.init(this);
@@ -37,6 +38,12 @@ void RotatePanel::procBBSMessage(BBSMessage bbsMsg)
 {
     if (bbsMsg.sender == &bbsUser)
         return;
+    if (bbsMsg.varity == EBV_ViewType)
+    {
+        updateFromCameraPos();
+        updateFromCutField();
+    }
+
     if (bbsMsg.varity == EBV_Camera)
         updateFromCameraPos();
     if (bbsMsg.varity == EBV_VCut)
@@ -72,12 +79,41 @@ void RotatePanel::calculateCameraPos()
     else
         G.viewPot.cameraPar.yaw = camA;
     BBSMessage msg(EBS_RotatePanel, EBV_Camera);
-    bbsUser.sendBBSMessage(msg);
     qDebug() << "RotatePanel::calculateCameraPos()" << camA;
+    bbsUser.sendBBSMessage(msg);
 }
 
 void RotatePanel::mousePressEvent(QMouseEvent *event)
 {
+    qDebug() << "RotatePanel::mousePressEvent";
+    if (justHasFocus)
+    {
+        justHasFocus = false;
+    }
+    else
+    {
+        justHasFocus = false;
+        qDebug() << "RotatePanel::mousePressEvent hasFocus";
+        int x = event->x();
+        int y = event->y();
+        if (y > height()/2)
+        {
+            if (x < width()/2)
+                camA = (camA+10) % 360;
+            else
+                camA = (camA+350) % 360;
+            calculateCameraPos();
+        }
+        else
+        {
+            if (x > width()/2)
+                cutA = (cutA+10) % 360;
+            else
+                cutA = (cutA+350) % 360;
+            calculateCutField();
+        }
+        repaint();
+    }
     QWidget::mousePressEvent(event);
 }
 
@@ -107,6 +143,7 @@ void RotatePanel::keyPressEvent(QKeyEvent *event)
         repaint();
         calculateCutField();
     }
+    QWidget::keyPressEvent(event);
 }
 
 void RotatePanel::paintEvent(QPaintEvent *event)
@@ -130,12 +167,15 @@ void RotatePanel::paintEvent(QPaintEvent *event)
 
 void RotatePanel::focusInEvent(QFocusEvent *event)
 {
+    qDebug() << "RotatePanel::focusInEvent";
+    justHasFocus = true;
     QWidget::focusInEvent(event);
     setFocusedColor();
 }
 
 void RotatePanel::focusOutEvent(QFocusEvent *event)
 {
+    qDebug() << "RotatePanel::focusOutEvent";
     QWidget::focusOutEvent(event);
     setNotFocusedColor();
 }
@@ -146,8 +186,8 @@ void RotatePanel::setFocusedColor()
     fontColor = Qt::green;
     camColor = QColor(255,255,0);
     arrowColor = QColor(220,60,60);
-    crownColor1 = Qt::white;
-    crownColor2 = Qt::yellow;
+    crownColor1 = QColor(220,60,60);
+    crownColor2 = QColor(250,250,50);
     update();
 }
 
@@ -167,8 +207,8 @@ void RotatePanel::drawCrown(QPainter *painter)
     painter->save();
     int radius = 100;
     QLinearGradient lg1(0,-radius, 0,radius);
-    lg1.setColorAt(0.2, crownColor1);
-    lg1.setColorAt(1, crownColor2);
+    lg1.setColorAt(0.01, crownColor1);
+    lg1.setColorAt(0.99, crownColor2);
     painter->setBrush(lg1);
     painter->drawEllipse(-99, -99, 198, 198);
     painter->restore();
@@ -254,7 +294,7 @@ void RotatePanel::drawIndicator(QPainter *painter)
     painter->rotate(cutA);
     QRadialGradient haloGradient(0, 0, 60, 0, 0);  //辐射渐变
     haloGradient.setColorAt(0, arrowColor);
-    haloGradient.setColorAt(1, QColor(160,160,160)); //灰
+    haloGradient.setColorAt(1, QColor(250,160,160)); //灰
     painter->setPen(Qt::white); //定义线条文本颜色  设置线条的颜色
     painter->setBrush(haloGradient);//刷子定义形状如何填满 填充后的颜色
     painter->drawConvexPolygon(pts); //这是个重载函数，绘制多边形。

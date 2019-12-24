@@ -24,7 +24,7 @@ public:
 
     RotatePanel * rotatePanel;
 
-    ShapeButton * moveLeft, * moveRight, * moveUp, * moveBottom;
+    ShapeButton * moveLeft, * moveRight, * moveUp, * moveDown;
 
     //
     QPushButton * toDefaultButton;
@@ -93,7 +93,7 @@ public:
     // 根据切空参数变化，刷新滚动条等显示
     void updateFromCutField();
     // 根据视点参数刷新按钮
-    void updateViewPot();
+    void updateViewTypeModeCheck();
 
     // 更新文字信息的显示，
     void updateTextInfo();

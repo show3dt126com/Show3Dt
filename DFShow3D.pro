@@ -117,9 +117,9 @@ HEADERS += \
     ScrollBarV.h \
     PythonIf.h \
     BubbleTip.h \
-    ShapeButton.h \
     RotatePanel.h \
-    CustomStyleDlg.h
+    CustomStyleDlg.h \
+    ShapeButton.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \

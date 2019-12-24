@@ -31,6 +31,6 @@ void CustomStyleDlg::on_pushButtonTest_clicked()
 
 void CustomStyleDlg::on_pushButtonDefault_clicked()
 {
-    ui->textEditStyle->setText(G.activeScrollBarStyleV);
+    //ui->textEditStyle->setText(G.activeScrollBarStyleV);
 
 }
