@@ -158,7 +158,7 @@ void CubeModel::makeModelDown2D()
 void CubeModel::makeModelSide2D()
 {
     // 一定是经过一个点、由正北开始的某角度定义一条垂直切线
-    DVec3 vCutPoint = G.viewPot.fieldCut.vCutPoint;
+    DVec3 vCutPoint = G.viewPot.fieldCut.vCutPoint();
     double vCutAngle = G.viewPot.fieldCut.vCutAngle;
 
     // 一层的点数

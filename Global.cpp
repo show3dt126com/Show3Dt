@@ -121,7 +121,7 @@ void Global::setField(Field field)
     defaultViewPotH.cameraPar.yaw = 0;
     defaultViewPotH.cameraPar.pitch = 0;
     defaultViewPotH.cameraPar.roll = 0;
-    defaultViewPotH.cameraPar.viewW = 2*fieldRange.width;
+    defaultViewPotH.cameraPar.viewPercent = 100;
 
     // 俯视图，相机在正上方，
     strcpy(defaultViewPotV.note, "缺省垂直视图");
@@ -137,7 +137,11 @@ void Global::setField(Field field)
     defaultViewPotV.cameraPar.yaw = 0;
     defaultViewPotV.cameraPar.pitch = 0;
     defaultViewPotV.cameraPar.roll = 0;
-    defaultViewPotV.cameraPar.viewW = 2*fieldRange.width;
+    defaultViewPotV.cameraPar.viewPercent = 100;
+
+    // 场区变化之后，最近视点设置为缺省值
+    lastViewPotH = defaultViewPotH;
+    lastViewPotV = defaultViewPotV;
 }
 
 void Global::setViewType(EViewType viewType)

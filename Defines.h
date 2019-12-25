@@ -399,10 +399,12 @@ struct FieldCut
 {
     // 切去顶部部分，单位为：百米
     double cutDepth;
-    // 垂直切去经过的点，在世界坐标系定义，单位：千米
-    DVec3 vCutPoint;
     // 0..360 正北开始，切去射线及反向延长线的右边部分
     double vCutAngle;
+    // 垂直切去点与坐标中心的距离，带符号，单位：千米
+    double vCutRadius;
+    // 垂直切去经过的点，在世界坐标系定义，单位：千米
+    DVec3 vCutPoint();
 };
 
 #define NOTEMAX  32
@@ -424,8 +426,8 @@ struct CameraPar
     // 滚动角，度。俯视图模式下，视窗的角度，正北为0，顺时针。
     // 侧视图为0。
     double roll;
-    // 视窗水平尺寸，单位：千米。viewH根据当前视窗比例尺计算。
-    double viewW;
+    // 视窗水平范围，与全区半径的比例，单位：%。viewH根据当前视窗比例尺计算。
+    double viewPercent;
 };
 
 // 视景点参数，包含当前显示的全部参数：

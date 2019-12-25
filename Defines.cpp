@@ -148,6 +148,15 @@ double Field::radius()
     return r;
 }
 
+DVec3 FieldCut::vCutPoint()
+{
+    DVec3 v;
+    v.x = vCutRadius * cos(vCutAngle*D2R);
+    v.z = vCutRadius * sin(vCutAngle*D2R);
+    v.y = 0.0;
+    return v;
+}
+
 FieldRange::FieldRange()
 {
 

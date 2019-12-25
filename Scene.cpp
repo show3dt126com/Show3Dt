@@ -157,7 +157,24 @@ void Scene::initializeGL()
 
 void Scene::procBBSMessage(BBSMessage bbsMsg)
 {
-
+    if (bbsMsg.varity == EBV_Camera)
+    {
+    }
+    else if (bbsMsg.varity == EBV_HCut)
+    {
+    }
+    else if (bbsMsg.varity == EBV_VCut)
+    {
+    }
+    else if (bbsMsg.varity == EBV_ViewType)
+    {
+    }
+    else if (bbsMsg.varity == EBV_DimMode)
+    {
+    }
+    else if (bbsMsg.varity == EBV_ColorMap)
+    {
+    }
 }
 
 void Scene::resizeGL(int w, int h)

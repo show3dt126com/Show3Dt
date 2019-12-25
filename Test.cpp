@@ -52,8 +52,6 @@ int Test::testSceneWin()
     G.scheme.schemeInfo = "台湾海峡周围150km海声场春季温度特性";
     G.viewPot = G.defaultViewPotV;
 
-    G.lastViewPotH = G.defaultViewPotH;
-    G.lastViewPotV = G.defaultViewPotV;
 
     return 1;
 }

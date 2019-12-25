@@ -70,7 +70,7 @@ void ScrollBarV::paintEvent(QPaintEvent * pe)
     QScrollBar::paintEvent(pe);
     if (fmt == "")
         return;
-    qDebug() << "ScrollBarV::paintEvent" << tag;
+    //qDebug() << "ScrollBarV::paintEvent" << tag;
 
     int v = value();
     int mid = minimum()/2 + maximum()/2;
@@ -99,7 +99,7 @@ void ScrollBarV::paintEvent(QPaintEvent * pe)
             x = width() - 25 - vsw;
     }
     // y = baseline
-    qDebug() << "pntr.drawText" << tag << fmt << v << vs;
+    //qDebug() << "pntr.drawText" << tag << fmt << v << vs;
     pntr.drawText(x, y, vs);
 }
 
