@@ -66,6 +66,9 @@ protected:
     // 当鼠标移动或点击时拾取数据
     void pickPointerData(QMouseEvent* event);
 
+    // 根据 CameraPar 参数计算 Camera 输入
+    void updateCameraParToCamera();
+
     //
     virtual void initializeGL() override;
     virtual void resizeGL(int w, int h) override;

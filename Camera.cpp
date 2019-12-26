@@ -38,7 +38,7 @@ void Camera::updateCameraVectors()
     up = QVector3D::crossProduct(right, front).normalized();
 }
 
-// 设置摄像机的姿态角: 俯仰 偏转 滚动
+// 设置摄像机的姿态角: 俯仰 偏转 滚动 zhai
 void Camera::setCameraAttitude(double pitch, double yaw, double roll)
 {
     this->yaw = yaw;

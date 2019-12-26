@@ -296,6 +296,22 @@ void Scene::paintGL()
 
 }
 
+void Scene::updateCameraParToCamera()
+{
+    CameraPar & p = G.viewPot.cameraPar;
+    Camera & c = G.camera;
+    c.setCameraPos(p.x*1000, -p.y*100, p.z*1000);
+    if (G.viewPot.viewType == EVT_Down)
+    {
+        c.setCameraAttitude(p.yaw, p.roll, p.pitch);
+        double w = p.viewPercent*G.fieldRange.width*10;
+        c.setOrthoOptions(w, w*height()/width(), 1, w*2);
+    }
+    else
+    {
+    }
+}
+
 void Scene::updateGL()
 {
 
