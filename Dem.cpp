@@ -153,7 +153,6 @@ int Dem::loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l
     return 1;
 }
 
-
 int Dem::loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l1, double b1, double lc, double bs, GLshort &high)
 {
     if (lc >l1 || bs >b1)

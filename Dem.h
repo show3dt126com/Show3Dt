@@ -26,6 +26,17 @@ public:
 };
 
 // 根据水声场区域中心点，以及半径，构建周边环境,
+// 包括天空下面的陆地以及海面区域，
+// 挖去声场半径或者略大一些的海面圆面，
+// 添加挖去圆面下面的圆柱体柱面，直达海底
+// 陆地、海面用地图纹理，
+// 柱面用一种水纹理
+// 海底用一种泥纹理
+// 当程序刚启动时，根据最近打开的范围进行初始化，
+// 当设置声场区范围，根据情况确定是否重新读取数据
+// 读取的数据比声场区大一些，满足全局范围的显示需求
+// 刚打开程序时，不挖空圆柱体
+
 class Dem : public BaseModel
 {
 public:
@@ -42,11 +53,9 @@ public:
     // 读取足够大范围，覆盖预计可能海区的，如果超出，再考虑重新读取
     int loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l1, double b1);
 
-
     // 根据指定的经纬度范围读取 海深及地形高程数据，
     // 读取足够大范围，覆盖预计可能海区的，如果超出，再考虑重新读取
     int loadGEBCO1DNetCDFArea(QString gebcoFile, double l0, double b0, double l1, double b1, double lc, double bs, GLshort &high );
-
 
     //获得指定经纬度的高程点 by sxd
     int getHightValue(double lc, double bs, GLshort &high);

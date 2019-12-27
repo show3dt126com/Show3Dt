@@ -79,6 +79,17 @@ double distBetween2LB(double l0, double b0, double l1, double b1)
     return distance;
 }
 
+void CLBWH2LBLB(double l, double b, double w, double h,
+              double &l0, double &b0, double &l1, double &b1)
+{
+    double b2 = 360 *h /(2*PI*EARTH_R) /2;
+    b0 = b - b2;
+    b1 = b + b2;
+    double l2 = b2 * cos(b*D2R);
+    l0 = l - l2;
+    l1 = l + l2;
+}
+
 // makeBatchDownloadConfigFileForShuiJingZhuMap
 // 在标准 Web地图2分块基础上，每个分割处增加一个块，但0度和360的位置数据
 // 能保证在任何位置，任何级别，都能有有一块地图覆盖

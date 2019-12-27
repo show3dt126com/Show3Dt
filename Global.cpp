@@ -5,6 +5,7 @@
 #include "BBS.h"
 #include "Scene.h"
 #include "Shader.h"
+#include "ToolBox.h"
 
 
 QOpenGLFunctions_4_0_Core * C = nullptr;
@@ -28,8 +29,15 @@ int Global::init()
     codec = QTextCodec::codecForName("GB18030");
 
     iniFile = new QSettings(mainPath + "/config/DFShow3D.ini", QSettings::IniFormat);
+    loadConfig();
     dem.initDemData();
     sky.initSkyData();
+
+    double l0, b0, l1, b1;
+    CLBWH2LBLB(fieldRange.centerP.lon, fieldRange.centerP.lat,
+               fieldRange.width, fieldRange.height,
+               l0, b0, l1, b1);
+    dem.loadGEBCO1DNetCDFArea(G.pathFileOfGEBCO, l0, b0, l1, b1);
 
     showBathy = false;
     showSky = false;
@@ -39,9 +47,38 @@ int Global::init()
     viewPot.viewType = EVT_Down;
     viewPot.dimMode = EDM_2D;
 
+    //fieldRange
+
     PythonIf::initPython();
 
     return 1;
+}
+
+void Global::loadConfig()
+{
+    // 与最近打开声场区相关的
+    QSettings & settings = * G.iniFile;
+    settings.beginGroup("LastFieldRange");
+    fieldRange.centerP.lon = settings.value("lon", 115).toDouble();
+    fieldRange.centerP.lat = settings.value("lat", 21).toDouble();
+    fieldRange.centerP.height = 0;
+    fieldRange.width = settings.value("width", 300).toDouble();
+    fieldRange.height = settings.value("height", 200).toDouble();
+    fieldRange.depth = settings.value("depth", 30).toDouble();
+    settings.endGroup();
+
+}
+
+void Global::saveConfig()
+{
+    QSettings & settings = * G.iniFile;
+    settings.beginGroup("LastFieldRange");
+    settings.setValue("lon", fieldRange.centerP.lon);
+    settings.setValue("lat", fieldRange.centerP.lat);
+    settings.setValue("width", fieldRange.width);
+    settings.setValue("height", fieldRange.height);
+    settings.setValue("depth", fieldRange.depth);
+    settings.endGroup();
 }
 
 int Global::initSence()

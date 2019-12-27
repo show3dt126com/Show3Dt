@@ -21,6 +21,10 @@ QPointF ll2map(const QPointF & geo);
 // 计算2点之间的距离，单位米
 double distBetween2LB(double l0, double b0, double l1, double b1);
 
+// 根据中心点和半径，计算经纬度范围
+void CLBWH2LBLB(double l, double b, double w, double h,
+              double &l0, double &b0, double &l1, double &b1);
+
 // 水经注地图批量下载配置文件的辅助构建
 void makeBatchDownloadConfigFileForShuiJingZhuMap();
 

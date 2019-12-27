@@ -49,6 +49,10 @@ public:
     void setField(Field field);
     void setViewType(EViewType viewType);
 
+    // 保存读取缺省参数，或者最近参数
+    void loadConfig();
+    void saveConfig();
+
     // 从 shaderAll 中解析指定名称的代码，返回
     QString parseShaderCode(QString name);
     // 构建指定名称的Shader
@@ -57,6 +61,12 @@ public:
     // 程序开始路径，含最后的"/"
     QString mainPath;
     QTextCodec *codec;
+
+    // 地图和纹理数据文件的路径
+    // F:\\Software\\Gis\\GEBCO\\GEBCO_2014_1D_GRID_1.nc
+    QString pathFileOfGEBCO;
+    // F:\\DemFiles
+    QString pathToDemFile;
 
     // 方便访问主窗口
     MainWindow * mw;

@@ -168,12 +168,19 @@ void FieldRange::setField(Field & field)
     centerP.lon = field.lon0/2.0 + field.lon1/2.0;
     centerP.height = 0.0;
 
+    // 单位转换，千米、百米
     radius = field.radius()/1000;
     width = field.width()/1000;
     height = field.height()/1000;
     depth = field.depth/100;
 
+    // 扩展区域，限定相机移动
     aboveField = depth * 0.1;
     belowField = depth * 0.1;
     outRadius = radius * 0.1;
+
+    // 挖去圆柱体超出部分
+    demOutRaius = radius * 0.1;
+    demMinWidth = width*2;
+    demMinHeight = height*2;
 }

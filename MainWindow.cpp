@@ -111,6 +111,12 @@ void MainWindow::readConfig()
             qDebug() << "recentFile[i]=" << recentFile[i];
         }
     }
+
+    // 下面的参数需要手工配置
+    settings.beginGroup("System");
+    G.pathFileOfGEBCO = settings.value("pathFileOfGEBCO", "").toDouble();
+    G.pathToDemFile = settings.value("pathToDemFile", "").toDouble();
+    settings.endGroup();
 }
 
 void MainWindow::saveGeometryAndState(QString set)

@@ -383,6 +383,13 @@ struct FieldRange
     // 相机水平超出半径最大值，俯视图、侧视图，单位：千米
     double outRadius;
 
+    // 周边环境 Dem 绘制时，挖去比声场区半径略大的圆柱体，
+    // 该参数可通过配置相对于声场区半径的比例进行设置和计算
+    double demOutRaius;
+    // 周边环境区域的最小范围
+    double demMinWidth;
+    double demMinHeight;
+
     // 水面中心点，经纬度，如果界面指定用合并场区范围，则为合并后的中心点
     // 如果界面指定采用某场区为代表，则采用代表场区的中心点
     LBH centerP;
