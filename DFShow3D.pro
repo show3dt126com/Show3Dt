@@ -77,7 +77,8 @@ SOURCES += \
     BubbleTip.cpp \
     ShapeButton.cpp \
     RotatePanel.cpp \
-    CustomStyleDlg.cpp
+    CustomStyleDlg.cpp \
+    MapMan.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -119,7 +120,8 @@ HEADERS += \
     BubbleTip.h \
     RotatePanel.h \
     CustomStyleDlg.h \
-    ShapeButton.h
+    ShapeButton.h \
+    MapMan.h
 FORMS += \
         MainWindow.ui \
     ColorMapSet.ui \

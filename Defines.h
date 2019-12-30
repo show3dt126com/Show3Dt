@@ -313,6 +313,14 @@ struct LBH
     double height;
 };
 
+
+// 表示经纬度
+struct LB
+{
+    double lon;
+    double lat;
+};
+
 // 存储1维参数数据对
 struct DVec2
 {
@@ -330,6 +338,17 @@ struct VertexPC
     void init(GLfloat x, GLfloat y, GLfloat z, GLfloat v);
     GLfloat x, y, z;
     GLfloat v;
+};
+
+// 水经注文件信息
+struct DemInfo
+{
+    // 级数 1..19
+    int level;
+    // 图形尺寸，像素
+    int texW, texH;
+    // 图像对应经纬度范围，左上角，右下角
+    LB texLB0, texLB1;
 };
 
 struct VertexColor
