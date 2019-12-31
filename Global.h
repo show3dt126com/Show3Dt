@@ -19,13 +19,13 @@
 #include "BaseModel.h"
 #include "Scheme.h"
 #include "BSIMap.h"
-//#include "MainWindow.h"
 #include "Camera.h"
 #include "WinBox.h"
 #include "Test.h"
 #include "EagleEye.h"
 #include "SideEye.h"
 #include "SceneWin.h"
+#include "MapMan.h"
 
 #include "LookDownControl.h"
 #include "LookIso3DCamera.h"
@@ -75,6 +75,9 @@ public:
 
     // 初始化配置文件
     QSettings * iniFile;
+
+    //
+    MapMan mapMan;
 
     // shaders 源码，合并在一个文件中
     QString shaderAll;

@@ -345,8 +345,6 @@ struct DemInfo
 {
     // 级数 1..19
     int level;
-    // 图形尺寸，像素
-    int texW, texH;
     // 图像对应经纬度范围，左上角，右下角
     LB texLB0, texLB1;
 };

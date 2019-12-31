@@ -9,7 +9,6 @@ PythonIf::PythonIf()
 void PythonIf::initPython()
 {
     Py_SetPythonHome((const wchar_t *)(L"C:\\Program Files\\Python37A"));
-    qDebug() << "initPython 1";
     //PyRun_SimpleString("sys.path.append('D:\\DFShow3DRun')");
     Py_Initialize();
     qDebug() << "initPython 1";

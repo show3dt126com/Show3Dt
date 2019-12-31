@@ -16,75 +16,79 @@ bool compareDemInfo(const DemInfo &a, const DemInfo &b)
 {
     if (a.level < b.level)
         return true;
-    if (a.texLB0.lon < b.texLB0.lon)
+    else if (a.level > b.level)
+        return false;
+    else if (a.texLB0.lon < b.texLB0.lon-1E-10)
+        return true;
+    else if (a.texLB0.lon > b.texLB0.lon+1E-10)
+        return false;
+    else if (a.texLB0.lat < b.texLB0.lat-1E-10)
         return true;
     return false;
 }
 
 int MapMan::init()
 {
-    QString indexListFile = G.pathToDemFile + "\\DemIndexList.txt";
+    QString indexListFile = G.pathToDemFile + "\\WorldIndexList.txt";
     QFile indexLF(indexListFile);
     if(!indexLF.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        qDebug() <<"Can't open the DemIndexList.txt!"<<endl;
+        qDebug() <<"Can't open the WorldIndexList.txt!"<<endl;
+        qDebug() << indexListFile;
         return -1;
     }
 
+    int c = 0;
     while(!indexLF.atEnd())
     {
-        QByteArray indexFileName = indexLF.readLine();
-        QString indexFile = G.pathToDemFile +"\\" + QString(indexFileName);
+        QString indexFileName = QString(indexLF.readLine());
+        if (indexFileName.length() < 5)
+            break;
+        indexFileName.replace("\r", "").replace("\n", "");
+        QString indexFile = G.pathToDemFile +"\\" + indexFileName;
         QFile indexF(indexFile);
         if(!indexF.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            qDebug() << "Can't open: " << indexFile;
-            return -1;
-        }
+            break;
+        qDebug() << "indexFile=" << indexFile;
 
         while(!indexF.atEnd())
         {
             QString texInfoS = QString(indexF.readLine());
             // 解析一个 txt 文件的信息
-
+            // World-L05-000-000|-180.0000000000000,-84.0000000000000|180.0000000000000,84.0000000000000|5
             DemInfo demInfo;
-
-//            QTextStream in(&file);
-//            in.setCodec( QTextCodec::codecForName("UTF8"));
-//            QString txtAll = in.readAll();
-//            QStringList list = txtAll.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
-//            //qDebug() << "loadTextureFile=" <<  txtAll << list;
-//            //qDebug() << list[1] << list[2];
-//            QRegExp rx("\\d+");
-//            //QString wStr = list[1].mid(3);
-//            rx.indexIn(list[1], 3);
-//            //qDebug() << rx.cap(0) << rx.cap(1);
-//            tex.texW = rx.cap(0).toInt();
-//            rx.indexIn(list[2], 3);
-//            tex.texH = rx.cap(0).toInt();
-
-//            QStringList p = list[9].mid(6).split(",");
-//            tex.texXY0.x = p[0].toDouble();
-//            tex.texXY0.y = p[1].toDouble();
-//            tex.texXY0.z = 0.0;
-//            p = list[11].mid(6).split(",");
-//            tex.texXY1.x = p[0].toDouble();
-//            tex.texXY1.y = p[1].toDouble();
-//            tex.texXY1.z = 0.0;
-
-//            tex.texLB0 = WebMercator::webMercator2lonLat(tex.texXY0);
-//            tex.texLB1 = WebMercator::webMercator2lonLat(tex.texXY1);
-
+            QStringList list = texInfoS.split(QRegExp("[|,\n\r]"), QString::SkipEmptyParts);
+            if (list.count() != 6)
+                continue;
+            //qDebug() << "MapMan::init " << list;
+            c ++;
+            demInfo.level = list[5].toInt();
+            demInfo.texLB0.lon = list[1].toDouble();
+            demInfo.texLB0.lat = list[2].toDouble();
+            demInfo.texLB1.lon = list[3].toDouble();
+            demInfo.texLB1.lat = list[4].toDouble();
 
             demList.append(demInfo);
         }
         indexF.close();
     }
+    qDebug() << "Dem File Num = " << c;
     indexLF.close();
 
     // 对文件按时间排序
     std::sort(demList.begin(), demList.end(), compareDemInfo);
 
+    FILE * fp = fopen("D:\\ShuiJingZhu-GoogleMap\\Sort.txt", "wt");
+    for (int i=0; i<demList.count(); i++)
+    {
+        fprintf(fp, "%d %d %10.7lf %10.7lf %10.7lf %10.7lf %10.7lf %10.7lf\n",
+                i, demList[i].level,
+                demList[i].texLB0.lon, demList[i].texLB0.lat,
+                demList[i].texLB1.lon, demList[i].texLB1.lat,
+                demList[i].texLB1.lon-demList[i].texLB0.lon,
+                demList[i].texLB1.lat-demList[i].texLB0.lat);
+        }
+    fclose(fp);
 }
 
 QString MapMan::findFitMap(double l0, double b0, double l1, double b1)

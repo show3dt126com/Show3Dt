@@ -32,12 +32,13 @@ int Global::init()
     loadConfig();
     dem.initDemData();
     sky.initSkyData();
+    mapMan.init();
 
     double l0, b0, l1, b1;
     CLBWH2LBLB(fieldRange.centerP.lon, fieldRange.centerP.lat,
                fieldRange.width, fieldRange.height,
                l0, b0, l1, b1);
-    dem.loadGEBCO1DNetCDFArea(G.pathFileOfGEBCO, l0, b0, l1, b1);
+    //dem.loadGEBCO1DNetCDFArea(G.pathFileOfGEBCO, l0, b0, l1, b1);
 
     showBathy = false;
     showSky = false;
@@ -65,6 +66,13 @@ void Global::loadConfig()
     fieldRange.width = settings.value("width", 300).toDouble();
     fieldRange.height = settings.value("height", 200).toDouble();
     fieldRange.depth = settings.value("depth", 30).toDouble();
+    settings.endGroup();
+
+    // 下面的参数需要手工配置
+    settings.beginGroup("System");
+    G.pathFileOfGEBCO = settings.value("pathFileOfGEBCO", "").toString();
+    G.pathToDemFile = settings.value("pathToDemFile", "D:\\ShuiJingZhu-GoogleMap").toString();
+    qDebug() << "G.pathToDemFile=" << G.pathToDemFile;
     settings.endGroup();
 
 }
