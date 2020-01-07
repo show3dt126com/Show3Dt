@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "Global.h"
 #include <QtAlgorithms>
+#include "WebMercator.h"
 
 
 MapMan::MapMan()
@@ -26,6 +27,13 @@ bool compareDemInfo(const DemInfo &a, const DemInfo &b)
         return true;
     return false;
 }
+
+
+/*
+  下载水经注地图时，考虑的是不拼图方式。奇数编号的图片都是用于覆盖接缝处的。
+  可以：修改为拼图方式：作为纹理时，选择合适的相邻4张图片进行覆盖。
+  作为地图时，根据当前缩放级别，选择相邻的4张图片进行显示。
+*/
 
 int MapMan::init()
 {
@@ -60,8 +68,19 @@ int MapMan::init()
             QStringList list = texInfoS.split(QRegExp("[|,\n\r]"), QString::SkipEmptyParts);
             if (list.count() != 6)
                 continue;
+            QStringList listName = list[0].split(QRegExp("[-]"), QString::SkipEmptyParts);
+            if (listName.count() != 4)
+                continue;
+            int x = listName[2].toInt();
+            int y = listName[3].toInt();
+
+            // 如果采用拼图方式，重叠的图片不需要考虑
+            if (x%2!=0 || y%2!=0)
+                continue;
+
             //qDebug() << "MapMan::init " << list;
             c ++;
+            demInfo.demFile = list[0];
             demInfo.level = list[5].toInt();
             demInfo.texLB0.lon = list[1].toDouble();
             demInfo.texLB0.lat = list[2].toDouble();
@@ -91,7 +110,32 @@ int MapMan::init()
     fclose(fp);
 }
 
+/*
+  决定合适图片的策略：最多4张相邻图片拼接。文字大小要合适，即显示的分辨率与屏幕分辨率吻合。
+  图片分辨率为：4096*3844  屏幕分辨率为：1920*1080。
+  如果正好落在一张图片，如果落在2张图片中间，则需要选择上一级的图片，造成分辨率显示不一致，
+  这种情况需要拼接。根据范围经纬度，计算 Mercator坐标范围，根据 Mercator 范围选择合适的级别。
+*/
+
 QString MapMan::findFitMap(double l0, double b0, double l1, double b1)
 {
+    DVec3 lonLat0(l0, b0, 0.0);
+    DVec3 xy0 = WebMercator::lonLat2WebMercatorD(lonLat0);
+    DVec3 lonLat1(l1, b1, 0.0);
+    DVec3 xy1 = WebMercator::lonLat2WebMercatorD(lonLat1);
 
+    for (int i=demList.count()-1; i>=0; i--)
+    {
+        DemInfo & di = demList[i];
+        if (di.texLB0.lon < l0 && di.texLB0.lat < b0
+                && di.texLB1.lon > l1 && di.texLB1.lat > b1)
+        {
+            printf("findFitMap= %d %d %s %10.7lf %10.7lf %10.7lf %10.7lf %10.7lf %10.7lf\n",
+                   i, di.level, di.demFile.toLatin1().data(),
+                   di.texLB0.lon, di.texLB0.lat, di.texLB1.lon, di.texLB1.lat,
+                   di.texLB1.lon-di.texLB0.lon, di.texLB1.lat-di.texLB0.lat);
+            return di.demFile;
+        }
+    }
+    return "";
 }

@@ -618,7 +618,7 @@ void SceneWin::updateTextInfo()
     CameraPar & gCameraPar = G.viewPot.cameraPar;
     QString camS;
     camS.sprintf("Cam:%c XYZ=%3.1lf %3.1lf %3.1lf "
-            "Roll=%2.1lf Pitch=%2.1lf Yaw=%2.1lf V%=%1.0lf D*=%1.0lf\r\n",
+            "Roll=%2.1lf Pitch=%2.1lf Yaw=%2.1lf V%%=%1.0lf D*=%1.0lf\r\n",
             G.viewPot.viewType == EVT_Down ? 'V':'H',
             gCameraPar.x, gCameraPar.y, gCameraPar.z,
             gCameraPar.roll, gCameraPar.pitch, gCameraPar.yaw,

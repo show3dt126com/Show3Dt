@@ -12,7 +12,7 @@ ToolBox::ToolBox()
 // GCJ-02 和 BD-09
 const double x_pi = 3.14159265358979324 * 3000.0 / 180.0;
 
-void gcj2bd(double gg_lat, double gg_lon, double &bd_lat, double &bd_lon)
+void gcj02_to_bd09(double gg_lat, double gg_lon, double &bd_lat, double &bd_lon)
 {
     double x = gg_lon, y = gg_lat;
     double z = sqrt(x * x + y * y) + 0.00002 * sin(y * x_pi);
@@ -21,7 +21,7 @@ void gcj2bd(double gg_lat, double gg_lon, double &bd_lat, double &bd_lon)
     bd_lat = z * sin(theta) + 0.006;
 }
 
-void bd2gcj(double bd_lat, double bd_lon, double &gg_lat, double &gg_lon)
+void bd09_to_gcj02(double bd_lat, double bd_lon, double &gg_lat, double &gg_lon)
 {
     double x = bd_lon - 0.0065, y = bd_lat - 0.006;
     double z = sqrt(x * x + y * y) - 0.00002 * sin(y * x_pi);
@@ -36,7 +36,6 @@ void bd2gcj(double bd_lat, double bd_lon, double &gg_lat, double &gg_lon)
 //#define PI	3.141592653589793
 #define WMCT256_RES(x) ((WMCT256_P * 2)/(256 * (2<<((x)-1))))
 
-// 场景像素坐标与地图坐标之间的转换函数
 QPointF qgs2map(const QPointF & qgs, quint8 zoomLevel)
 {
     double resolution = WMCT256_RES(zoomLevel);
@@ -45,16 +44,6 @@ QPointF qgs2map(const QPointF & qgs, quint8 zoomLevel)
     return QPointF(x, y);
 }
 
-// 地图坐标与地理坐标之间的转换函数
-QPointF map211(const QPointF & map)
-{
-    qreal x = (qreal)(map.x() / WMCT256_P * 180);
-    qreal y = (qreal)(map.y() / WMCT256_P * 180);
-    y = (180 / PI)*(2 * atan(exp(y*PI / 180) - PI / 2));
-    return QPointF(x, y);
-}
-
-// 地图坐标与场景像素坐标之间的转换函数
 QPointF map2qgs(const QPointF & map, quint8 zoomLevel)
 {
     double resolution = WMCT256_RES(zoomLevel);
@@ -63,7 +52,14 @@ QPointF map2qgs(const QPointF & map, quint8 zoomLevel)
     return QPointF(x, y);
 }
 
-//地理坐标与地图坐标之间的转换函数
+QPointF map211(const QPointF & map)
+{
+    qreal x = (qreal)(map.x() / WMCT256_P * 180);
+    qreal y = (qreal)(map.y() / WMCT256_P * 180);
+    y = (180 / PI)*(2 * atan(exp(y*PI / 180) - PI / 2));
+    return QPointF(x, y);
+}
+
 QPointF ll2map(const QPointF & geo)
 {
     qreal x = (qreal)(geo.x() *WMCT256_P /180);
@@ -149,6 +145,71 @@ void makeBatchDownloadConfigFileForShuiJingZhuMap()
         MY = MY / 2.0;
         dlon = dlon / 2.0;
         t = 2*t+1;
+    }
+    fclose(fp);
+}
+
+
+// 不重叠方式
+// L05:1
+// L06:2*2
+// L07:4*4
+// L08:8*8
+// L09:16*16
+// L10:32*32
+//
+// L11:64*64
+// L12:128*128
+// L13:256*256
+void makeBatchDownloadConfigFileForShuiJingZhuMapGrid()
+{
+    double l0, b0, l1, b1;
+    int s0 = 5, s1=12;
+    FILE * fp = fopen("D:/ShuiJingZhu-GoogleMap-Download-Batch/ShuiJingZhuBatch.txt", "wt");
+
+    DVec3 P;
+    P.x = 0;
+    //P.y = 85.0511287798065467;
+    P.y = 84.0;
+    P.z = 0;
+    DVec3 M = WebMercator::lonLat2WebMercatorD(P);
+    double MY = M.y;
+    double dlon = 360.0;
+    int t = 1;
+
+    int f10i = 0;
+    for (int s=5; s<=11; s++)
+    {
+        for (int x=0; x<t; x++)
+        {
+            DVec3 MXY;
+            MXY.x = 0;
+            MXY.y = -M.y + MY*2*x;
+            DVec3 latMin = WebMercator::webMercator2lonLatD(MXY);
+            MXY.x = 0;
+            MXY.y = MXY.y + MY*2;
+            DVec3 latMax = WebMercator::webMercator2lonLatD(MXY);
+
+            for (int y=0; y<t; y++)
+            {
+                if (s == 11 && x%8 == 0 && y == 0)
+                {
+                    fclose(fp);
+                    char fn[300];
+                    sprintf(fn, "D:/ShuiJingZhu-GoogleMap-Download-Batch/ShuiJingZhuBatch-L%d-%d.txt",
+                            s, f10i++);
+                    fp = fopen(fn, "wt");
+                }
+                double lonMin = -180 + y*dlon;
+                double lonMax = lonMin + dlon;
+                fprintf(fp, "World-L%02d-%03d-%03d|%15.13lf,%15.13lf|%15.13lf,%15.13lf|%d\n",
+                        s, x*2,y*2, lonMin, latMin.y, lonMax, latMax.y, s);
+            }
+            fprintf(fp, "\n");
+        }
+        MY = MY / 2.0;
+        dlon = dlon / 2.0;
+        t = 2*t;
     }
     fclose(fp);
 }

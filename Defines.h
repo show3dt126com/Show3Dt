@@ -286,6 +286,8 @@ struct CameraParam
 // XY：经纬度，单位度。墨卡托：XY，单位米。
 struct DVec3
 {
+    DVec3();
+    DVec3(double x, double y, double z);
     // 经度Lon, L，度；或者 x，米
     double x;
     // 纬度Lat, B，度；或者 y，米
@@ -297,6 +299,8 @@ struct DVec3
 // Eular Angles 不考虑 roll操作
 struct Eular
 {
+    Eular();
+    Eular(double pitch, double yaw, double roll);
     // 俯仰叫，度
     double pitch;
     // 偏转角，度
@@ -308,6 +312,8 @@ struct Eular
 // 表示经纬度和高度的点
 struct LBH
 {
+    LBH();
+    LBH(double lon, double lat, double height);
     double lon;
     double lat;
     double height;
@@ -317,6 +323,8 @@ struct LBH
 // 表示经纬度
 struct LB
 {
+    LB();
+    LB(double lon, double lat);
     double lon;
     double lat;
 };
@@ -324,6 +332,9 @@ struct LB
 // 存储1维参数数据对
 struct DVec2
 {
+    DVec2();
+    DVec2(double d, double v);
+
     // 参数。距离：米
     double d;
     // 数据。深度：米。
@@ -347,6 +358,8 @@ struct DemInfo
     int level;
     // 图像对应经纬度范围，左上角，右下角
     LB texLB0, texLB1;
+    // World-L05-000-000
+    QString demFile;
 };
 
 struct VertexColor

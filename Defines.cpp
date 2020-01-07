@@ -2,6 +2,71 @@
 #include "ToolBox.h"
 #include <math.h>
 
+DVec3::DVec3()
+{
+    x = 0.0;
+    y = 0.0;
+    z = 0.0;
+}
+
+DVec3::DVec3(double x, double y, double z)
+{
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
+Eular::Eular()
+{
+    pitch = 0.0;
+    yaw = 0.0;
+    roll = 0.0;
+}
+
+Eular::Eular(double pitch, double yaw, double roll)
+{
+    this->pitch = pitch;
+    this->yaw = yaw;
+    this->roll = roll;
+}
+
+LBH::LBH()
+{
+    lon = 0.0;
+    lat = 0.0;
+}
+
+LBH::LBH(double lon, double lat, double height)
+{
+    this->lon = lon;
+    this->lat = lat;
+    this->height = height;
+}
+
+LB::LB()
+{
+    lon = 0.0;
+    lat = 0.0;
+}
+
+LB::LB(double lon, double lat)
+{
+    this->lon = lon;
+    this->lat = lat;
+}
+
+DVec2::DVec2()
+{
+    d = 0.0;
+    v = 0.0;
+}
+
+DVec2::DVec2(double d, double v)
+{
+    this->d = d;
+    this->v = v;
+}
+
 int compareColorKey( const void *arg1, const void *arg2)
 {
     ColorKey * p1 = PColorKey(arg1);

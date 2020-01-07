@@ -48,6 +48,10 @@ public:
     BBS2 bbs2;
     BBS3 bbs3;
 
+    void testWebMercator();
+    void testFindMap();
+    void testMakeBatchDownloadShuiJingZhuFile();
+
     Scheme scheme;
     int testSchemeSaveLoad();
 

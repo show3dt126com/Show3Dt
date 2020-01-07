@@ -1,6 +1,8 @@
 #include "Test.h"
 #include <QDebug>
 #include "Global.h"
+#include "ToolBox.h"
+#include "WebMercator.h"
 
 Test T;
 
@@ -18,9 +20,48 @@ void Test::init()
 
 int Test::test(int p)
 {
-    testBBS(p);
+    //testBBS(p);
     //testSchemeSaveLoad();
+    //testWebMercator();
+    //testFindMap();
+    testMakeBatchDownloadShuiJingZhuFile();
     return 1;
+}
+
+void Test::testWebMercator()
+{
+    DVec3 lonLat;
+    lonLat.x = 110;
+    lonLat.y = 25;
+    lonLat.z = 0;
+
+    DVec3 m = WebMercator::lonLat2WebMercatorD(lonLat);
+    DVec3 ll = WebMercator::webMercator2lonLatD(m);
+    qDebug() << "Test ll2map" << m.x << m.y << m.z << ll.x << ll.y << ll.z;
+
+    DVec3 twM0, twM1, twLL0, twLL1;
+    twM0.x = 12972241.510078705847263;
+    twM0.y = 2399498.498509500175714;
+    twM1.x = 13662089.402329696342349;
+    twM1.y = 3084405.306345136370510;
+
+    twLL0 = WebMercator::webMercator2lonLatD(twM0);
+    twLL1 = WebMercator::webMercator2lonLatD(twM1);
+    qDebug() << "Test TaiWan" << twLL0.x << twLL0.y << twLL1.x << twLL1.y;
+    // 116.532 21.0639 122.729 26.6869
+    QString taiWanMap = G.mapMan.findFitMap(116.6, 21.1, 122.6, 26.6);
+    qDebug() << "taiWanMap=" << taiWanMap;
+
+}
+
+void Test::testFindMap()
+{
+
+}
+
+void Test::testMakeBatchDownloadShuiJingZhuFile()
+{
+    makeBatchDownloadConfigFileForShuiJingZhuMapGrid();
 }
 
 int Test::testBBS(int p)
